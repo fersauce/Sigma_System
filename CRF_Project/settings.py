@@ -52,23 +52,33 @@ ROOT_URLCONF = 'CRF_Project.urls'
 
 WSGI_APPLICATION = 'CRF_Project.wsgi.application'
 
-
+ADMINS= (
+    ('Fernando Saucedo','carlifer.fernando@gmail.com'),
+    ('Cristian Candia', 'kandia88@gmail.com'),
+    ('Ruth Centurion', 'ruthiccr@gmail.com'),
+)
+"""Administradores"""
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'ss_des',
+        'USER': 'sigmasystem',
+        'PASSWORD': 'SS_is2.',
+        'HOST':'localhost',
+        'PORT':'5432',
     }
 }
+"""Configuracion de la BD del sistema, ahora mismo en desarrollo"""
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-py'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Paraguay'
 
 USE_I18N = True
 
@@ -81,3 +91,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'sigmasystem21@gmail.com'
+EMAIL_HOST_PASSWORD = 'useruser'
+EMAIL_PORT = 587
+"""Configuracion del servidor de correo de la aplicacion"""
