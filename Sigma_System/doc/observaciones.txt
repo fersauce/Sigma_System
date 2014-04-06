@@ -1,0 +1,3 @@
+Tipo de Item:
+- Opcion de importar o no.
+- Nombre unico en el proyecto, no asi en el sistema.

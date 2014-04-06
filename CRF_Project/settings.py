@@ -78,7 +78,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'es-py'
 
-TIME_ZONE = 'America/Paraguay'
+TIME_ZONE = 'America/Asuncion'
 
 USE_I18N = True
 
