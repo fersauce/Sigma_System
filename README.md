@@ -20,7 +20,7 @@ Integrantes
 
 1. Cristian Miguel Candia
 
-2. Ruth Carolina Centurión
+2. Ruth Carolina Centurión Rolón
 
 3. Fernando Ramón Saucedo Argüello
 
