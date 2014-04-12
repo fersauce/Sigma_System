@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block contenido %}
+    <h1>Iniciar<small class="on-right">Sesion</small></h1>
+    <div class="">
+        <form action="{%  url 'sigma:login' %}" method="post">
+            {% csrf_token %}
+            <fieldset>
+                <div class="span3">
+                    <div class="input-control text" data-role="input-control">
+                        <!--input type="text" placeholder="usuario" id ="username" required-->
+                            {{ form.username }}
+                        <button class="btn-clear" tabindex="-1" type="button"></button>
+                    </div>
+                    <div class="input-control password" data-role="input-control">
+                        <!--input type="password" placeholder="contraseña" id = "password" required-->
+                            {{ form.password }}
+                        <button class="btn-reveal" tabindex="-1" type="button"> </button>
+                    </div>
+                    <input type="submit" value="Aceder" onclick="">
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <br>
+    <p><a href="#">He olvidado la contraseña</a></p>
+{% endblock %}
