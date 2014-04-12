@@ -13,4 +13,4 @@ modules: CRF_Project, Sigma_System
 
 # Write html output to the directory "apidocs"
 output: pdf
-target: CRF_Project/static/ssdocs
+target: static/ssdocs

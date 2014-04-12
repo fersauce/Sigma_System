@@ -67,8 +67,14 @@ def adm_usuario(request):
 
 
 def recuperarPass(request):
+    """
+    Vista que es utilizada para la regeneracion del pass de un usuario
+    """
     if request.method == 'POST':
         formulario = RecuperarPassForm(request.POST, request.FILES)
+        """
+        Variable que representa al formulario
+        """
         if formulario.is_valid():
             password = generar_nuevo_pass(request, formulario.cleaned_data['correo'])
             contenido = render_to_string('mailing/recuperacion_password.html', {'pass': password})
@@ -85,6 +91,9 @@ def recuperarPass(request):
 
 
 def generar_nuevo_pass(request, correo):
+    """
+    Metodo que genera el nuevo pass para el usuario.
+    """
     if correo is not None:
         user = User.objects.get(email=correo)
         password = ''.join([choice(string.letters + string.digits) for i in range(10)])
