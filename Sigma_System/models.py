@@ -37,11 +37,6 @@ class Rol(models.Model):
 
 
 class Usuario(models.Model):
-    #nombreUsuario = models.CharField(max_length=30, unique=True)
-    #nombre = models.CharField(max_length=30)
-    #apellido = models.CharField(max_length=30)
-    #email = models.EmailField(unique=True)
-    #contrasenha = models.CharField(max_length=120, unique=True)
     user = models.OneToOneField(User)
     ci = models.CharField(max_length=15, unique=True)
     direccion = models.CharField(max_length=100)
