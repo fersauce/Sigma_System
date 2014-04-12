@@ -19,7 +19,7 @@ def iniciarsesion(request):
                     login(request, user)
                     return render(request, 'principal.html', {'user': username, })
     else:
-            form = FormLogin()
+        form = FormLogin()
     return render(request, 'login.html', {'form': form, })
 
 
