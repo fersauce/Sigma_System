@@ -13,9 +13,9 @@ class Testing(TestCase):
         """
         Test de la url de usuario.
         """
-        response = self.client.get("/adm_u")
+        response = self.client.get("/ss/adm_u/")
         print 'hecho'
-        print self.assertEqual(response.status_code, 301)
+        print self.assertEqual(response.status_code, 402)
 
 
     def testUsuarioComparacion(self):

@@ -21,12 +21,12 @@
         <script src="{{ STATIC_URL }}MetroBoostrap/js/prettify/prettify.js"></script>
 
         <!-- Metro UI CSS JavaScript plugins -->
-        <script src="{{ STATIC_URL }}MetroBoostrap/js/load-metro.js"></script>
+        <!--script src="{{ STATIC_URL }}MetroBoostrap/js/load-metro.js"></script>
 
         <!-- Local JavaScript -->
         <script src="{{ STATIC_URL }}MetroBoostrap/js/docs.js"></script>
         <script src="{{ STATIC_URL }}MetroBoostrap/js/github.info.js"></script>
-
+        <script src="{{ STATIC_URL }}MetroBoostrap/js/metro.min.js"></script>
         <title>{% block titulo %}{% endblock %}</title>
     </head>
     <body class="metro">
@@ -42,7 +42,7 @@
         <div class="container" align="center">
             {% block contenido %}{% endblock %}
         </div>
-        <script src="{{ STATIC_URL }}MetroBoostrap/js/hitua.js"></script>
+        <!--script src="{{ STATIC_URL }}MetroBoostrap/js/hitua.js"></script-->
     </body>
     <footer>
         {% block pie %}{% endblock %}

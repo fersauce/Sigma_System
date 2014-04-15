@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block navegacion %}
-    <a class="element place-right" href={% url 'sigma:finalizar' %}> Cerrar Sesion </a>
+    <a class="element place-right" href="{% url 'sigma:finalizar' %}"> Cerrar Sesion </a>
     <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
@@ -11,7 +11,7 @@
                     <span class="icon-cog"></span>
                 </a>
                 <ul class="dropdown-menu place-right" data-role="dropdown">
-                    <li><a href="Iniciar Sesion.html">Cerrar Sesión</a></li>
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
                 </ul>
             </div>
         </div>
