@@ -146,6 +146,14 @@ class HistorialLineabase(models.Model):
     linea_base = models.ForeignKey(LBase)
 
 
+class UsuariosXProyecto(models.Model):
+    """
+    Modelo que representa la conexion entre los usuarios y los proyectos asociados.
+    """
+    proyecto = models.ForeignKey(Proyecto)
+    usuario = models.ForeignKey(Usuario)
+
+
 class FormAltaUsuario(forms.Form):
     nombre_usuario = forms.CharField(max_length=30,
                                      widget=forms.TextInput(attrs={
