@@ -81,9 +81,9 @@ def alta_usuario(request):
 
 
 @login_required(login_url='/login/')
-def baja_usuario(request, valor):
+def baja_usuario(request, us):
 
-    user=User.objects.get(id=valor)
+    user=User.objects.get(id=us)
     user.is_active=False
     user.save()
 
