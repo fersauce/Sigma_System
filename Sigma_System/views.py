@@ -87,7 +87,7 @@ def baja_usuario(request, us):
     user.is_active=False
     user.save()
 
-    return render(request, 'Administrador Usuario.html')
+    return HttpResponseRedirect('/ss/adm_u/')
 
 
 
@@ -97,7 +97,7 @@ def baja_usuario(request, us):
 
 @login_required(login_url='/login/')
 def adm_usuario(request):
-    user = User.objects.all()
+    user = User.objects.get(is_active=True)
     return render(request, 'Administrador Usuario.html', {'user': user })
 
 
