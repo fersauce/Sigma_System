@@ -78,6 +78,48 @@ def alta_usuario(request):
 
 
 @login_required(login_url='/login/')
+def baja_usuario(request):
+    if request.method == 'POST':
+        form = FormAltaUsuario(request.POST, request.FILES)
+        if form.is_valid():
+            user = User.objects.filter(username=form.cleaned_data['nombre_usuario'])
+            if user.__len__() == 0:
+                user = User.objects.filter(email=form.cleaned_data['email'])
+                if user.__len__() == 0:
+                    user = Usuario.objects.filter(ci=form.cleaned_data['ci'])
+                    if user.__len__() == 0:
+                        usuario = User.objects.create(username=form.cleaned_data['nombre_usuario'],
+                                                      first_name=form.cleaned_data['nombre'],
+                                                      last_name=form.cleaned_data['apellido'],
+                                                      email=form.cleaned_data['email'],
+                                                      password=make_password(form.cleaned_data['contrasenha']))
+                        Usuario.objects.create(user=usuario, ci=form.cleaned_data['ci'],
+                                                       direccion=form.cleaned_data['direccion'],
+                                                       tel=form.cleaned_data['tel'],
+                                                       estado=True)
+                        return HttpResponseRedirect('/ss/adm_u/')
+                    else:
+                        form = FormAltaUsuario()
+                        return render(request, 'Alta Usuario.html', {'form': form, 'alerta': 'Ya existe este ci'})
+                else:
+                    form = FormAltaUsuario()
+                    return render(request, 'Alta Usuario.html', {'form': form, 'alerta': 'Ya existe este e-mail'})
+            else:
+                form = FormAltaUsuario()
+                return render(request, 'Alta Usuario.html', {'form': form, 'alerta': 'Ya existe este username'})
+        else:
+            return HttpResponseRedirect('/ss/adm_u/')
+    else:
+        form = FormAltaUsuario()
+    return render(request, 'bajaUsuario.html', {'form': form})
+
+
+
+
+
+
+
+@login_required(login_url='/login/')
 def adm_usuario(request):
     user = User.objects.all()
     return render(request, 'Administrador Usuario.html', {'user': user })

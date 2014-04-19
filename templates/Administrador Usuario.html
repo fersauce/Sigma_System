@@ -11,7 +11,7 @@
                     <span class="icon-cog"></span>
                 </a>
                 <ul class="dropdown-menu place-right" data-role="dropdown">
-                    <li><a href="Iniciar Sesion.html">Cerrar Sesión</a></li>
+                    <li><a href={% url 'sigma:finalizar' %}>Cerrar Sesión</a></li>
                 </ul>
             </div>
         </div>
@@ -38,16 +38,19 @@
                                 <tr>
                                     <td>{{ u.username }}</td>
                                     <td class="right">{{ u.email }}</td>
-                                    <!--td class="right"><a class="pull-menu" href="#"></a>
+
+                                    <td class="right">{{ u.date_joined }}</td>
+
+                                    <td class="right"><a class="pull-menu" href="#"></a>
                                         <div class="element-menu">
                                             <a class="dropdown-toggle" href="#"><span class="icon-cog"></span></a>
                                             <ul class="dropdown-menu default" data-role="dropdown">
-                                                <li class="disabled"><a href="#">Modificar</a></li>
-                                                <li class="disabled"><a href="#">Eliminar</a></li>
+                                                <li><a href="#">Modificar</a></li>
+                                                <li><a href="{%  url 'sigma:adm_u_baja' %}">Eliminar</a></li>
+                                                <!--li class="disabled"><a href="#">Eliminar</a></li-->
                                             </ul>
                                         </div>
-                                    </td-->
-                                    <td class="right">{{ u.date_joined }}</td>
+                                    </td>
                                 </tr>
                             {% endfor %}
                             </tbody>

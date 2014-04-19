@@ -28,35 +28,43 @@
                         {%  if alerta %}
                             <p> {{ alerta }}</p>
                         {% endif %}
+                        <label>Nombre</label>
                         <div class="input-control text" data-role="input-control">
                             {{ form.nombre }}
                             <!--input type="text" placeholder="nombre del usuario" id="nombre" required-->
                             <button class="btn-clear" tabindex="-1" type="button"> </button>
                         </div>
+                        <label>Apellido</label>
                         <div class="input-control text" data-role="input-control">
                             {{ form.apellido }}
                             <button class="btn-clear" tabindex="-1" type="button"> </button>
                         </div>
+                        <label>Cedula de Identidad</label>
                         <div class="input-control text" data-role="input-control">
                             {{ form.ci }}
                             <button class="btn-clear" tabindex="-1" type="button"> </button>
                         </div>
+                        <label>Direccion</label>
                         <div class="input-control text" data-role="input-control" >
                             {{ form.direccion }}
                             <button class="btn-clear" tabindex="-1" type="button"> </button>
                         </div>
+                        <label>Numero de telefono</label>
                         <div class="input-control text" data-role="input-control" >
                             {{ form.tel }}
                             <button class="btn-clear" tabindex="-1" type="button"> </button>
                         </div>
+                        <label>Direccion de e-mail</label>
                         <div class="input-control text" data-role="input-control" >
                             {{ form.email }}
                             <button class="btn-clear" tabindex="-1" type="button"> </button>
                         </div>
+                        <label>Nombre de la cuenta</label>
                         <div class="input-control text" data-role="input-control" >
                             {{ form.nombre_usuario }}
                             <button class="btn-clear" tabindex="-1" type="button"> </button>
                         </div>
+                        <label>Contraseña</label>
                         <div class="input-control password" data-role="input-control">
                             {{ form.contrasenha }}
                             <button class="btn-reveal" tabindex="-1" type="button"> </button>
