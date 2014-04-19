@@ -79,7 +79,9 @@ def alta_usuario(request):
 
 
 
-
+"""
+vista utilizada para dar de baja un usuario, baja logica
+"""
 @login_required(login_url='/login/')
 def baja_usuario(request, us):
 
@@ -97,7 +99,7 @@ def baja_usuario(request, us):
 
 @login_required(login_url='/login/')
 def adm_usuario(request):
-    user = User.objects.get(is_active=True)
+    user = User.objects.filter(is_active=True)
     return render(request, 'Administrador Usuario.html', {'user': user })
 
 
