@@ -9,5 +9,5 @@ urlpatterns = patterns('',
     url(r'^adm_u/$', 'Sigma_System.views.adm_usuario', name='adm_u'),
     url(r'^adm_u_altas/$', 'Sigma_System.views.alta_usuario', name='adm_u_altas'),
     url(r'^nuevopass/$', 'Sigma_System.views.recuperarPass', name='recu_pass'),
-    url(r'^adm_u_baja/$', 'Sigma_System.views.baja_usuario', name='adm_u_baja'),
+    url(r'^adm_u_baja/(?P<user>\d+)$', 'Sigma_System.views.baja_usuario', name='adm_u_baja'),
 )
