@@ -7,26 +7,27 @@
         <meta name="description" content="Simple responsive css framework">
         <meta name="author" content="Sergey S. Pimenov, Ukraine, Kiev">
 
-        <link href="{{ STATIC_URL }}MetroBoostrap/css/metro-bootstrap.css" rel="stylesheet">
-        <link href="{{ STATIC_URL }}MetroBoostrap/css/metro-bootstrap-responsive.css" rel="stylesheet">
-        <link href="{{ STATIC_URL }}MetroBoostrap/css/iconFont.css" rel="stylesheet">
-        <link href="{{ STATIC_URL }}MetroBoostrap/css/docs.css" rel="stylesheet">
-        <link href="{{ STATIC_URL }}MetroBoostrap/js/prettify/prettify.css" rel="stylesheet">
+
+        <link href="/static/MetroBoostrap/css/metro-bootstrap.css" rel="stylesheet">
+        <link href="/static/MetroBoostrap/css/metro-bootstrap-responsive.css" rel="stylesheet">
+        <link href="/static/MetroBoostrap/css/iconFont.css" rel="stylesheet">
+        <link href="/static/MetroBoostrap/css/docs.css" rel="stylesheet">
+        <link href="/static/MetroBoostrap/js/prettify/prettify.css" rel="stylesheet">
 
 
         <!-- Load JavaScript Libraries -->
-        <script src="{{ STATIC_URL }}MetroBoostrap/js/jquery/jquery.min.js"></script>
-        <script src="{{ STATIC_URL }}MetroBoostrap/js/jquery/jquery.widget.min.js"></script>
-        <script src="{{ STATIC_URL }}MetroBoostrap/js/jquery/jquery.mousewheel.js"></script>
-        <script src="{{ STATIC_URL }}MetroBoostrap/js/prettify/prettify.js"></script>
+        <script src="/static/MetroBoostrap/js/jquery/jquery.min.js"></script>
+        <script src="/static/MetroBoostrap/js/jquery/jquery.widget.min.js"></script>
+        <script src="/static/MetroBoostrap/js/jquery/jquery.mousewheel.js"></script>
+        <script src="/static/MetroBoostrap/js/prettify/prettify.js"></script>
 
         <!-- Metro UI CSS JavaScript plugins -->
         <!--script src="{{ STATIC_URL }}MetroBoostrap/js/load-metro.js"></script>
 
         <!-- Local JavaScript -->
-        <script src="{{ STATIC_URL }}MetroBoostrap/js/docs.js"></script>
-        <script src="{{ STATIC_URL }}MetroBoostrap/js/github.info.js"></script>
-        <script src="{{ STATIC_URL }}MetroBoostrap/js/metro.min.js"></script>
+        <script src="/static/MetroBoostrap/js/docs.js"></script>
+        <script src="/static/MetroBoostrap/js/github.info.js"></script>
+        <script src="/static/MetroBoostrap/js/metro.min.js"></script>
         <title>{% block titulo %}{% endblock %}</title>
     </head>
     <body class="metro">
@@ -42,7 +43,6 @@
         <div class="container" align="center">
             {% block contenido %}{% endblock %}
         </div>
-        <!--script src="{{ STATIC_URL }}MetroBoostrap/js/hitua.js"></script-->
     </body>
     <footer>
         {% block pie %}{% endblock %}
