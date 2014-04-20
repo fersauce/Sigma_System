@@ -9,6 +9,8 @@ class Proyecto(models.Model):
     nombre = models.CharField(max_length=30, unique=True)
     descripcion = models.CharField(max_length=200)
     fechaCreacion = models.DateField()
+    fechaInicio = models.DateField()
+    fechaFinalizacion = models.DateField()
     duracion = models.IntegerField()
     complejidad = models.IntegerField()
     costo = models.IntegerField()
