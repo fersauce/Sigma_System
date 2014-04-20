@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block contenido %}
+    <h1>Agregar<small class="on-right">Roles</small></h1>
+    <div class="">
+        <form action="{%  url 'sigma:adm_r_altas' %}" method="post">
+            {% csrf_token %}
+            <fieldset>
+                <div class="span3">
+                    <div class="input-control text" data-role="input-control">
+                        <input type="text" placeholder="nombre del rol" name="nombre" required>
+                        <button class="btn-clear" tabindex="-1" type="button"></button>
+                    </div>
+                    <div class="input-control text" data-role="input-control">
+                        <input type="text" placeholder="descripcion del rol" name="descripcion" required>
+                        <button class="btn-clear" tabindex="-1" type="button"></button>
+                    </div>
+                    <div>
+                        <div class="input-control switch" data-role="input-control">
+                            <label class="inline-block">
+                                <input type="checkbox" id="1" name="permisos">
+                                <span class="check"></span>
+                                Prueba del checked button
+                            </label>
+                        </div>
+                    </div>
+                    <input type="submit" value="Asignar" onclick="">
+                </div>
+            </fieldset>
+        </form>
+    </div>
+{% endblock %}

@@ -7,8 +7,8 @@ from django.shortcuts import render, render_to_response
 from django.http import *
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from Sigma_System.forms import RecuperarPassForm
-from Sigma_System.models import FormLogin, FormAltaUsuario, Usuario
+from Sigma_System.forms import RecuperarPassForm, FormLogin, FormAltaUsuario
+from Sigma_System.models import Usuario, Rol, Permiso
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
@@ -119,3 +119,21 @@ def generar_nuevo_pass(request, correo):
         return str(password)
 
     return None
+
+
+def add_roles(request):
+    """
+    Vista que maneja la asignacion de roles.
+    """
+    if request.method == 'POST':
+        nombre = request.POST['nombre']
+        descripcion = request.POST['descripcion']
+        print (nombre)
+        print (descripcion)
+        permisos = request.POST.getlist('permisos')
+        for p in permisos:
+            print p
+    else:
+        permisos = Permiso.objects.all()
+        return render(request, 'Agregar_Rol.html', {'permisos': permisos})
+    return HttpResponseRedirect('/ss/adm_u/')

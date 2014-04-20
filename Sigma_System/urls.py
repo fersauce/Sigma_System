@@ -9,4 +9,5 @@ urlpatterns = patterns('',
     url(r'^adm_u/$', 'Sigma_System.views.adm_usuario', name='adm_u'),
     url(r'^adm_u_altas/$', 'Sigma_System.views.alta_usuario', name='adm_u_altas'),
     url(r'^nuevopass/$', 'Sigma_System.views.recuperarPass', name='recu_pass'),
+    url(r'^adm_r_altas/$', 'Sigma_System.views.add_roles', name='adm_r_altas'),
 )
