@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block navegacion %}
     <span class="element-divider"></span>
-    <a class="element" href={% url 'sigma:adm_u' %}> Administrar Usuario </a-->
+    <a class="element" href={% url 'sigma:adm_u' %}> Administrar Usuario </a>
     <a class="element place-right" href={% url 'sigma:finalizar' %}> Cerrar Sesión </a>
     <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
@@ -32,52 +32,52 @@
                             <p> {{ alerta }}</p>
                         {% endif %}
 
-                        <label>Nombre</label>
+                        <label>Nombre del usuario</label>
                         <div class="input-control text"  data-role="input-control" value="urth">
-                            <input type="text" placeholder=" " id="nombre" required value={{user.first_name }} disabled>
+                            <input type="text" name="nombre_usuario" placeholder=" " id="nombre" required value={{user.first_name }} disabled>
 
                         </div>
 
 
                         <label>Apellido</label>
                         <div class="input-control text" data-role="input-control">
-                            <input type="text" placeholder=" " required value={{user.last_name }} disabled>
+                            <input type="text" name="apellido" placeholder=" " required value={{user.last_name }} disabled>
                         </div>
 
 
                         <label>Cedula de Identidad</label>
                         <div class="input-control text" data-role="input-control">
-                            <input type="text" placeholder=" " required value={{user.usuario.ci }} disabled>
+                            <input type="text" name="ci" placeholder=" " required value={{user.usuario.ci }} disabled>
                         </div>
 
 
                         <label>Direccion</label>
                         <div class="input-control text" data-role="input-control" >
-                            <input type="text" placeholder=" " required value={{user.usuario.direccion }}>
+                            <input type="text" name="direccion" placeholder=" " required value={{user.usuario.direccion }}>
                         </div>
 
 
                         <label>Numero de telefono</label>
                         <div class="input-control text" data-role="input-control" >
-                            <input type="text" placeholder=" " required value={{user.usuario.tel }}>
+                            <input type="text" name="tel" placeholder=" " required value={{user.usuario.tel }}>
                         </div>
 
 
                         <label>Direccion de e-mail</label>
                         <div class="input-control text" data-role="input-control" >
-                            <input type="text" placeholder=" " required value={{user.email }} disabled>
+                            <input type="text" name="email" placeholder=" " required value={{user.email }} disabled>
                         </div>
 
 
                         <label>Nombre de la cuenta</label>
                         <div class="input-control text" data-role="input-control" >
-                            <input type="text" placeholder=" " required value={{user.username }} disabled>
+                            <input type="text" name="username" placeholder=" " required value={{user.username }} disabled>
                         </div>
 
 
                         <label>Contraseña</label>
                         <div class="input-control password" data-role="input-control">
-                            <input type="text" placeholder=" la contraseña no se puede visualizar" required >
+                            <input type="text" name="pass" placeholder=" " required disabled >
                         </div>
                         <br>
                         <br>
