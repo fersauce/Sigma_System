@@ -23,7 +23,7 @@
     <div class="container" align = "center">
         <h1><a href="#"></a>Modificar<small class="on-right">Usuario</small></h1>
         <div class="">
-            <form action = "{% url 'sigma:guardar_mod_u' %}" method="post">
+            <form action = "{% url 'sigma:adm_u_mod' user.id %}" method="post">
                 {% csrf_token %}
                 <fieldset>
                     <div class="span3">
