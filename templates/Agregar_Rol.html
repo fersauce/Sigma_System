@@ -14,14 +14,14 @@
                         <input type="text" placeholder="descripcion del rol" name="descripcion" required>
                         <button class="btn-clear" tabindex="-1" type="button"></button>
                     </div>
-                    <div>
-                        <div class="input-control switch" data-role="input-control">
-                            <label class="inline-block">
-                                <input type="checkbox" id="1" name="permisos">
-                                <span class="check"></span>
-                                Prueba del checked button
-                            </label>
-                        </div>
+                    <div class="input-control switch" data-role="input-control">
+                    {%  for p in permisos %}
+                        <label class="inline-block">
+                            <input type="checkbox" name="permisos" value="{{ p.id }}">
+                            <span class="check"></span>
+                            {{ p.nombre }}
+                        </label>
+                    {% endfor %}
                     </div>
                     <input type="submit" value="Asignar" onclick="">
                 </div>
