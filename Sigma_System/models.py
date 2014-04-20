@@ -18,6 +18,9 @@ class Proyecto(models.Model):
     nroFases = models.IntegerField()
     nroMiembros = models.IntegerField()
 
+    def __str__(self):
+        return str(self.nombre)
+
 
 class Fase(models.Model):
     proyecto = models.ForeignKey(Proyecto)
@@ -45,6 +48,9 @@ class Usuario(models.Model):
     tel = models.CharField(max_length=20)
     estado = models.BooleanField(default=True)
     roles = models.ManyToManyField(Rol, through='UsuarioRol')
+
+    def __str__(self):
+        return self.user.username.__str__()
 
 
 def create_user_profile(sender, instance, created, **kwargs):
