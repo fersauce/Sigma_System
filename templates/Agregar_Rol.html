@@ -10,21 +10,26 @@
                         <input type="text" placeholder="nombre del rol" name="nombre" required>
                         <button class="btn-clear" tabindex="-1" type="button"></button>
                     </div>
+                </div>
+                <div class="span8">
                     <div class="input-control text" data-role="input-control">
                         <input type="text" placeholder="descripcion del rol" name="descripcion" required>
                         <button class="btn-clear" tabindex="-1" type="button"></button>
                     </div>
-                    <div class="input-control switch" data-role="input-control">
-                    {%  for p in permisos %}
-                        <label class="inline-block">
-                            <input type="checkbox" name="permisos" value="{{ p.id }}">
-                            <span class="check"></span>
-                            {{ p.nombre }}
-                        </label>
-                    {% endfor %}
-                    </div>
-                    <input type="submit" value="Asignar" onclick="">
                 </div>
+                    {%  for p in permisos %}
+                        <div class="input-control switch" data-role="input-control" align="left">
+                            <label class="inline-block" align="left">
+                                <input type="checkbox" name="permisos" value="{{ p.id }}" align="left">
+                                <span class="check"></span>
+                                {{ p.nombre }}
+                            </label>
+                        </div>
+                        <br>
+                    {% endfor %}
+                    <div class="span3">
+                        <input type="submit" value="Asignar" onclick="">
+                    </div>
             </fieldset>
         </form>
     </div>

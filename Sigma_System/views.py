@@ -117,7 +117,6 @@ def generar_nuevo_pass(request, correo):
         user.password = make_password(password)
         user.save()
         return str(password)
-
     return None
 
 
