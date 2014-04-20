@@ -114,14 +114,14 @@ def modificar_usuario(request, us):
 
 def guardarCambiosUsuario(request):
     if request.method == 'POST':
-        user = User.objects.filter(is_active=True)
 
-        user.first_name=User.objects.get(request.POST['nombre_usuario'])
-        user.last_name=User.objects.get(request._post['apellido'])
-        user.email=User.objects.get(request._post['email'])
-        user.usuario.ci =User.objects.get(request._post['ci'])
-        user.usuario.direccion=User.objects.get(request._post['direccion'])
-        user.usuario.tel=User.objects.get(request._post['email'])
+        user = User.objects.filter(is_active=True)
+        user.first_name=request.POST['nombre_usuario']
+        user.last_name= request.POST['apellido']
+        user.email= request.POST['email']
+        user.usuario.ci =request.POST['ci']
+        user.usuario.direccion=request.POST['direccion']
+        user.usuario.tel=request.POST['email']
         user.save()
         user.usuario.save()
     return render(request, 'Administrador Usuario.html', {'user' : user})
