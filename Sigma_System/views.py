@@ -79,12 +79,12 @@ def alta_usuario(request):
 
 
 
-"""
-vista utilizada para dar de baja un usuario, baja logica
-"""
+
 @login_required(login_url='/login/')
 def baja_usuario(request, us):
-
+    """
+    vista utilizada para dar de baja un usuario, baja logica
+    """
     user=User.objects.get(id=us)
     user.is_active=False
     user.save()
@@ -94,7 +94,36 @@ def baja_usuario(request, us):
 
 
 
+@login_required(login_url='/login/')
+def modificar_usuario(request, us):
+    user=User.objects.get(id=us)
+    usuarioAnexado=user.usuario
+    form = FormAltaUsuario(request.POST, request.FILES)
+    nombre_usuario=user.username
+    nombre=user.first_name
+    apellido=user.last_name
+    email=user.email
+    contrasenha=user.password
+    ci=usuarioAnexado.ci
+    direccion=usuarioAnexado.direccion
+    tel=usuarioAnexado.tel
 
+    return render(request,'modificarUsuario.html', {'user': user })
+
+
+
+def guardarCambiosUsuario(request):
+    form = FormAltaUsuario(request.POST, request.FILES)
+    user = User.objects.get(username = form.nombre_usuario)
+    user.first_name = form.nombre
+    user.last_name=form.apellido
+    user.email=form.email
+    user.usuario.ci =form.ci
+    user.usuario.direccion=form.direccion
+    user.usuario.tel=form.tel
+    user.save()
+    user.usuario.save()
+    return render(request, 'Administrador Usuario.html', {'user' : user})
 
 
 @login_required(login_url='/login/')
