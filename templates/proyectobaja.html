@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block navegacion %}
+    <a class="element place-right" href={% url 'sigma:finalizar' %}> Cerrar Sesion </a>
+    <span class="element-divider"></span>
+    <a class="pull-menu" href="#"></a>
+    <ul class="element-menu">
+        <li></li>
+        <div class="no-tablet-portrait">
+            <div class="element place-right">
+                <a class="dropdown-toggle" href="#">
+                    <span class="icon-cog"></span>
+                </a>
+                <ul class="dropdown-menu place-right" data-role="dropdown">
+                    <li><a href="Iniciar Sesion.html">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </ul>
+{% endblock %}
+{% block contenido %}
+    <div class="container" align = "center">
+        <h1><a href="#"></a>Dar de baja un <small class="on-right">Proyecto</small></h1>
+        <div class="">
+            {% if alerta %}
+                <p>{{ alerta }}</p>
+                <a href="{% url 'sigma:adm_proy' %}"><input type="button" value="Atr&aacute;" ></a>
+            {% else %}
+            <form action = "{% url 'sigma:adm_proy_baja' idProyecto %}" method="post">
+                {% csrf_token %}
+                <fieldset>
+                    <div class="span3">
+                        <h1>¿Est&aacute; seguro de querer eliminar este proyecto?</h1>
+                        <input type="submit" value="S&iacute;" onclick="">
+                        <a href="{% url 'sigma:adm_proy' %}"><input type="button" value="No" ></a>
+                    </div>
+                </fieldset>
+            </form>{% endif %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block navegacion %}
+    <a class="element place-right" href={% url 'sigma:finalizar' %}> Cerrar Sesion </a>
+    <span class="element-divider"></span>
+    <a class="pull-menu" href="#"></a>
+    <ul class="element-menu">
+        <li></li>
+        <div class="no-tablet-portrait">
+            <div class="element place-right">
+                <a class="dropdown-toggle" href="#">
+                    <span class="icon-cog"></span>
+                </a>
+                <ul class="dropdown-menu place-right" data-role="dropdown">
+                    <li><a href="Iniciar Sesion.html">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </ul>
+{% endblock %}
+{% block titulo %}Administraci&oacute;n de Proyectos{% endblock %}
+{% block contenido %}
+    <div class="container">
+        <div class="grid">
+            <div class="row">
+                  <!--=====================================tabla=================================-->
+                <div class="span12">
+                    <div class="">
+
+                        <h1><a href="#"></a>Administrador<small class="on-right">de Proyectos</small></h1>
+                        <table class="table hovered" >
+                            <thead>
+                                <tr>
+                                    <th class="text-left">Nombre</th>
+                                    <th class="text-left">Fecha de Creaci&oacute;n</th>
+                                    <th class="text-left">Nº de Fases</th>
+                                    <th class="text-left">Nº de Miembros</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for proyecto in proyectos %}
+                                <tr>
+                                    <td>{{ proyecto.nombre }}</td>
+                                    <td class="right"><a href="{% url 'sigma:amd_fase' proyecto.pk %}">{{ proyecto.fechaCreacion }}</a></td>
+                                    <td class="right">{{ proyecto.nroFases }}</td>
+                                    <td class="right">{{ proyecto.nroMiembros }}</td>
+                                    <td class="button warning"><a href="{% url 'sigma:adm_proy_mod' proyecto.pk %}">Modificar</a></td>
+                                    <td class="button danger"><a href="{% url 'sigma:adm_proy_baja' proyecto.pk %}" id="botBaja" >Eliminar</a></td>
+                                    <!--script>
+                                        $("#botBaja").on('click', function(){
+                                        $.Dialog({
+                                            shadow: true,
+                                            overlay: true,
+                                            flat: true,
+                                            draggable: true,
+                                            icon: '<span class="icon-bus"></span>',
+                                            title: 'Draggable window',
+                                            width: 500,
+                                            padding: 10,
+                                            content: 'This Window is draggable by caption.',
+                                            onShow: function(){
+                                                var content = '<form id="{% url 'sigma:adm_proy_baja' proyecto.pk %}" method="post">' +
+                                                        '<script>' +
+                                                        'function getCookie(name) {'+
+                                                        '    var cookieValue = null;'+
+                                                        '    if (document.cookie && document.cookie != \'\') {'+
+                                                        '        var cookies = document.cookie.split(\';\');'+
+                                                        '        for (var i = 0; i < cookies.length; i++) {'+
+                                                        '            var cookie = jQuery.trim(cookies[i]);'+
+                                                        '            // Does this cookie string begin with the name we want?'+
+                                                        '            if (cookie.substring(0, name.length + 1) == (name + \'=\')) {'+
+                                                        '                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));'+
+                                                        '                break;'+
+                                                        '            }'+
+                                                        '        }'+
+                                                        '    }'+
+                                                        '    return cookieValue;'+
+                                                        '}'+
+                                                        'var csrftoken = getCookie(\'csrftoken\');'+
+                                                        '{% csrf_token %}'
+                                                        '<p>¿Est&aacute; seguro de querer eliminar este proyecto?</p>' +
+                                                        '<input type="submit" value="S&iacute;" onclick="">' +
+                                                        '<a href="{% url 'sigma:adm_proy' %}"><input type="button" value="No" ></a>'+
+                                                        '</form>';
+                                                $.Dialog.title("Confirmar Eliminaci&oacute;n");
+                                                $.Dialog.content(content);
+                                                $.Dialog.csrfmiddlewaretoken
+                                            }
+
+                                        });
+                                    });
+                                    $.ajaxSetup({
+                                        data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+                                    });
+                                    </script-->
+                                </tr>
+                            {% empty %}
+                                <tr><td class="text-center">No hay proyectos registrados.</td></tr>
+                            {% endfor %}
+                            </tbody>
+                            <tfoot></tfoot>
+                        </table>
+                    </div><!--div de la tabla 1-->
+                    <a href="{%  url 'sigma:adm_proy_alta' %}">
+                        <button class="command-button primary">
+                            <i class=""></i>Agregar Proyecto
+                            <small></small>
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--div class="window" id="win-baja">
+        <div class="caption">
+            <span class="icon icon-windows"></span>
+            <div class="title">Confirmar Eliminaci&oacute;n</div>
+            <button class="btn-min"></button>
+            <button class="btn-max"></button>
+            <button class="btn-close"></button>
+        </div>
+        <div class="content">
+            Window content
+        </div>
+    </div-->
+{% endblock %}
