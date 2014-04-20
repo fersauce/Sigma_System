@@ -128,12 +128,9 @@ def add_roles(request):
         nombre = request.POST['nombre']
         descripcion = request.POST['descripcion']
         rol = Rol.objects.create(nombre=nombre, descripcion=descripcion)
-        print (nombre)
-        print (descripcion)
         permisos = request.POST.getlist('permisos')
         for p in permisos:
             rol.permisos.add(Permiso.objects.get(id=p))
-            print p
     else:
         permisos = Permiso.objects.all()
         return render(request, 'Agregar_Rol.html', {'permisos': permisos})

@@ -28,6 +28,22 @@
         <script src="/static/MetroBoostrap/js/docs.js"></script>
         <script src="/static/MetroBoostrap/js/github.info.js"></script>
         <script src="/static/MetroBoostrap/js/metro.min.js"></script>
+
+        <!-- funciones JavaScript -->
+        <script type="text/javascript">
+        function marcar(source)
+        {
+            checkboxes=document.getElementsByTagName('input');
+            for(i=0;i<checkboxes.length;i++)
+            {
+                if(checkboxes[i].type == "checkbox")
+                {
+                    checkboxes[i].checked=source.checked;
+                }
+            }
+        }
+        </script>
+
         <title>{% block titulo %}{% endblock %}</title>
     </head>
     <body class="metro">
