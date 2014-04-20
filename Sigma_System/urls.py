@@ -11,5 +11,4 @@ urlpatterns = patterns('',
     url(r'^nuevopass/$', 'Sigma_System.views.recuperarPass', name='recu_pass'),
     url(r'^adm_u_baja/(?P<us>\d+)$', 'Sigma_System.views.baja_usuario', name='adm_u_baja'),
     url(r'^adm_u_mod/(?P<us>\d+)$', 'Sigma_System.views.modificar_usuario', name='adm_u_mod'),
-    url(r'^guardar_mod_u/$', 'Sigma_System.views.guardarCambiosUsuario', name='guardar_mod_u'),
 )

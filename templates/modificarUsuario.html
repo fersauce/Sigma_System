@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block navegacion %}
     <span class="element-divider"></span>
-    <a class="element" href={% url 'sigma:adm_u' %}> Administrar Usuario </a-->
+    <a class="element" href={% url 'sigma:adm_u' %}> Administrar Usuario </a>
     <a class="element place-right" href={% url 'sigma:finalizar' %}> Cerrar Sesión </a>
     <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
@@ -23,8 +23,7 @@
     <div class="container" align = "center">
         <h1><a href="#"></a>Modificar<small class="on-right">Usuario</small></h1>
         <div class="">
-            <form action = "{% url 'sigma:guardar_mod_u' %}" method="post">
-
+            <form action = "{% url 'sigma:adm_u_mod' user.id %}" method="post">
                 {% csrf_token %}
                 <fieldset>
                     <div class="span3">
@@ -35,49 +34,48 @@
                         <label>Nombre</label>
                         <div class="input-control text"  data-role="input-control" value="urth">
                             <input type="text" placeholder=" " id="nombre" required value={{user.first_name }} disabled>
-
                         </div>
 
 
                         <label>Apellido</label>
                         <div class="input-control text" data-role="input-control">
-                            <input type="text" placeholder=" " required value={{user.last_name }} disabled>
+                            <input type="text" placeholder=" " id="apellido" required value={{user.last_name }} disabled>
                         </div>
 
 
                         <label>Cedula de Identidad</label>
                         <div class="input-control text" data-role="input-control">
-                            <input type="text" placeholder=" " required value={{user.usuario.ci }} disabled>
+                            <input type="text" placeholder=" " id="ci" required value={{user.usuario.ci }} disabled>
                         </div>
 
 
                         <label>Direccion</label>
                         <div class="input-control text" data-role="input-control" >
-                            <input type="text" placeholder=" " required value={{user.usuario.direccion }}>
+                            <input type="text" placeholder=" " id="direccion" required value={{user.usuario.direccion }}>
                         </div>
 
 
                         <label>Numero de telefono</label>
                         <div class="input-control text" data-role="input-control" >
-                            <input type="text" placeholder=" " required value={{user.usuario.tel }}>
+                            <input type="text" placeholder=" " id="tel" required value={{user.usuario.tel }}>
                         </div>
 
 
                         <label>Direccion de e-mail</label>
                         <div class="input-control text" data-role="input-control" >
-                            <input type="text" placeholder=" " required value={{user.email }} disabled>
+                            <input type="text" placeholder=" " id="email" required value={{user.email }} disabled>
                         </div>
 
 
                         <label>Nombre de la cuenta</label>
                         <div class="input-control text" data-role="input-control" >
-                            <input type="text" placeholder=" " required value={{user.username }} disabled>
+                            <input type="text" placeholder=" " id="username" required value={{user.username }} disabled>
                         </div>
 
 
                         <label>Contraseña</label>
                         <div class="input-control password" data-role="input-control">
-                            <input type="text" placeholder=" la contraseña no se puede visualizar" required >
+                            <input type="text" placeholder=" la contraseña no se puede visualizar " id="pass">
                         </div>
                         <br>
                         <br>
