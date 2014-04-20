@@ -96,41 +96,35 @@ def baja_usuario(request, us):
 
 @login_required(login_url='/login/')
 def modificar_usuario(request, us):
-    """
-    vista utilizada para dar de baja a un usuario, baja logica
-    """
-    user = User.objects.get(id=us)
-    if request.method == 'POST':
-        """
-        Solo los campos direccion y tel no estan disabled
-        por eso no llegaba los otros datos
-        solo lo que se carga en el form nomas llegan
-        en este caso direccion y telefono nomas se pueden modificar
-        en el form
-        """
-        user.usuario.direccion = request.POST['direccion']
-        user.usuario.tel = request.POST['tel']
-        user.usuario.save()
-    else:
-        return render(request, 'modificarUsuario.html', {'user': user})
-    return HttpResponseRedirect('/ss/adm_u/')
+    user=User.objects.get(id=us)
+    usuarioAnexado=user.usuario
+    form = FormAltaUsuario(request.POST, request.FILES)
+    nombre_usuario=user.username
+    nombre=user.first_name
+    apellido=user.last_name
+    email=user.email
+    contrasenha=user.password
+    ci=usuarioAnexado.ci
+    direccion=usuarioAnexado.direccion
+    tel=usuarioAnexado.tel
 
-""" hace lo mismo, no hace falta esta vista
-def guardarCambiosUsuario(request, id):
-    user = User.objects.get(id=id)
-    if request.method == 'POST':
-        user = User.objects.get(=request.POST)
-        user.first_name = form.nombre
-        user.last_name=form.apellido
-        user.email=form.email
-        user.usuario.ci =form.ci
-        user.usuario.direccion=form.direccion
-        user.usuario.tel=form.tel
-        user.save()
-        user.usuario.save()
-        return HttpResponseRedirect('/ss/adm_u/')
-    return render(request, 'modificarUsuario.html', {'user': user})
-"""
+    return render(request,'modificarUsuario.html', {'user': user })
+
+
+
+def guardarCambiosUsuario(request):
+    form = FormAltaUsuario(request.POST, request.FILES)
+    user = User.objects.get(username = form.nombre_usuario)
+    user.first_name = form.nombre
+    user.last_name=form.apellido
+    user.email=form.email
+    user.usuario.ci =form.ci
+    user.usuario.direccion=form.direccion
+    user.usuario.tel=form.tel
+    user.save()
+    user.usuario.save()
+    return render(request, 'Administrador Usuario.html', {'user' : user})
+
 
 @login_required(login_url='/login/')
 def adm_usuario(request):
