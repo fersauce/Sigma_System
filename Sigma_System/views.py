@@ -96,18 +96,24 @@ def baja_usuario(request, us):
 
 @login_required(login_url='/login/')
 def modificar_usuario(request, us):
+    """
+    vista utilizada para dar de baja a un usuario, baja logica
+    """
     user = User.objects.get(id=us)
     if request.method == 'POST':
-        #user.first_name = request.POST['nombre']
-        user.last_name = request.POST['apellido']
-        user.email = request.POST['email']
-        user.usuario.ci = request.POST['ci']
+        """
+        Solo los campos direccion y tel no estan disabled
+        por eso no llegaba los otros datos
+        solo lo que se carga en el form nomas llegan
+        en este caso direccion y telefono nomas se pueden modificar
+        en el form
+        """
         user.usuario.direccion = request.POST['direccion']
         user.usuario.tel = request.POST['tel']
-        user.save()
         user.usuario.save()
-        return HttpResponseRedirect('/ss/adm_u/')
-    return render(request, 'modificarUsuario.html', {'user': user})
+    else:
+        return render(request, 'modificarUsuario.html', {'user': user})
+    return HttpResponseRedirect('/ss/adm_u/')
 
 """ hace lo mismo, no hace falta esta vista
 def guardarCambiosUsuario(request, id):
