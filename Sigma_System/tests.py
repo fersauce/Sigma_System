@@ -33,6 +33,12 @@ class Testing(TestCase):
         self.assertTrue(self.client.login(username='test', password='test'))
 
 
+    def testNuevoProyecto(self):
+        """
+        Testeo de alta de proyecto
+        """
+        pass
+
     def tearDown(self):
         self.user.delete()
 
