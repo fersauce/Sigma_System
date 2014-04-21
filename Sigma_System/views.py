@@ -331,7 +331,18 @@ def modificar_fase(request, idProyect, idFase):
     """
     Vista para realizar la modificacion de datos de una fase
     """
-    pass
+    fase = Fase.objects.get(pk=idFase)
+    if request.method == 'POST':
+        if fase.nombre == request.POST['nombre'] or Fase.objects.get(
+                nombre=request.POST['nombre']):
+            fase.nombre = request.POST['nombre']
+            fase.descripcion = request.POST['descripcion']
+            fase.fechaInicio = request.POST['fechInicio']
+            fase.fechaFin = request.POST['fechaFin']
+            fase.save()
+            return HttpResponseRedirect('/ss/proyecto' + str(idProyect) + '/fase/')
+    return render(request, 'fasemodificar.html', {'proyecto': idProyect,
+                                                  'fase': fase})
 
 
 def baja_fase(request, idProyect, idFase):
