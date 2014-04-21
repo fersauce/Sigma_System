@@ -62,6 +62,19 @@
                                 </style>
                             </div>
                         </form>
+                        <!--div class="pagination">
+                         <span class="step-links">
+                             {% if roles.has_previous %}
+                                 <a href="?page={{ roles.previous_page_number }}">Previous</a>
+                             {% endif %}
+                             <span class="current">
+                                 Pag. {{ roles.number }} de {{ roles.paginator.num_pages }}.
+                             </span>
+                             {% if roles.has_next %}
+                                 <a href="?page={{ roles.next_page_number }}">Next</a>
+                             {% endif %}
+                         </span>
+                     </div-->
                         <table class="table hovered" >
                             <thead>
                                 <tr>

@@ -4,6 +4,7 @@ import string
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, render_to_response
 from django.http import *
 from django.template import RequestContext
@@ -15,6 +16,7 @@ from Sigma_System.models import FormLogin, FormAltaUsuario, Usuario, Proyecto, \
     Fase
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 
 
 def iniciarsesion(request):
@@ -155,6 +157,22 @@ def administrar_proyecto(request):
                                         'registrados',
                                'form': forms.BusquedaProyectoForm()}
                               , context_instance=RequestContext(request))
+    '''proyecto_list = Proyecto.objects.all()
+    paginator = Paginator(proyecto_list, 2)
+
+    page = request.GET.get('page')
+    try:
+        proyectos = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        proyectos = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        proyectos = paginator.page(paginator.num_pages)
+    return render(request, 'administrarproyectos.html',
+                  {"proyectos": proyectos,
+                   'vacio': 'No se encuentran proyectos registrados',
+                   'form': forms.BusquedaProyectoForm()})'''
 
 
 def alta_proyecto(request):
@@ -306,6 +324,20 @@ def alta_fase(request, idProyect):
         fase = Fase.objects.filter(proyecto=proyecto).filter(
             nombre=request.POST['nombre'])
         if fase.__len__() == 0:
+            ultFase = Fase(fase.last())
+            if request.POST['fechaInicio'] > request.POST['fechaFin']:
+                messages.error(request, 'La fecha de Inicio se encuentra'
+                                        'mas adelantada que la fecha de fin')
+                return render(request, 'fasealta.html',
+                              {'proyecto': idProyect, 'fase': fase})
+            if ultFase is not None:
+                if str(ultFase.fechaFin) > request.POST['fechaInicio']:
+                    messages.error(request,
+                                   'La fecha de Inicio de esta '
+                                   'fase es inferior a la fecha de  '
+                                   'fin de la fase anterior')
+                    return render(request, 'fasealta.html',
+                                  {'fase': fase, 'proyecto': idProyect})
             faseNueva = Fase.objects.create(
                 proyecto=proyecto,
                 nombre=request.POST['nombre'],
@@ -316,6 +348,7 @@ def alta_fase(request, idProyect):
             )
             proyecto.nroFases = Fase.objects.filter(proyecto=proyecto).__len__()
             proyecto.save()
+            messages.success(request, 'Fase creada con exito')
             return HttpResponseRedirect(
                 '/ss/proyecto/' + str(idProyect) + '/fase/')
         else:
@@ -330,17 +363,45 @@ def alta_fase(request, idProyect):
 def modificar_fase(request, idProyect, idFase):
     """
     Vista para realizar la modificacion de datos de una fase
+    :param idProyect: pk del proyecto sobre el cual se esta trabajando
+    :param idFase: pk de la fase que se quiere modificar
     """
     fase = Fase.objects.get(pk=idFase)
+    fase.fechaInicio = str(fase.fechaInicio)
+    fase.fechaFin = str(fase.fechaFin)
     if request.method == 'POST':
         if fase.nombre == request.POST['nombre'] or Fase.objects.get(
                 nombre=request.POST['nombre']):
+            if fase.posicionFase > 1:
+                faseAnt = Fase.objects.get(posicionFase=fase.posicionFase - 1)
+                if str(faseAnt.fechaFin) > request.POST['fechaInicio']:
+                    return render(request, 'fasemodificar.html',
+                                  {'proyecto': idProyect, 'fase': fase,
+                                   'alerta': 'La fecha de Inicio de esta fase '
+                                             'es inferior a la fecha de '
+                                             'fin de la fase anterior'})
+            print Proyecto.objects.get(pk=idProyect).nroFases
+            if fase.posicionFase < Proyecto.objects.get(pk=idProyect).nroFases:
+                faseSig = Fase.objects.get(posicionFase=fase.posicionFase + 1)
+                if str(faseSig.fechaInicio) > request.POST['fechaFin']:
+                    return render(request, 'fasemodificar.html',
+                                  {'proyecto': idProyect, 'fase': fase,
+                                   'alerta': 'La fecha de fin de esta fase '
+                                             'es superior a la fecha de '
+                                             'inicio de la fase siguiente'})
+            if request.POST['fechaInicio'] > request.POST['fechaFin']:
+                return render(request, 'fasemodificar.html',
+                              {'proyecto': idProyect, 'fase': fase,
+                               'alerta': 'La fecha de Inicio se encuentra '
+                                         'mas adelantada que la fecha de fin'})
             fase.nombre = request.POST['nombre']
             fase.descripcion = request.POST['descripcion']
-            fase.fechaInicio = request.POST['fechInicio']
+            fase.fechaInicio = request.POST['fechaInicio']
             fase.fechaFin = request.POST['fechaFin']
             fase.save()
-            return HttpResponseRedirect('/ss/proyecto' + str(idProyect) + '/fase/')
+            messages.success(request, 'Fase modificada con exito')
+            return HttpResponseRedirect(
+                '/ss/proyecto/' + str(idProyect) + '/fase/')
     return render(request, 'fasemodificar.html', {'proyecto': idProyect,
                                                   'fase': fase})
 

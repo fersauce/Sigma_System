@@ -34,7 +34,7 @@
                                         {{ form.busqueda }}
                                         <button class="btn-search"> </button>
                                     </div><br><br>
-                                    <div>
+                                    <div id="">
                                         <a class="button info" href="{% url 'sigma:adm_fase' proyecto.pk %}" id="botLimpiar">Limpiar</a>
                                     </div>
                                     <style type="text/css">
@@ -68,6 +68,8 @@
                                     <th class="text-left">Nombre</th>
                                     <th class="text-left">Descripci&oacute;n</th>
                                     <th class="text-left">Estado</th>
+                                    <th class="text-left">Fecha de Inicio</th>
+                                    <th class="text-left">Fecha de Fin</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -76,6 +78,8 @@
                                     <td>{{ fase.nombre }}</td>
                                     <td class="right">{{ fase.descripcion }}</td>
                                     <td class="right" width>{{ fase.estado }}</td>
+                                    <td class="right" width>{{ fase.fechaInicio}}</td>
+                                    <td class="right" width>{{ fase.fechaFin }}</td>
                                     <td class="button warning"><a href="{% url 'sigma:adm_fase_mod' proyecto.pk fase.pk %}">Modificar</a></td>
                                     <td class="button danger"><a id="botBaja{{ fase.pk }}" >Eliminar</a></td>
                                     <script>
