@@ -65,20 +65,20 @@ def alta_usuario(request):
                                                        direccion=form.cleaned_data['direccion'],
                                                        tel=form.cleaned_data['tel'],
                                                        estado=True)
-                        messages.success(request, 'El usuario: '+usuario.username+', ha sido creado con exito')
+                        messages.success(request, 'El usuario "'+usuario.username+'" ha sido creado con exito')
                         user = User.objects.filter(is_active=True)
                         return render(request, 'Administrador Usuario.html', {'user': user})
                     else:
                         form = FormAltaUsuario()
-                        messages.error(request, 'El ci: '+cid+', ya existe')
+                        messages.error(request, 'El ci "'+cid+'" ya existe')
                         return render(request, 'Alta Usuario.html', {'form': form})
                 else:
                     form = FormAltaUsuario()
-                    messages.error(request, 'El e-mail: '+e_mail+', ya existe')
+                    messages.error(request, 'El e-mail "'+e_mail+'" ya existe')
                     return render(request, 'Alta Usuario.html', {'form': form})
             else:
                 form = FormAltaUsuario()
-                messages.error(request, 'El username: '+user_n+', ya existe')
+                messages.error(request, 'El username "'+user_n+'" ya existe')
                 return render(request, 'Alta Usuario.html', {'form': form})
         else:
             messages.error(request, 'Formulario invalido')
@@ -99,25 +99,26 @@ def baja_usuario(request, us):
     nombre = user.username
     user.save()
     user = User.objects.filter(is_active=True)
-    messages.error(request, 'El useario: '+nombre+', fue dado de baja')
+    messages.error(request, 'El usuario "'+nombre+'" ha sido eliminado')
     return render(request, 'Administrador Usuario.html', {'user': user})
 
 
 @login_required(login_url='/login/')
-def modificar_usuario(request, us):
+def modificar_usuario(request, us, pag):
     """
     vista utilizada para dar de baja a un usuario, baja logica
     """
     user = User.objects.get(id=us)
+    direccion = '/ss/adm_u/?page = '+ pag
     if request.method == 'POST':
         user.usuario.direccion = request.POST['direccion']
         user.usuario.tel = request.POST['tel']
         user.usuario.save()
         nombre = user.username
-        messages.success(request, 'usuario: '+nombre+', modificado correctamente')
+        messages.info(request, 'usuario: '+nombre+', modificado correctamente')
     else:
-        return render(request, 'modificarUsuario.html', {'user': user})
-    return HttpResponseRedirect('/ss/adm_u/')
+        return render(request, 'modificarUsuario.html', {'user': user, 'pag': pag})
+    return HttpResponseRedirect(direccion)
 
 
 @login_required(login_url='/login/')
@@ -151,7 +152,6 @@ def recuperarPass(request):
             correo = EmailMessage('Restablecimiento de Pass de SS', contenido,
                                   to=[formulario.cleaned_data['correo']])
             correo.content_subtype = "html"
-
             correo.send()
             return HttpResponseRedirect('/ss/login/')
     else:

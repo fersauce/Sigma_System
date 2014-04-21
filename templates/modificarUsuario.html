@@ -15,7 +15,7 @@
                     <span class="icon-cog"></span>
                 </a>
                 <ul class="dropdown-menu place-right" data-role="dropdown">
-                    <li><a href={% url 'sigma:finalizar' %}>Cerrar Sesión</a></li>
+                    <li><a href={ url 'sigma:finalizar' %}>Cerrar Sesión</a></li>
                 </ul>
             </div>
         </div-->
@@ -25,7 +25,7 @@
     <div class="container" align = "center">
         <h1><a href="#"></a>Modificar<small class="on-right">Usuario</small></h1>
         <div class="">
-            <form action = "{% url 'sigma:adm_u_mod' user.id %}" method="post">
+            <form action = "{% url 'sigma:adm_u_mod' user.id pag %}" method="post">
                 {% csrf_token %}
                 <fieldset>
                     <div class="span3">
