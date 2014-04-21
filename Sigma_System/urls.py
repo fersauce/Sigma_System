@@ -11,4 +11,6 @@ urlpatterns = patterns('',
     url(r'^nuevopass/$', 'Sigma_System.views.recuperarPass', name='recu_pass'),
     url(r'^adm_r/$', 'Sigma_System.views.adm_roles', name='adm_r'),
     url(r'^adm_r_altas/$', 'Sigma_System.views.add_roles', name='adm_r_altas'),
+    url(r'^adm_r_mod/(?P<id>\d+)$', 'Sigma_System.views.mod_roles', name='adm_r_mod'),
+    url(r'^adm_r_baja/(?P<id>\d+)$', 'Sigma_System.views.del_roles', name='adm_r_baja'),
 )

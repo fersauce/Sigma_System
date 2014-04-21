@@ -122,7 +122,7 @@ def generar_nuevo_pass(request, correo):
 
 @login_required(login_url='/login/')
 def adm_roles(request):
-    roles = Rol.objects.all()
+    roles = Rol.objects.order_by('id')
     return render(request, 'AdministradorRoles.html', {'roles': roles })
 
 
@@ -138,9 +138,6 @@ def add_roles(request):
         permisos = request.POST.getlist('permisos')
         for p in permisos:
             rol.permisos.add(Permiso.objects.get(id=p))
-
-        for p in rol.permisos.all():
-            print p.nombre
     else:
         permisos = Permiso.objects.all()
         return render(request, 'Agregar_Rol.html', {'permisos': permisos})
@@ -157,22 +154,23 @@ def del_roles(request, id):
 def mod_roles(request, id):
     rol = Rol.objects.get(id=id)
     todoLosPermisos = Permiso.objects.all()
-    permisosDelRol = Rol.permisos.all()
-    permisos = []
+    permisosDelRol = rol.permisos.all()
+    permisosAux = []
     for p in todoLosPermisos:
         if p in permisosDelRol:
             diccionario = {'nombre': p.nombre, 'id': p.id, 'ban': "checked"}
-            permisos.append(diccionario)
+            permisosAux.append(diccionario)
         else:
-            diccionario = {'nombre': p.nombre, 'id': p.id, 'ban': "checked"}
-            permisos.append(diccionario)
+            diccionario = {'nombre': p.nombre, 'id': p.id, 'ban': ""}
+            permisosAux.append(diccionario)
+    rol.permisos.clear()
     if request.method == 'POST':
         rol.nombre = request.POST['nombre']
         rol.descripcion = request.POST['descripcion']
+        rol.save()
         permisos = request.POST.getlist('permisos')
-        rol.permisos.all().delete()
         for p in permisos:
-            rol.permisos.add(Permiso.objects.get(id=p))
+                rol.permisos.add(Permiso.objects.get(id=p))
     else:
-        return render(request, 'Modificar_Rol.html', {'rol': rol}, {'permisos': permisos})
+        return render(request, 'ModificarRol.html', {'rol': rol, 'permisos': permisosAux})
     return HttpResponseRedirect('/ss/adm_r/')

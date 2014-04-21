@@ -29,7 +29,7 @@
                     <br><br>
                     {% for p in permisos %}
                     <label class="inline-block" align="left">
-                        <input type="checkbox" name="permisos" value="{{ p['id'] }}" align="left" {{ p['ban'] }}>
+                        <input type="checkbox" name="permisos" value="{{ p.id }}" align="left" {{ p.ban }}>
                         <span class="check"></span>
                         {{ p.nombre }}
                     </label>
@@ -38,7 +38,7 @@
                 </div>
                 <div class="span3">
                     <input type="submit" value="Aceptar" onclick="">
-                    <a href="{% url 'sigma:adm_u' %}"><input type="button" value="Cancelar" ></a>
+                    <a href="{% url 'sigma:adm_r' %}"><input type="button" value="Cancelar" ></a>
                 </div>
             </fieldset>
         </form>
