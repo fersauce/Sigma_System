@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block contenido %}
+    <h1>Modificar<small class="on-right">Rol</small></h1>
+    <div class="">
+        <form action="{%  url 'sigma:adm_r_mod' rol.id %}" method="post">
+            {% csrf_token %}
+            <fieldset>
+                <div class="span5">
+                    <label>Nombre del rol</label>
+                    <div class="input-control text" data-role="input-control">
+                        <input type="text" name="nombre" value="{{ rol.nombre }}" required>
+                        <button class="btn-clear" tabindex="-1" type="button"></button>
+                    </div>
+                </div>
+                <div class="span12">
+                    <label>Descripcion</label>
+                    <div class="input-control text" data-role="input-control">
+                        <input type="text" name="descripcion" value="{{ rol.descripcion }}">
+                        <button class="btn-clear" tabindex="-1" type="button"></button>
+                    </div>
+                </div>
+                <h1>Asignar/Desasignar<small class="on-right">permisos</small></h1>
+                <div class="input-control switch" data-role="input-control" align="left">
+                    <label class="inline-block" align="left">
+                        <input type="checkbox" name="mar_desmar" value="" onclick=marcar(this);>
+                        <span class="check"></span>
+                        Marcar/Desmarcar
+                    </label>
+                    <br><br>
+                    {% for p in permisos %}
+                    <label class="inline-block" align="left">
+                        <input type="checkbox" name="permisos" value="{{ p['id'] }}" align="left" {{ p['ban'] }}>
+                        <span class="check"></span>
+                        {{ p.nombre }}
+                    </label>
+                    <br>
+                    {% endfor %}
+                </div>
+                <div class="span3">
+                    <input type="submit" value="Aceptar" onclick="">
+                    <a href="{% url 'sigma:adm_u' %}"><input type="button" value="Cancelar" ></a>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+{% endblock %}
