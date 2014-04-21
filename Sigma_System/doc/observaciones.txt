@@ -1,3 +1,17 @@
 Tipo de Item:
 - Opcion de importar o no.
 - Nombre unico en el proyecto, no asi en el sistema.
+
+Iteracion 2:
+Ver cambiar contraseña.
+Ver que el administrador resetee el pass.
+Los label se tienen que colocarse al costado del input.
+Falta permiso de visualizar proyecto y demas.
+Mantener consistencia entre interfaces.
+Ver la paginacion y los mensajes de confirmacion
+Borrar el proyecto si no tiene fases asociadas.
+Evitar cascada.
+Tipos de item, tipos de atributos.
+Administrador de sistema le da los permisos.
+Miembros de un proyecto.
+Contexto de roles.
