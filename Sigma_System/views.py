@@ -120,6 +120,13 @@ def generar_nuevo_pass(request, correo):
     return None
 
 
+@login_required(login_url='/login/')
+def adm_roles(request):
+    roles = Rol.objects.all()
+    return render(request, 'AdministradorRoles.html', {'roles': roles })
+
+
+@login_required(login_url='/login/')
 def add_roles(request):
     """
     Vista que maneja la asignacion de roles.
@@ -131,7 +138,16 @@ def add_roles(request):
         permisos = request.POST.getlist('permisos')
         for p in permisos:
             rol.permisos.add(Permiso.objects.get(id=p))
+
+        for p in rol.permisos.all():
+            print p.nombre
     else:
         permisos = Permiso.objects.all()
         return render(request, 'Agregar_Rol.html', {'permisos': permisos})
+    return HttpResponseRedirect('/ss/adm_r/')
+
+
+@login_required(login_url='/login/')
+def del_roles(request, id):
+    Rol.objects.get(id=id).delete()
     return HttpResponseRedirect('/ss/adm_u/')
