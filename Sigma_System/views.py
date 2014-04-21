@@ -161,10 +161,10 @@ def mod_roles(request, id):
     permisos = []
     for p in todoLosPermisos:
         if p in permisosDelRol:
-            diccionario = {'nombre': p.nombre, 'id': p.id, 'ban': True}
+            diccionario = {'nombre': p.nombre, 'id': p.id, 'ban': "checked"}
             permisos.append(diccionario)
         else:
-            diccionario = {'nombre': p.nombre, 'id': p.id, 'ban': False}
+            diccionario = {'nombre': p.nombre, 'id': p.id, 'ban': "checked"}
             permisos.append(diccionario)
     if request.method == 'POST':
         rol.nombre = request.POST['nombre']
@@ -174,5 +174,5 @@ def mod_roles(request, id):
         for p in permisos:
             rol.permisos.add(Permiso.objects.get(id=p))
     else:
-        return render(request, 'Modificar_Rol.html', {'rol': rol}, {'per': per})
+        return render(request, 'Modificar_Rol.html', {'rol': rol}, {'permisos': permisos})
     return HttpResponseRedirect('/ss/adm_r/')
