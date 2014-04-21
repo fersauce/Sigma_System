@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% block navegacion %}
     <span class="element-divider"></span>
-    <a class="element" href={% url 'sigma:inicio' %}> Pagina Principal</a>
+    <a class="element" href={% url 'sigma:inicio' %}> Página Principal</a>
     <div class="element input-element">
         <form action="{% url 'sigma:adm_u_bus' %}" method="post" >
            {% csrf_token %}
 
            <div class="input-control text">
                <input type="text" placeholder="Search..." name="valor_buscado">
-               <!--a class="btn-search" href ={% url 'sigma:adm_u_bus'%} type="submit">  </a-->
+               <!--a class="btn-search" href ={ url 'sigma:adm_u_bus'%} type="submit">  </a-->
                </input>
             </div>
             <input type="submit"  value="Buscar" >
@@ -64,6 +64,7 @@
                                             <ul class="dropdown-menu default" data-role="dropdown">
                                                 <li><a href="{% url 'sigma:adm_u_mod' u.id %}">Modificar</a></li>
                                                 <li><a href="{% url 'sigma:adm_u_baja' u.id %}">Eliminar</a></li>
+                                                <li><a href="{% url 'sigma:adm_u_ver' u.id %}">Ver detalle</a></li>
                                                 <!--li class="disabled"><a href="#">Eliminar</a></li-->
                                             </ul>
                                         </div>

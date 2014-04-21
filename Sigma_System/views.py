@@ -191,3 +191,18 @@ def buscar_usuario(request):
             return render(request, 'busquedUsuario.html', {'user': user })
     else:
         return HttpResponseRedirect('/ss/adm_u/')
+
+
+
+@login_required(login_url='/login/')
+def ver_detalle(request, us):
+    """
+    vista utilizada para dar los demas datos de un usuario,
+    pero sin modificarlos
+    """
+
+
+
+    user = User.objects.filter(is_active=True)
+    user=User.objects.filter(id=us)
+    return render(request, 'verDetalle.html', {'user': user })
