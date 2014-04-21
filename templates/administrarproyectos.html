@@ -22,11 +22,46 @@
     <div class="container">
         <div class="grid">
             <div class="row">
-                  <!--=====================================tabla=================================-->
                 <div class="span12">
                     <div class="">
-
                         <h1><a href="#"></a>Administrador<small class="on-right">de Proyectos</small></h1>
+                        <form action = "{% url 'sigma:adm_proy_busq' %}" method="post">{% csrf_token %}
+                            <div class="" id="formBusqueda" >
+                                <div class="input-control select" id="columna">
+                                    {{ form.columna }}
+                                </div>
+                                <div class="input-control text" data-role="input-control" id="busqueda">
+                                    {{ form.busqueda }}
+                                    <button class="btn-search"> </button>
+                                </div><br><br>
+                                <div>
+                                    <a class="button info" href="{% url 'sigma:adm_proy' %}" id="botLimpiar">Limpiar</a>
+                                </div>
+                                <style type="text/css">
+                                    #formBusqueda{
+                                        width: 600px;
+                                    }
+                                    #columna{
+                                        float: left;
+                                        margin-left: 10px;
+                                        margin-right: 10px;
+                                        width: 200px;
+                                    }
+                                    #busqueda{
+                                        float: left;
+                                        margin-left: 10px;
+                                        height: 35px;
+                                        width: 200px;
+                                    }
+                                    #limp{
+                                        float: left;
+                                        margin-left: 10px;
+                                        width: 15px;
+                                        height: 35px;
+                                    }
+                                </style>
+                            </div>
+                        </form>
                         <table class="table hovered" >
                             <thead>
                                 <tr>
@@ -39,8 +74,8 @@
                             <tbody>
                             {% for proyecto in proyectos %}
                                 <tr>
-                                    <td>{{ proyecto.nombre }}</td>
-                                    <td class="right"><a href="{% url 'sigma:amd_fase' proyecto.pk %}">{{ proyecto.fechaCreacion }}</a></td>
+                                    <td><a href="{% url 'sigma:adm_fase' proyecto.pk %}">{{ proyecto.nombre }}</a></td>
+                                    <td class="right">{{ proyecto.fechaCreacion }}</td>
                                     <td class="right">{{ proyecto.nroFases }}</td>
                                     <td class="right">{{ proyecto.nroMiembros }}</td>
                                     <td class="button warning"><a href="{% url 'sigma:adm_proy_mod' proyecto.pk %}">Modificar</a></td>
@@ -94,12 +129,12 @@
                                     </script-->
                                 </tr>
                             {% empty %}
-                                <tr><td class="text-center">No hay proyectos registrados.</td></tr>
+                                <tr><td class="text-center">{{ vacio }}</td></tr>
                             {% endfor %}
                             </tbody>
                             <tfoot></tfoot>
                         </table>
-                    </div><!--div de la tabla 1-->
+                    </div>
                     <a href="{%  url 'sigma:adm_proy_alta' %}">
                         <button class="command-button primary">
                             <i class=""></i>Agregar Proyecto

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from Sigma_System.models import Usuario
+from Sigma_System.models import Usuario, Proyecto
 
 __author__ = 'sauce'
 
@@ -62,3 +62,12 @@ class ModificarProyecto(forms.Form):
     estado = forms.CharField(max_length=30,
                              widget=forms.Select(choices=opciones))
     costo = forms.IntegerField()
+
+
+class BusquedaProyectoForm(forms.Form):
+    CHOICES = [(1, 'Nombre'), (2, 'Fecha de Inicio'), (3, 'Fecha A Culminar')]
+
+    columna = forms.CharField(max_length=40,
+                              widget=forms.Select(choices=CHOICES))
+    busqueda = forms.CharField(max_length=50,
+                               widget=forms.TextInput(attrs={}))

@@ -8,7 +8,9 @@ from django.shortcuts import render, render_to_response
 from django.http import *
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from Sigma_System.forms import RecuperarPassForm, AltaProyectoForm
+from Sigma_System import forms
+from Sigma_System.forms import RecuperarPassForm, AltaProyectoForm, \
+    BusquedaProyectoForm
 from Sigma_System.models import FormLogin, FormAltaUsuario, Usuario, Proyecto, \
     Fase
 from django.contrib.auth.decorators import login_required
@@ -148,8 +150,10 @@ def administrar_proyecto(request):
     """
     proyectos = Proyecto.objects.all()
     return render_to_response('administrarproyectos.html',
-                              {'proyectos': proyectos},
-                              context_instance=RequestContext(request))
+                              {'proyectos': proyectos,
+                               'vacio': 'No se encuentran proyectos registrados',
+                               'form': forms.BusquedaProyectoForm()}
+                              , context_instance=RequestContext(request))
 
 
 def alta_proyecto(request):
@@ -225,7 +229,33 @@ def buscar_proyecto(request):
     """
     Vista para realizar la busqueda de un proyecto
     """
-    pass
+    proyectos = []
+    if request.method == 'POST':
+        form = BusquedaProyectoForm(request.POST, request.FILES)
+        if form.is_valid():
+            if form.cleaned_data['columna'] == '1':
+                """
+                Si el patron a utilizar es el nombre
+                """
+                proyectos = Proyecto.objects.filter(
+                    nombre=form.cleaned_data['busqueda'])
+            if form.cleaned_data['columna'] == '2':
+                """
+                Si el patron a utilizar es la fecha de inicio
+                """
+                proyectos = Proyecto.objects.filter(
+                    fechaInicio=form.cleaned_data['busqueda'])
+            if form.cleaned_data['columna'] == '3':
+                """
+                Si el patron a utilizar es la fecha de culminacion de un
+                proyecto
+                """
+                proyectos = Proyecto.objects.filter(
+                    fechaFinalizacion=form.cleaned_data['busqueda'])
+    return render(request, 'administrarproyectos.html',
+                  {'proyectos': proyectos,
+                   'vacio': 'No se encuentran proyectos con ese patron de busqueda',
+                   'form': BusquedaProyectoForm()})
 
 
 ################################################################################
@@ -233,8 +263,6 @@ def buscar_proyecto(request):
 #########################          FASES          ##############################
 ################################################################################
 ################################################################################
-
-
 def administrar_fases(request, idProyect):
     """
     Vista para realizar la administracion de las fases de un proyecto
