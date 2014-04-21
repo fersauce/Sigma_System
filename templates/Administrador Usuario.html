@@ -75,6 +75,19 @@
                             <tfoot></tfoot>
                         </table>
                     </div><!--div de la tabla 1-->
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% if user.has_previous %}
+                                <a href="?page={{ user.previous_page_number }}">Previous</a>
+                            {% endif %}
+                            <span class="current">
+                                Pag. {{ user.number }} de {{ user.paginator.num_pages }}.
+                            </span>
+                            {% if user.has_next %}
+                                <a href="?page={{ user.next_page_number }}">Next</a>
+                            {% endif %}
+                        </span>
+                    </div>
                     <a href="{%  url 'sigma:adm_u_altas' %}">
                         <button class="command-button primary">
                             <i class=""></i>Agregar Usuario

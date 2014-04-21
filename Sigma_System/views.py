@@ -12,7 +12,7 @@ from Sigma_System.models import Usuario, Rol, Permiso
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def iniciarsesion(request):
     if request.method == 'POST':
@@ -147,8 +147,19 @@ def guardarCambiosUsuario(request, id):
 
 @login_required(login_url='/login/')
 def adm_usuario(request):
-    user = User.objects.filter(is_active=True)
-    return render(request, 'Administrador Usuario.html', {'user': user })
+    user_list = User.objects.filter(is_active=True)
+    paginator = Paginator(user_list, 2)
+
+    page = request.GET.get('page')
+    try:
+        users = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        users = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        users = paginator.page(paginator.num_pages)
+    return render_to_response('Administrador Usuario.html', {"user": users})
 
 
 def recuperarPass(request):
@@ -213,16 +224,25 @@ def ver_detalle(request, us):
     vista utilizada para dar los demas datos de un usuario,
     pero sin modificarlos
     """
-
-
-
     user = User.objects.filter(is_active=True)
-    user=User.objects.filter(id=us)
+    user = user.objects.filter(id=us)
     return render(request, 'verDetalle.html', {'user': user })
 
 @login_required(login_url='/login/')
 def adm_roles(request):
-    roles = Rol.objects.order_by('id')
+    roles_list = Rol.objects.order_by('id')
+    paginator = Paginator(roles_list, 2)
+
+    page = request.GET.get('page')
+    try:
+        roles = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        roles = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        roles = paginator.page(paginator.num_pages)
+
     return render(request, 'AdministradorRoles.html', {'roles': roles })
 
 
