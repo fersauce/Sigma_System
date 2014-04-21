@@ -2,6 +2,8 @@
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}">Modulo de Administracion</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_r' %}">Administrar Roles</a>
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
         <li></li>
@@ -72,12 +74,6 @@
                             <tfoot></tfoot>
                         </table>
                     </div><!--div de la tabla 1-->
-                    <a href="{%  url 'sigma:adm_r_altas' %}">
-                        <button class="command-button primary">
-                            <i class=""></i>Agregar Rol
-                            <small></small>
-                        </button>
-                    </a>
                 </div>
             </div>
         </div>

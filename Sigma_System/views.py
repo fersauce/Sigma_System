@@ -174,3 +174,16 @@ def mod_roles(request, id):
     else:
         return render(request, 'ModificarRol.html', {'rol': rol, 'permisos': permisosAux})
     return HttpResponseRedirect('/ss/adm_r/')
+
+
+@login_required(login_url='/login/')
+def buscar_roles(request):
+    """
+    Vista que maneja la busqueda de roles.
+    """
+    if request.method == 'POST':
+        buscar = request.POST['busqueda']
+        rol = Rol.objects.filter(nombre=buscar)
+        return render(request, 'BusquedaRol.html', {'roles': rol})
+    return HttpResponseRedirect('/ss/adm_r/')
+
