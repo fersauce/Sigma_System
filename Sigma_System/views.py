@@ -89,9 +89,6 @@ def alta_usuario(request):
     return render(request, 'Alta Usuario.html', {'form': form})
 
 
-
-
-
 @login_required(login_url='/login/')
 def baja_usuario(request, us):
     """
@@ -113,43 +110,20 @@ def modificar_usuario(request, us):
     """
     user = User.objects.get(id=us)
     if request.method == 'POST':
-        """
-        Solo los campos direccion y tel no estan disabled
-        por eso no llegaba los otros datos
-        solo lo que se carga en el form nomas llegan
-        en este caso direccion y telefono nomas se pueden modificar
-        en el form
-        """
         user.usuario.direccion = request.POST['direccion']
         user.usuario.tel = request.POST['tel']
         user.usuario.save()
+        nombre = user.username
+        messages.success(request, 'usuario: '+nombre+', modificado correctamente')
     else:
         return render(request, 'modificarUsuario.html', {'user': user})
     return HttpResponseRedirect('/ss/adm_u/')
-
-""" hace lo mismo, no hace falta esta vista
-def guardarCambiosUsuario(request, id):
-    user = User.objects.get(id=id)
-    if request.method == 'POST':
-        user = User.objects.get(=request.POST)
-        user.first_name = form.nombre
-        user.last_name=form.apellido
-        user.email=form.email
-        user.usuario.ci =form.ci
-        user.usuario.direccion=form.direccion
-        user.usuario.tel=form.tel
-        user.save()
-        user.usuario.save()
-        return HttpResponseRedirect('/ss/adm_u/')
-    return render(request, 'modificarUsuario.html', {'user': user})
-"""
 
 
 @login_required(login_url='/login/')
 def adm_usuario(request):
     user_list = User.objects.filter(is_active=True)
     paginator = Paginator(user_list, 2)
-
     page = request.GET.get('page')
     try:
         users = paginator.page(page)
@@ -159,7 +133,7 @@ def adm_usuario(request):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         users = paginator.page(paginator.num_pages)
-    return render_to_response('Administrador Usuario.html', {"user": users})
+    return render(request, 'Administrador Usuario.html', {"user": users})
 
 
 def recuperarPass(request):
@@ -205,16 +179,12 @@ def buscar_usuario(request):
     vista utilizada para buscar un usuario
     """
     if request.method == 'POST':
-        valor=request.POST['valor_buscado']
-        user = User.objects.all().filter(username=valor, is_active=True)
-        if user.__len__()== 0:
-
-            return render(request, 'noExisteUser.html',{'user': user })
-
-        else:
-            return render(request, 'busquedUsuario.html', {'user': user })
-    else:
-        return HttpResponseRedirect('/ss/adm_u/')
+        buscar = request.POST['valor_buscado']
+        user = User.objects.filter(username=buscar)
+        if user.__len__() == 0:
+            messages.error(request, 'No existen coincidencias')
+        return render(request, 'busquedUsuario.html', {'user': user})
+    return HttpResponseRedirect('/ss/adm_u/')
 
 
 
@@ -224,8 +194,7 @@ def ver_detalle(request, us):
     vista utilizada para dar los demas datos de un usuario,
     pero sin modificarlos
     """
-    user = User.objects.filter(is_active=True)
-    user = user.objects.filter(id=us)
+    user = User.objects.filter(is_active=True, id = us)
     return render(request, 'verDetalle.html', {'user': user })
 
 @login_required(login_url='/login/')
@@ -243,7 +212,7 @@ def adm_roles(request):
         # If page is out of range (e.g. 9999), deliver last page of results.
         roles = paginator.page(paginator.num_pages)
 
-    return render(request, 'AdministradorRoles.html', {'roles': roles })
+    return render(request, 'AdministradorRoles.html', {'roles': roles})
 
 
 @login_required(login_url='/login/')

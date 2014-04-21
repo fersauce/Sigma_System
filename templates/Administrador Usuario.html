@@ -1,19 +1,7 @@
 {% extends 'base.html' %}
 {% block navegacion %}
     <span class="element-divider"></span>
-    <a class="element" href={% url 'sigma:inicio' %}> Página Principal</a>
-    <div class="element input-element">
-        <form action="{% url 'sigma:adm_u_bus' %}" method="post" >
-           {% csrf_token %}
-           <div class="input-control text">
-               <input type="text" placeholder="Buscar por username" name="valor_buscado">
-               <button class="btn-search"></button>
-               </input>
-            </div>
-        </form>
-    </div>
-    <!--a class="element place-right" href={% url 'sigma:finalizar' %}> Cerrar Sesión </a-->
-    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
         <li></li>
@@ -23,7 +11,7 @@
                     <span class="icon-cog"></span>
                 </a>
                 <ul class="dropdown-menu place-right" data-role="dropdown">
-                    <li><a href={% url 'sigma:finalizar' %}>Cerrar Sesión</a></li>
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
                 </ul>
             </div>
         </div>
@@ -34,7 +22,7 @@
         {% if messages %}
             {% for message in messages %}
                     {{ message }}
-                {% endfor %}
+            {% endfor %}
         {% endif %}
         <div class="grid">
             <div class="row">
@@ -42,6 +30,15 @@
                 <div class="span9">
                     <div class="">
                         <h1><a href="#"></a>Administrador<small class="on-right">de Usuario</small></h1>
+                        <form action="{%  url 'sigma:adm_u_bus' %}" method="post">
+                        {% csrf_token %}
+                            <div class="span5">
+                                <div class="input-control text" data-role="input-control">
+                                    <input type="text" name="valor_buscado" placeholder="Username">
+                                    <button class="btn-search"></button>
+                                </div>
+                            </div>
+                        </form>
                         <table class="table hovered" >
                             <thead>
                                 <tr><!--quinta tabla--la que se selecciona al pasar encima-->
