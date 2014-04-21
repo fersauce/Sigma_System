@@ -173,3 +173,21 @@ def generar_nuevo_pass(request, correo):
         return str(password)
 
     return None
+
+
+@login_required(login_url='/login/')
+def buscar_usuario(request):
+    """
+    vista utilizada para buscar un usuario
+    """
+    if request.method == 'POST':
+        valor=request.POST['valor_buscado']
+        user = User.objects.all().filter(username=valor, is_active=True)
+        if user.__len__()== 0:
+
+            return render(request, 'noExisteUser.html',{'user': user })
+
+        else:
+            return render(request, 'busquedUsuario.html', {'user': user })
+    else:
+        return HttpResponseRedirect('/ss/adm_u/')

@@ -2,37 +2,27 @@
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href={% url 'sigma:inicio' %}> Pagina Principal</a>
-    <div class="element input-element">
+    <span class="element-divider"></span>
+    <a class="element" href={% url 'sigma:adm_u' %}> Administrar Usuario </a>
+    <!--div class="element input-element">
         <form action="{% url 'sigma:adm_u_bus' %}" method="post" >
            {% csrf_token %}
 
            <div class="input-control text">
                <input type="text" placeholder="Search..." name="valor_buscado">
                <!--a class="btn-search" href ={% url 'sigma:adm_u_bus'%} type="submit">  </a-->
-               </input>
+               <!--/input>
             </div>
-            <input type="submit"  value="Buscar" >
+            <input type="submit"  value="Buscar">
 
         </form>
 
-    </div>
+    </div-->
     <!--a class="element"> Buscar </a-->
     <a class="element place-right" href={% url 'sigma:finalizar' %}> Cerrar Sesión </a>
     <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
-    <ul class="element-menu">
-        <li></li>
-        <!--div class="no-tablet-portrait">
-            <div class="element place-right">
-                <a class="dropdown-toggle" href="#">
-                    <span class="icon-cog"></span>
-                </a>
-                <ul class="dropdown-menu place-right" data-role="dropdown">
-                    <li><a href={ url 'sigma:finalizar' %}>Cerrar Sesión</a></li>
-                </ul>
-            </div>
-        </div-->
-    </ul>
+
 {% endblock %}
 {% block contenido %}
     <div class="container">
@@ -41,7 +31,7 @@
                   <!--=====================================tabla=================================-->
                 <div class="span9">
                     <div class="">
-                        <h1><a href="#"></a>Administrador<small class="on-right">de Usuario</small></h1>
+                        <h1><a href="#"></a>Busqueda <small class="on-right">de Usuario</small></h1>
                         <table class="table hovered" >
                             <thead>
                                 <tr><!--quinta tabla--la que se selecciona al pasar encima-->
@@ -69,17 +59,18 @@
                                         </div>
                                     </td>
                                 </tr>
+
                             {% endfor %}
                             </tbody>
                             <tfoot></tfoot>
                         </table>
                     </div><!--div de la tabla 1-->
-                    <a href="{%  url 'sigma:adm_u_altas' %}">
+                    <!--a href="{  url 'sigma:adm_u_altas' %}">
                         <button class="command-button primary">
                             <i class=""></i>Agregar Usuario
                             <small></small>
                         </button>
-                    </a>
+                    </a-->
                 </div>
             </div>
         </div>
