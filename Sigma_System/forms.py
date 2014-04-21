@@ -72,8 +72,10 @@ class BusquedaProyectoForm(forms.Form):
     busqueda = forms.CharField(max_length=50,
                                widget=forms.TextInput(attrs={}))
 
+
 class BusquedaFasesForm(forms.Form):
-    CHOICES = [(1, 'Nombre'), (2, 'Estado')]
+    CHOICES = [(1, 'Nombre'), (2, 'Estado'), (3, 'Fecha de Inicio'),
+               (4, 'Fecha de Culminacion')]
     columna = forms.CharField(max_length=40,
                               widget=forms.Select(choices=CHOICES))
     busqueda = forms.CharField(max_length=50,

@@ -228,8 +228,8 @@ def modificar_proyecto(request, idProyecto):
 def baja_proyecto(request, idProyecto):
     """
     Vista para realizar la baja de un proyecto.
+    :param idProyecto: pk del proyecto a ser suprimido del sistema.
     """
-    print 12
     if request.method == 'GET':
         proyecto = Proyecto.objects.get(pk=idProyecto)
         if proyecto.estado == 'Iniciado':
@@ -237,8 +237,6 @@ def baja_proyecto(request, idProyecto):
                 'alerta': 'No se puede suprimir el proyecto'})
         else:
             proyecto.delete()
-        print 'Chau'
-    print 'Hola'
     return HttpResponseRedirect('/ss/proyecto/')
 
 
@@ -302,19 +300,41 @@ def alta_fase(request, idProyect):
     :param idProyect: codigo del proyecto del cual se van a administrar sus
     fases.
     """
+    usuarios = Usuario.objects.all()
     if request.method == 'POST':
-        pass
-    return render(request, )
+        proyecto = Proyecto.objects.get(pk=idProyect)
+        fase = Fase.objects.filter(proyecto=proyecto).filter(
+            nombre=request.POST['nombre'])
+        if fase.__len__() == 0:
+            faseNueva = Fase.objects.create(
+                proyecto=proyecto,
+                nombre=request.POST['nombre'],
+                descripcion=request.POST['descripcion'],
+                posicionFase=Fase.objects.filter(
+                    proyecto=proyecto).__len__() + 1,
+                estado='Pendiente'
+            )
+            proyecto.nroFases = Fase.objects.filter(proyecto=proyecto).__len__()
+            proyecto.save()
+            return HttpResponseRedirect(
+                '/ss/proyecto/' + str(idProyect) + '/fase/')
+        else:
+            return render(request, 'fasealta.html',
+                          {'proyecto': idProyect,
+                           'alerta': 'Nombre de Fase ya existente '
+                                     'en este proyecto'})
+    return render(request, 'fasealta.html', {'usuarios': usuarios,
+                                             'proyecto': idProyect})
 
 
-def modificar_fase(request):
+def modificar_fase(request, idProyect, idFase):
     """
     Vista para realizar la modificacion de datos de una fase
     """
     pass
 
 
-def baja_fase(request):
+def baja_fase(request, idProyect, idFase):
     """
     Vista para realizar la baja de una fase
     """
@@ -323,6 +343,41 @@ def baja_fase(request):
 
 def buscar_fase(request, idProyect):
     """
-    Vista para realizar la busqueda de fases.
+    Vista para realizar la busqueda de fases
+    :param idProyect: codigo del proyecto del cual se van a administrar sus
+    fases.
     """
-    pass
+    fases = []
+    if request.method == 'POST':
+        form = BusquedaFasesForm(request.POST, request.FILES)
+        if form.is_valid():
+            if form.cleaned_data['columna'] == '1':
+                """
+                Si el patron a utilizar es el nombre
+                """
+                fases = Fase.objects.filter(
+                    nombre=form.cleaned_data['busqueda'])
+            if form.cleaned_data['columna'] == '2':
+                """
+                Si el patron a utilizar es el estado de la fase
+                """
+                fases = Fase.objects.filter(
+                    estado=form.cleaned_data['busqueda'])
+            if form.cleaned_data['columna'] == '3':
+                """
+                Si el patron a utilizar es la fecha de inicio de la fase
+                """
+                fases = Fase.objects.filter(
+                    fechaInicio=form.cleaned_data['busqueda'])
+            if form.cleaned_data['columna'] == '3':
+                """
+                Si el patron a utilizar es la fecha de fin de la fase
+                """
+                fases = Fase.objects.filter(
+                    fechaFin=form.cleaned_data['busqueda'])
+    return render(request, 'administrarfases.html',
+                  {'proyecto': Proyecto.objects.get(pk=idProyect),
+                   'fases': fases,
+                   'form': BusquedaFasesForm(),
+                   'vacio': 'No se encontraron fases que coincidan '
+                            'con el patron de busqueda'})
