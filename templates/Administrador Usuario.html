@@ -5,33 +5,28 @@
     <div class="element input-element">
         <form action="{% url 'sigma:adm_u_bus' %}" method="post" >
            {% csrf_token %}
-
            <div class="input-control text">
-               <input type="text" placeholder="Search..." name="valor_buscado">
-               <!--a class="btn-search" href ={ url 'sigma:adm_u_bus'%} type="submit">  </a-->
+               <input type="text" placeholder="Buscar por username" name="valor_buscado">
+               <button class="btn-search"></button>
                </input>
             </div>
-            <input type="submit"  value="Buscar" >
-
         </form>
-
     </div>
-    <!--a class="element"> Buscar </a-->
-    <a class="element place-right" href={% url 'sigma:finalizar' %}> Cerrar Sesión </a>
+    <!--a class="element place-right" href={% url 'sigma:finalizar' %}> Cerrar Sesión </a-->
     <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
         <li></li>
-        <!--div class="no-tablet-portrait">
+        <div class="no-tablet-portrait">
             <div class="element place-right">
                 <a class="dropdown-toggle" href="#">
                     <span class="icon-cog"></span>
                 </a>
                 <ul class="dropdown-menu place-right" data-role="dropdown">
-                    <li><a href={ url 'sigma:finalizar' %}>Cerrar Sesión</a></li>
+                    <li><a href={% url 'sigma:finalizar' %}>Cerrar Sesión</a></li>
                 </ul>
             </div>
-        </div-->
+        </div>
     </ul>
 {% endblock %}
 {% block contenido %}
