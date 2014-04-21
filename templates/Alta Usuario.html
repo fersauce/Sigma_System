@@ -23,15 +23,17 @@
 {% endblock %}
 {% block contenido %}
     <div class="container" align = "center">
+        {% if messages %}
+            {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+        {% endif %}
         <h1><a href="#"></a>Crear<small class="on-right">Usuario</small></h1>
         <div class="">
             <form action = "{% url 'sigma:adm_u_altas' %}" method="post">
                 {% csrf_token %}
                 <fieldset>
                     <div class="span3">
-                        {%  if alerta %}
-                            <p> {{ alerta }}</p>
-                        {% endif %}
                         <label>Nombre</label>
                         <div class="input-control text" data-role="input-control">
                             {{ form.nombre }}

@@ -11,6 +11,7 @@ from Sigma_System.forms import RecuperarPassForm, FormLogin, FormAltaUsuario
 from Sigma_System.models import Usuario, Rol, Permiso
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 
 
 def iniciarsesion(request):
@@ -46,32 +47,43 @@ def alta_usuario(request):
         form = FormAltaUsuario(request.POST, request.FILES)
         if form.is_valid():
             user = User.objects.filter(username=form.cleaned_data['nombre_usuario'])
+            user_n = form.cleaned_data['nombre_usuario']
             if user.__len__() == 0:
+                e_mail = form.cleaned_data['email']
                 user = User.objects.filter(email=form.cleaned_data['email'])
                 if user.__len__() == 0:
+                    cid=form.cleaned_data['ci']
                     user = Usuario.objects.filter(ci=form.cleaned_data['ci'])
                     if user.__len__() == 0:
                         usuario = User.objects.create(username=form.cleaned_data['nombre_usuario'],
                                                       first_name=form.cleaned_data['nombre'],
                                                       last_name=form.cleaned_data['apellido'],
                                                       email=form.cleaned_data['email'],
-                                                      password=make_password(form.cleaned_data['contrasenha']))
+                                                      password=make_password(form.cleaned_data['contrasenha']),
+                                                      is_active=True)
                         Usuario.objects.create(user=usuario, ci=form.cleaned_data['ci'],
                                                        direccion=form.cleaned_data['direccion'],
                                                        tel=form.cleaned_data['tel'],
                                                        estado=True)
-                        return HttpResponseRedirect('/ss/adm_u/')
+                        messages.success(request, 'El usuario: '+usuario.username+', ha sido creado con exito')
+                        user = User.objects.filter(is_active=True)
+                        return render(request, 'Administrador Usuario.html', {'user': user})
                     else:
                         form = FormAltaUsuario()
-                        return render(request, 'Alta Usuario.html', {'form': form, 'alerta': 'Ya existe este ci'})
+                        messages.error(request, 'El ci: '+cid+', ya existe')
+                        return render(request, 'Alta Usuario.html', {'form': form})
                 else:
                     form = FormAltaUsuario()
-                    return render(request, 'Alta Usuario.html', {'form': form, 'alerta': 'Ya existe este e-mail'})
+                    messages.error(request, 'El e-mail: '+e_mail+', ya existe')
+                    return render(request, 'Alta Usuario.html', {'form': form})
             else:
                 form = FormAltaUsuario()
-                return render(request, 'Alta Usuario.html', {'form': form, 'alerta': 'Ya existe este username'})
+                messages.error(request, 'El username: '+user_n+', ya existe')
+                return render(request, 'Alta Usuario.html', {'form': form})
         else:
-            return HttpResponseRedirect('/ss/adm_u/')
+            messages.error(request, 'Formulario invalido')
+            user = User.objects.filter(is_active=True)
+            return render(request, 'Administrador Usuario.html', {'user': user})
     else:
         form = FormAltaUsuario()
     return render(request, 'Alta Usuario.html', {'form': form})
@@ -87,9 +99,11 @@ def baja_usuario(request, us):
     """
     user=User.objects.get(id=us)
     user.is_active=False
+    nombre = user.username
     user.save()
-
-    return HttpResponseRedirect('/ss/adm_u/')
+    user = User.objects.filter(is_active=True)
+    messages.error(request, 'El useario: '+nombre+', fue dado de baja')
+    return render(request, 'Administrador Usuario.html', {'user': user})
 
 
 @login_required(login_url='/login/')
@@ -224,6 +238,7 @@ def add_roles(request):
         permisos = request.POST.getlist('permisos')
         for p in permisos:
             rol.permisos.add(Permiso.objects.get(id=p))
+        messages.success(request, 'El rol: '+rol.nombre+', ha sido creado con exito')
     else:
         permisos = Permiso.objects.all()
         return render(request, 'Agregar_Rol.html', {'permisos': permisos})
@@ -232,7 +247,9 @@ def add_roles(request):
 
 @login_required(login_url='/login/')
 def del_roles(request, id):
+    nombre = Rol.objects.get(id=id).nombre
     Rol.objects.get(id=id).delete()
+    messages.error(request, 'El rol: '+nombre+', ha sido eliminado')
     return HttpResponseRedirect('/ss/adm_r/')
 
 
@@ -257,6 +274,7 @@ def mod_roles(request, id):
         permisos = request.POST.getlist('permisos')
         for p in permisos:
                 rol.permisos.add(Permiso.objects.get(id=p))
+        messages.success(request, 'El rol: '+rol.nombre+' ha sido modificado con exito')
     else:
         return render(request, 'ModificarRol.html', {'rol': rol, 'permisos': permisosAux})
     return HttpResponseRedirect('/ss/adm_r/')
@@ -270,6 +288,7 @@ def buscar_roles(request):
     if request.method == 'POST':
         buscar = request.POST['busqueda']
         rol = Rol.objects.filter(nombre=buscar)
+        if rol.__len__() == 0:
+            messages.error(request, 'No existen coincidencias')
         return render(request, 'BusquedaRol.html', {'roles': rol})
     return HttpResponseRedirect('/ss/adm_r/')
-
