@@ -52,7 +52,7 @@ ROOT_URLCONF = 'CRF_Project.urls'
 
 WSGI_APPLICATION = 'CRF_Project.wsgi.application'
 
-ADMINS= (
+ADMINS = (
     ('Fernando Saucedo','carlifer.fernando@gmail.com'),
     ('Cristian Candia', 'kandia88@gmail.com'),
     ('Ruth Centurion', 'ruthiccr@gmail.com'),
@@ -90,13 +90,13 @@ AUTH_PROFILE_MODULE = 'Sigma_System.Usuario'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-STATIC_URL = os.path.join(BASE_DIR, 'static/')
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    os.path.join(BASE_DIR, 'static'),
+    # os.path.join(BASE_DIR, 'static'),
 )
 
 
