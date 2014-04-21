@@ -23,7 +23,7 @@
         <div class="">
             {% if alerta %}
                 <p>{{ alerta }}</p>
-                <a href="{% url 'sigma:adm_proy' %}"><input type="button" value="Atr&aacute;" ></a>
+                <a href="{% url 'sigma:adm_proy' %}"><input type="button" value="Atr&aacute;s" ></a>
             {% else %}
             <form action = "{% url 'sigma:adm_proy_baja' idProyecto %}" method="post">
                 {% csrf_token %}

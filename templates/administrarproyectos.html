@@ -79,9 +79,9 @@
                                     <td class="right">{{ proyecto.nroFases }}</td>
                                     <td class="right">{{ proyecto.nroMiembros }}</td>
                                     <td class="button warning"><a href="{% url 'sigma:adm_proy_mod' proyecto.pk %}">Modificar</a></td>
-                                    <td class="button danger"><a href="{% url 'sigma:adm_proy_baja' proyecto.pk %}" id="botBaja" >Eliminar</a></td>
-                                    <!--script>
-                                        $("#botBaja").on('click', function(){
+                                    <td class="button danger"><a id="botBaja{{ proyecto.pk }}" >Eliminar</a></td>
+                                    <script>
+                                        $("#botBaja{{ proyecto.pk }}").on('click', function(){
                                         $.Dialog({
                                             shadow: true,
                                             overlay: true,
@@ -93,40 +93,18 @@
                                             padding: 10,
                                             content: 'This Window is draggable by caption.',
                                             onShow: function(){
-                                                var content = '<form id="{% url 'sigma:adm_proy_baja' proyecto.pk %}" method="post">' +
-                                                        '<script>' +
-                                                        'function getCookie(name) {'+
-                                                        '    var cookieValue = null;'+
-                                                        '    if (document.cookie && document.cookie != \'\') {'+
-                                                        '        var cookies = document.cookie.split(\';\');'+
-                                                        '        for (var i = 0; i < cookies.length; i++) {'+
-                                                        '            var cookie = jQuery.trim(cookies[i]);'+
-                                                        '            // Does this cookie string begin with the name we want?'+
-                                                        '            if (cookie.substring(0, name.length + 1) == (name + \'=\')) {'+
-                                                        '                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));'+
-                                                        '                break;'+
-                                                        '            }'+
-                                                        '        }'+
-                                                        '    }'+
-                                                        '    return cookieValue;'+
-                                                        '}'+
-                                                        'var csrftoken = getCookie(\'csrftoken\');'+
-                                                        '{% csrf_token %}'
+                                                var content = '<form>' +
                                                         '<p>¿Est&aacute; seguro de querer eliminar este proyecto?</p>' +
-                                                        '<input type="submit" value="S&iacute;" onclick="">' +
+                                                        '<a class="button warning" href="{% url 'sigma:adm_proy_baja' proyecto.pk %}"> S&iacute; </a>' +
                                                         '<a href="{% url 'sigma:adm_proy' %}"><input type="button" value="No" ></a>'+
                                                         '</form>';
                                                 $.Dialog.title("Confirmar Eliminaci&oacute;n");
                                                 $.Dialog.content(content);
-                                                $.Dialog.csrfmiddlewaretoken
                                             }
 
                                         });
                                     });
-                                    $.ajaxSetup({
-                                        data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
-                                    });
-                                    </script-->
+                                    </script>
                                 </tr>
                             {% empty %}
                                 <tr><td class="text-center">{{ vacio }}</td></tr>

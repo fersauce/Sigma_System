@@ -10,7 +10,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from Sigma_System import forms
 from Sigma_System.forms import RecuperarPassForm, AltaProyectoForm, \
-    BusquedaProyectoForm
+    BusquedaProyectoForm, BusquedaFasesForm
 from Sigma_System.models import FormLogin, FormAltaUsuario, Usuario, Proyecto, \
     Fase
 from django.contrib.auth.decorators import login_required
@@ -148,10 +148,11 @@ def administrar_proyecto(request):
     """
     Vista para acceder a la administracion de proyectos.
     """
-    proyectos = Proyecto.objects.all()
+    proyectos = Proyecto.objects.all().order_by('-nombre')
     return render_to_response('administrarproyectos.html',
                               {'proyectos': proyectos,
-                               'vacio': 'No se encuentran proyectos registrados',
+                               'vacio': 'No se encuentran proyectos '
+                                        'registrados',
                                'form': forms.BusquedaProyectoForm()}
                               , context_instance=RequestContext(request))
 
@@ -189,8 +190,10 @@ def alta_proyecto(request):
                 return HttpResponseRedirect('/ss/proyecto/')
             else:
                 form = AltaProyectoForm()
-                return render(request, 'proyectoalta.html', {'form': form,
-                                                             'alerta': 'Proyecto ya existente con ese nombre'})
+                return render(request, 'proyectoalta.html',
+                              {'form': form,
+                               'alerta': 'Proyecto ya existente '
+                                         'con ese nombre'})
     else:
         print '3'
         form = AltaProyectoForm()
@@ -202,26 +205,40 @@ def modificar_proyecto(request, idProyecto):
     """
     Vista para realizar la modificacion de datos del proyecto
     """
-    pass
+    proyecto = Proyecto.objects.get(pk=idProyecto)
+    usuarios = Usuario.objects.all()
+    if request.method == 'POST':
+        if proyecto.estado == 'Iniciado':
+            proyecto.duracion = request.POST['duracion']
+        else:
+            proyecto.nombre = request.POST['nombre']
+            proyecto.descripcion = request.POST['descripcion']
+            proyecto.duracion = request.POST['duracion']
+            proyecto.fechaFinalizacion = proyecto.fechaInicio + \
+                                         datetime.timedelta(
+                                             days=int(proyecto.duracion))
+            print str(proyecto.fechaFinalizacion) + 'hola' + str(
+                datetime.timedelta(days=int(proyecto.duracion)))
+        proyecto.save()
+        return HttpResponseRedirect('/ss/proyecto')
+    return render(request, 'proyectomodificar.html', {'proyecto': proyecto,
+                                                      'choices': usuarios})
 
 
 def baja_proyecto(request, idProyecto):
     """
     Vista para realizar la baja de un proyecto.
     """
-    if request.method == 'POST':
-        proyecto = Proyecto.objects.get(pk=idProyecto)
-        proyecto.delete()
-        print 'Hola'
-    elif request.method == 'GET':
+    print 12
+    if request.method == 'GET':
         proyecto = Proyecto.objects.get(pk=idProyecto)
         if proyecto.estado == 'Iniciado':
             return render(request, 'proyectobaja.html', {
                 'alerta': 'No se puede suprimir el proyecto'})
         else:
-            return render(request, 'proyectobaja.html',
-                          {'idProyecto': idProyecto})
+            proyecto.delete()
         print 'Chau'
+    print 'Hola'
     return HttpResponseRedirect('/ss/proyecto/')
 
 
@@ -254,7 +271,8 @@ def buscar_proyecto(request):
                     fechaFinalizacion=form.cleaned_data['busqueda'])
     return render(request, 'administrarproyectos.html',
                   {'proyectos': proyectos,
-                   'vacio': 'No se encuentran proyectos con ese patron de busqueda',
+                   'vacio': 'No se encuentran proyectos con ese '
+                            'patron de busqueda',
                    'form': BusquedaProyectoForm()})
 
 
@@ -272,14 +290,21 @@ def administrar_fases(request, idProyect):
     proyecto = Proyecto.objects.get(pk=idProyect)
     fases = Fase.objects.filter(proyecto=proyecto)
     return render(request, 'administrarfases.html',
-                  {'proyecto': proyecto, 'fases': fases})
+                  {'proyecto': proyecto, 'fases': fases,
+                   'form': BusquedaFasesForm(),
+                   'vacio': 'No se encontraron fases asociadas a este '
+                            'proyecto'})
 
 
-def alta_fase(request):
+def alta_fase(request, idProyect):
     """
     Vista para realizar la alta de una fase
+    :param idProyect: codigo del proyecto del cual se van a administrar sus
+    fases.
     """
-    pass
+    if request.method == 'POST':
+        pass
+    return render(request, )
 
 
 def modificar_fase(request):
@@ -296,7 +321,7 @@ def baja_fase(request):
     pass
 
 
-def buscar_fase(request):
+def buscar_fase(request, idProyect):
     """
     Vista para realizar la busqueda de fases.
     """

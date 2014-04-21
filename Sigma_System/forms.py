@@ -71,3 +71,10 @@ class BusquedaProyectoForm(forms.Form):
                               widget=forms.Select(choices=CHOICES))
     busqueda = forms.CharField(max_length=50,
                                widget=forms.TextInput(attrs={}))
+
+class BusquedaFasesForm(forms.Form):
+    CHOICES = [(1, 'Nombre'), (2, 'Estado')]
+    columna = forms.CharField(max_length=40,
+                              widget=forms.Select(choices=CHOICES))
+    busqueda = forms.CharField(max_length=50,
+                               widget=forms.TextInput(attrs={}))
