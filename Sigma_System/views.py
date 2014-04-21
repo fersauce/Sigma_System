@@ -77,9 +77,63 @@ def alta_usuario(request):
     return render(request, 'Alta Usuario.html', {'form': form})
 
 
+
+
+
+@login_required(login_url='/login/')
+def baja_usuario(request, us):
+    """
+    vista utilizada para dar de baja un usuario, baja logica
+    """
+    user=User.objects.get(id=us)
+    user.is_active=False
+    user.save()
+
+    return HttpResponseRedirect('/ss/adm_u/')
+
+
+@login_required(login_url='/login/')
+def modificar_usuario(request, us):
+    """
+    vista utilizada para dar de baja a un usuario, baja logica
+    """
+    user = User.objects.get(id=us)
+    if request.method == 'POST':
+        """
+        Solo los campos direccion y tel no estan disabled
+        por eso no llegaba los otros datos
+        solo lo que se carga en el form nomas llegan
+        en este caso direccion y telefono nomas se pueden modificar
+        en el form
+        """
+        user.usuario.direccion = request.POST['direccion']
+        user.usuario.tel = request.POST['tel']
+        user.usuario.save()
+    else:
+        return render(request, 'modificarUsuario.html', {'user': user})
+    return HttpResponseRedirect('/ss/adm_u/')
+
+""" hace lo mismo, no hace falta esta vista
+def guardarCambiosUsuario(request, id):
+    user = User.objects.get(id=id)
+    if request.method == 'POST':
+        user = User.objects.get(=request.POST)
+        user.first_name = form.nombre
+        user.last_name=form.apellido
+        user.email=form.email
+        user.usuario.ci =form.ci
+        user.usuario.direccion=form.direccion
+        user.usuario.tel=form.tel
+        user.save()
+        user.usuario.save()
+        return HttpResponseRedirect('/ss/adm_u/')
+    return render(request, 'modificarUsuario.html', {'user': user})
+"""
+
+
 @login_required(login_url='/login/')
 def adm_usuario(request):
-    user = User.objects.all()
+    user = User.objects.filter(is_active=True)
     return render(request, 'Administrador Usuario.html', {'user': user })
 
 

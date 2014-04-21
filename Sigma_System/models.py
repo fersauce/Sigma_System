@@ -149,38 +149,38 @@ class HistorialLineabase(models.Model):
 class FormAltaUsuario(forms.Form):
     nombre_usuario = forms.CharField(max_length=30,
                                      widget=forms.TextInput(attrs={
-                                         'placeholder': 'username',
+                                         'placeholder': ' ',
                                          'required': 'True'}))
     nombre = forms.CharField(max_length=30,
                                      widget=forms.TextInput(attrs={
-                                         'placeholder': 'nombre',
+                                         'placeholder': ' ',
                                          'required': 'True'}))
     apellido = forms.CharField(max_length=30,
                                      widget=forms.TextInput(attrs={
-                                         'placeholder': 'apellido',
+                                         'placeholder': ' ',
                                          'required': 'True'}))
     email = forms.EmailField(widget=forms.TextInput(attrs={
-                                         'placeholder': 'e-mail',
+                                         'placeholder': ' ',
                                          'required': 'True'}))
     contrasenha = forms.CharField(max_length=120, widget=forms.PasswordInput(attrs={
-                                         'placeholder': 'password',
+                                         'placeholder': ' ',
                                          'required': 'True'}))
     ci = forms.CharField(max_length=15, widget=forms.TextInput(attrs={
-                                         'placeholder': 'ci',
+                                         'placeholder': ' ',
                                          'required': 'True'}))
     direccion = forms.CharField(max_length=100, widget=forms.TextInput(attrs={
-                                         'placeholder': 'direccion',
+                                         'placeholder': ' ',
                                          'required': 'True'}))
     tel = forms.CharField(max_length=20, widget=forms.TextInput(attrs={
-                                         'placeholder': 'telefono',
+                                         'placeholder': ' ',
                                          'required': 'True'}))
 
 
 class FormLogin(forms.Form):
     username = forms.CharField(max_length=30, widget=forms.TextInput(attrs={
-                                         'placeholder': 'username',
+                                         'placeholder': ' ',
                                          'required': 'True'}))
     password = forms.CharField(max_length=120, widget=forms.PasswordInput(attrs={
-                                         'placeholder': 'password',
+                                         'placeholder': ' ',
                                          'required': 'True'}))
 

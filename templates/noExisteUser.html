@@ -2,16 +2,18 @@
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href={% url 'sigma:inicio' %}> Pagina Principal</a>
-    <div class="element input-element">
+    <span class="element-divider"></span>
+    <a class="element" href={% url 'sigma:adm_u' %}> Administrar Usuario </a>
+    <!--div class="element input-element">
         <form action="{% url 'sigma:adm_u_bus' %}" method="post" >
            {% csrf_token %}
 
            <div class="input-control text">
                <input type="text" placeholder="Search..." name="valor_buscado">
-               <!--a class="btn-search" href ={% url 'sigma:adm_u_bus'%} type="submit">  </a-->
-               </input>
+               <!--a class="btn-search" href ={ url 'sigma:adm_u_bus'%} type="submit">  </a-->
+               <!--/input>
             </div>
-            <input type="submit"  value="Buscar" >
+            <input type="submit"  value="Buscar">
 
         </form>
 
@@ -20,19 +22,7 @@
     <a class="element place-right" href={% url 'sigma:finalizar' %}> Cerrar Sesión </a>
     <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
-    <ul class="element-menu">
-        <li></li>
-        <!--div class="no-tablet-portrait">
-            <div class="element place-right">
-                <a class="dropdown-toggle" href="#">
-                    <span class="icon-cog"></span>
-                </a>
-                <ul class="dropdown-menu place-right" data-role="dropdown">
-                    <li><a href={ url 'sigma:finalizar' %}>Cerrar Sesión</a></li>
-                </ul>
-            </div>
-        </div-->
-    </ul>
+
 {% endblock %}
 {% block contenido %}
     <div class="container">
@@ -41,45 +31,56 @@
                   <!--=====================================tabla=================================-->
                 <div class="span9">
                     <div class="">
-                        <h1><a href="#"></a>Administrador<small class="on-right">de Usuario</small></h1>
-                        <table class="table hovered" >
+                        <h1><a href="#"></a>Busqueda <small class="on-right">de Usuario</small></h1>
+
+
+                        <h3><a href="#"></a><small class="on-right">No existe el nombre de usuario buscado</small></h3>
+
+                        <a href={% url 'sigma:adm_u_bus'%}>
+                        <button class="command-button primary">
+                            <i class=""></i>Atras
+                            <small></small>
+                        </button>
+                    </a>
+                        <!--table class="table hovered" >
                             <thead>
                                 <tr><!--quinta tabla--la que se selecciona al pasar encima-->
-                                    <th class="text-left">Username</th>
+                                    <!--th class="text-left">Username</th>
                                     <th class="text-left">E-mail</th>
                                     <th class="text-left">Fecha de Registro</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            {% for u in user %}
+                            {for u in user %}
                                 <tr>
-                                    <td>{{ u.username }}</td>
-                                    <td class="right">{{ u.email }}</td>
+                                    <td>{ u.username }}</td>
+                                    <td class="right">{ u.email }}</td>
 
-                                    <td class="right">{{ u.date_joined }}</td>
+                                    <td class="right">{ u.date_joined }}</td>
 
                                     <td class="right"><a class="pull-menu" href="#"></a>
                                         <div class="element-menu">
                                             <a class="dropdown-toggle" href="#"><span class="icon-cog"></span></a>
                                             <ul class="dropdown-menu default" data-role="dropdown">
-                                                <li><a href="{% url 'sigma:adm_u_mod' u.id %}">Modificar</a></li>
-                                                <li><a href="{% url 'sigma:adm_u_baja' u.id %}">Eliminar</a></li>
+                                                <li><a href="{ url 'sigma:adm_u_mod' u.id %}">Modificar</a></li>
+                                                <li><a href="{ url 'sigma:adm_u_baja' u.id %}">Eliminar</a></li>
                                                 <!--li class="disabled"><a href="#">Eliminar</a></li-->
-                                            </ul>
+                                            <!--/ul>
                                         </div>
                                     </td>
                                 </tr>
-                            {% endfor %}
+
+                            { endfor %}
                             </tbody>
                             <tfoot></tfoot>
-                        </table>
+                        </table-->
                     </div><!--div de la tabla 1-->
-                    <a href="{%  url 'sigma:adm_u_altas' %}">
+                    <!--a href="{  url 'sigma:adm_u_altas' %}">
                         <button class="command-button primary">
                             <i class=""></i>Agregar Usuario
                             <small></small>
                         </button>
-                    </a>
+                    </a-->
                 </div>
             </div>
         </div>
