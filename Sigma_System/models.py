@@ -2,15 +2,17 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django import forms
+import datetime
 # Create your models here.
 
 
 class Proyecto(models.Model):
     nombre = models.CharField(max_length=30, unique=True)
     descripcion = models.CharField(max_length=200)
-    fechaCreacion = models.DateField()
-    fechaInicio = models.DateField()
-    fechaFinalizacion = models.DateField()
+    fechaCreacion = models.DateField(default=datetime.datetime.now())
+    fechaInicio = models.DateField(default=datetime.datetime.now())
+    fechaFinalizacion = models.DateField(
+        default=(datetime.datetime.now() + datetime.timedelta(days=1)))
     duracion = models.IntegerField()
     complejidad = models.IntegerField()
     costo = models.IntegerField()
@@ -28,6 +30,9 @@ class Fase(models.Model):
     descripcion = models.CharField(max_length=200)
     posicionFase = models.IntegerField()
     estado = models.CharField(max_length=15)
+    fechaInicio = models.DateField(default=datetime.datetime.now())
+    fechaFin = models.DateField(
+        default=(datetime.datetime.now() + datetime.timedelta(days=1)))
 
 
 class Permiso(models.Model):
@@ -103,7 +108,8 @@ class Item(models.Model):
     complejidad = models.IntegerField()
     prioridad = models.IntegerField()
     estado = models.CharField(max_length=10, default='Activo')
-    items_atrib = models.ManyToManyField(AtribTipoDeItem, through='ItemAtributosTipoI')
+    items_atrib = models.ManyToManyField(AtribTipoDeItem,
+                                         through='ItemAtributosTipoI')
     arch_adjuntos = models.ManyToManyField(Archivo)
 
 
@@ -168,35 +174,37 @@ class FormAltaUsuario(forms.Form):
                                          'placeholder': 'username',
                                          'required': 'True'}))
     nombre = forms.CharField(max_length=30,
-                                     widget=forms.TextInput(attrs={
-                                         'placeholder': 'nombre',
-                                         'required': 'True'}))
+                             widget=forms.TextInput(attrs={
+                                 'placeholder': 'nombre',
+                                 'required': 'True'}))
     apellido = forms.CharField(max_length=30,
-                                     widget=forms.TextInput(attrs={
-                                         'placeholder': 'apellido',
-                                         'required': 'True'}))
+                               widget=forms.TextInput(attrs={
+                                   'placeholder': 'apellido',
+                                   'required': 'True'}))
     email = forms.EmailField(widget=forms.TextInput(attrs={
-                                         'placeholder': 'e-mail',
-                                         'required': 'True'}))
-    contrasenha = forms.CharField(max_length=120, widget=forms.PasswordInput(attrs={
-                                         'placeholder': 'password',
-                                         'required': 'True'}))
+        'placeholder': 'e-mail',
+        'required': 'True'}))
+    contrasenha = forms.CharField(max_length=120,
+                                  widget=forms.PasswordInput(attrs={
+                                      'placeholder': 'password',
+                                      'required': 'True'}))
     ci = forms.CharField(max_length=15, widget=forms.TextInput(attrs={
-                                         'placeholder': 'ci',
-                                         'required': 'True'}))
+        'placeholder': 'ci',
+        'required': 'True'}))
     direccion = forms.CharField(max_length=100, widget=forms.TextInput(attrs={
-                                         'placeholder': 'direccion',
-                                         'required': 'True'}))
+        'placeholder': 'direccion',
+        'required': 'True'}))
     tel = forms.CharField(max_length=20, widget=forms.TextInput(attrs={
-                                         'placeholder': 'telefono',
-                                         'required': 'True'}))
+        'placeholder': 'telefono',
+        'required': 'True'}))
 
 
 class FormLogin(forms.Form):
     username = forms.CharField(max_length=30, widget=forms.TextInput(attrs={
-                                         'placeholder': 'username',
-                                         'required': 'True'}))
-    password = forms.CharField(max_length=120, widget=forms.PasswordInput(attrs={
-                                         'placeholder': 'password',
-                                         'required': 'True'}))
+        'placeholder': 'username',
+        'required': 'True'}))
+    password = forms.CharField(max_length=120,
+                               widget=forms.PasswordInput(attrs={
+                                   'placeholder': 'password',
+                                   'required': 'True'}))
 
