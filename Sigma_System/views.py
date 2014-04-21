@@ -150,4 +150,30 @@ def add_roles(request):
 @login_required(login_url='/login/')
 def del_roles(request, id):
     Rol.objects.get(id=id).delete()
-    return HttpResponseRedirect('/ss/adm_u/')
+    return HttpResponseRedirect('/ss/adm_r/')
+
+
+@login_required(login_url='/login/')
+def mod_roles(request, id):
+    rol = Rol.objects.get(id=id)
+    todoLosPermisos = Permiso.objects.all()
+    permisosDelRol = Rol.permisos.all()
+    permisos = []
+    for p in todoLosPermisos:
+        if p in permisosDelRol:
+            diccionario = {'nombre': p.nombre, 'id': p.id, 'ban': True}
+            permisos.append(diccionario)
+        else:
+
+
+
+    if request.method == 'POST':
+        rol.nombre = request.POST['nombre']
+        rol.descripcion = request.POST['descripcion']
+        permisos = request.POST.getlist('permisos')
+        rol.permisos.all().delete()
+        for p in permisos:
+            rol.permisos.add(Permiso.objects.get(id=p))
+    else:
+        return render(request, 'Modificar_Rol.html', {'rol': rol}, {'per': per})
+    return HttpResponseRedirect('/ss/adm_r/')
