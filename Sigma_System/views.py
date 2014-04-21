@@ -164,9 +164,8 @@ def mod_roles(request, id):
             diccionario = {'nombre': p.nombre, 'id': p.id, 'ban': True}
             permisos.append(diccionario)
         else:
-
-
-
+            diccionario = {'nombre': p.nombre, 'id': p.id, 'ban': False}
+            permisos.append(diccionario)
     if request.method == 'POST':
         rol.nombre = request.POST['nombre']
         rol.descripcion = request.POST['descripcion']
