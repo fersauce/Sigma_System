@@ -104,12 +104,12 @@ def baja_usuario(request, us):
 
 
 @login_required(login_url='/login/')
-def modificar_usuario(request, us, pag):
+def modificar_usuario(request, us):
     """
     vista utilizada para dar de baja a un usuario, baja logica
     """
     user = User.objects.get(id=us)
-    direccion = '/ss/adm_u/?page='+pag
+    direccion = '/ss/adm_u/?page='+request.session['pag_actual']
     print direccion
     if request.method == 'POST':
         user.usuario.direccion = request.POST['direccion']
@@ -118,7 +118,7 @@ def modificar_usuario(request, us, pag):
         nombre = user.username
         messages.info(request, 'usuario: '+nombre+', modificado correctamente')
     else:
-        return render(request, 'modificarUsuario.html', {'user': user, 'pag': pag})
+        return render(request, 'modificarUsuario.html', {'user': user})
     return HttpResponseRedirect(direccion)
 
 
@@ -127,6 +127,7 @@ def adm_usuario(request):
     user_list = User.objects.filter(is_active=True)
     paginator = Paginator(user_list, 2)
     page = request.GET.get('page')
+    request.session['pag_actual'] = page
     try:
         users = paginator.page(page)
     except PageNotAnInteger:
