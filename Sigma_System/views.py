@@ -110,7 +110,6 @@ def modificar_usuario(request, us):
     """
     user = User.objects.get(id=us)
     direccion = '/ss/adm_u/?page='+request.session['pag_actual']
-    print direccion
     if request.method == 'POST':
         user.usuario.direccion = request.POST['direccion']
         user.usuario.tel = request.POST['tel']
