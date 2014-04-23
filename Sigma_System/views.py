@@ -109,7 +109,8 @@ def modificar_usuario(request, us, pag):
     vista utilizada para dar de baja a un usuario, baja logica
     """
     user = User.objects.get(id=us)
-    direccion = '/ss/adm_u/?page = '+ pag
+    direccion = '/ss/adm_u/?page='+pag
+    print direccion
     if request.method == 'POST':
         user.usuario.direccion = request.POST['direccion']
         user.usuario.tel = request.POST['tel']
