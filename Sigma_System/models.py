@@ -2,19 +2,26 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django import forms
+import datetime
 # Create your models here.
 
 
 class Proyecto(models.Model):
     nombre = models.CharField(max_length=30, unique=True)
     descripcion = models.CharField(max_length=200)
-    fechaCreacion = models.DateField()
+    fechaCreacion = models.DateField(default=datetime.datetime.now())
+    fechaInicio = models.DateField(default=datetime.datetime.now())
+    fechaFinalizacion = models.DateField(
+        default=(datetime.datetime.now() + datetime.timedelta(days=1)))
     duracion = models.IntegerField()
     complejidad = models.IntegerField()
     costo = models.IntegerField()
     estado = models.CharField(max_length=15)
     nroFases = models.IntegerField()
     nroMiembros = models.IntegerField()
+
+    def __str__(self):
+        return str(self.nombre)
 
 
 class Fase(models.Model):
@@ -23,6 +30,9 @@ class Fase(models.Model):
     descripcion = models.CharField(max_length=200)
     posicionFase = models.IntegerField()
     estado = models.CharField(max_length=15)
+    fechaInicio = models.DateField(default=datetime.datetime.now())
+    fechaFin = models.DateField(
+        default=(datetime.datetime.now() + datetime.timedelta(days=1)))
 
 
 class Permiso(models.Model):
@@ -43,6 +53,9 @@ class Usuario(models.Model):
     tel = models.CharField(max_length=20)
     estado = models.BooleanField(default=True)
     roles = models.ManyToManyField(Rol, through='UsuarioRol')
+
+    def __str__(self):
+        return self.user.username.__str__()
 
 
 def create_user_profile(sender, instance, created, **kwargs):
@@ -95,7 +108,8 @@ class Item(models.Model):
     complejidad = models.IntegerField()
     prioridad = models.IntegerField()
     estado = models.CharField(max_length=10, default='Activo')
-    items_atrib = models.ManyToManyField(AtribTipoDeItem, through='ItemAtributosTipoI')
+    items_atrib = models.ManyToManyField(AtribTipoDeItem,
+                                         through='ItemAtributosTipoI')
     arch_adjuntos = models.ManyToManyField(Archivo)
 
 
@@ -145,3 +159,10 @@ class HistorialLineabase(models.Model):
     tipo_operacion = models.CharField(max_length=50)
     linea_base = models.ForeignKey(LBase)
 
+
+class UsuariosXProyecto(models.Model):
+    """
+    Modelo que representa la conexion entre los usuarios y los proyectos asociados.
+    """
+    proyecto = models.ForeignKey(Proyecto)
+    usuario = models.ForeignKey(Usuario)

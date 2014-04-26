@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block navegacion %}
+    <a class="element place-right" href={% url 'sigma:finalizar' %}> Cerrar Sesion </a>
     <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
@@ -27,7 +28,7 @@
                     <ul class="dropdown-menu open keep-open" style="">
                         <li><a class="dropdown-toggle" href="{% url 'sigma:adm_u' %}">Modulo de administracion</a>
                             <ul class="dropdown-menu" data-role="dropdown" style="display: none;">
-                                <li><a href="Administrar Proyecto.html">Proyecto</a></li>
+                                <li><a href="{% url 'sigma:adm_proy' %}">Proyecto</a></li>
                                 <li><a href="{% url 'sigma:adm_u' %}">Usuario</a></li>
                                 <li><a href="{% url 'sigma:adm_r' %}">Roles y Permisos</a></li>
                             </ul>

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block navegacion %}
+    <a class="element place-right" href={% url 'sigma:finalizar' %}> Cerrar Sesion </a>
+    <span class="element-divider"></span>
+    <a class="pull-menu" href="#"></a>
+    <ul class="element-menu">
+        <li></li>
+        <div class="no-tablet-portrait">
+            <div class="element place-right">
+                <a class="dropdown-toggle" href="#">
+                    <span class="icon-cog"></span>
+                </a>
+                <ul class="dropdown-menu place-right" data-role="dropdown">
+                    <li><a href="Iniciar Sesion.html">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </ul>
+{% endblock %}
+{% block contenido %}
+    <div class="container" align = "center">
+        <h1><a href="#"></a>Modificar<small class="on-right">Proyecto {{ proyecto.nombre }}</small></h1>
+        <div class="">
+            <form action = "{% url 'sigma:adm_proy_mod' proyecto.pk %}" method="post">
+                {% csrf_token %}
+                <fieldset>
+                    <div class="span3">
+                        {%  if alerta %}
+                            <!--script>
+                                $(function (){
+                                    $.Notify({
+                                        shadow: true,
+                                        position: 'bottom-right',
+                                        content: {{ alerta }},
+                                        timeout: 10000
+                                    });
+                                })
+                            </script-->
+                            <p>{{ alerta }}</p>
+                        {% endif %}
+                        <div class="input-control text" data-role="input-control">
+                            <label class="label">Nombre de Proyecto</label>
+                            {% if proyecto.estado != 'Iniciado' %}
+                                <input type="text" name="nombre" required value="{{ proyecto.nombre }}">
+                            {% else %}
+                                <input type="text" name="nombre" required value="{{ proyecto.nombre }}" disabled>
+                            {% endif %}
+                            <button class="btn-clear" tabindex="-1" type="button"> </button>
+                        </div><br><br>
+                        <div class="input-control text" data-role="input-control">
+                            <label class="label">Descripci&oacute;n</label>
+                            {% if proyecto.estado != 'Iniciado' %}
+                                <input type="text" name="descripcion" required value="{{ proyecto.descripcion}}">
+                            {% else %}
+                                <input type="text" name="descripcion" required value="{{ proyecto.descripcion }}" disabled>
+                            {% endif %}
+                            <button class="btn-clear" tabindex="-1" type="button"> </button>
+                        </div><br><br><br>
+                        <div class="input-control number" data-role="input-control">
+                            <label class="label">Duraci&oacute;n</label>
+                            <input type="number" name="duracion" required value="{{ proyecto.duracion }}">
+                        </div><br><br>
+                        <div class="input-control select">
+                            <label class="label">L&iacute;der</label>
+                            <select id="id_lider" name="lider">
+                                {% for user in choices %}
+                                    <option value="{{ user.user.pk }}">{{ user.user.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <input type="submit" value="Aceptar" onclick="">
+                        <a href="{% url 'sigma:adm_proy' %}"><input type="button" value="Cancelar" ></a>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}
