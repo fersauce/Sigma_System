@@ -20,6 +20,23 @@
 {% block titulo %}Administraci&oacute;n de Fases del proyecto {{ proyecto.nombre }}{% endblock %}
 {% block contenido %}
     <div class="container">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <div {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+                {% endfor %}
+            </ul>
+            <script type="javascript">
+                $(function hola(mensaje){
+                    $.Notify({
+                        shadow: true,
+                        position: 'bottom-right',
+                        content: mensaje,
+                        timeout: 2500
+                    });
+                });
+            </script>
+        {% endif %}
         <div class="grid">
             <div class="row">
                 <div class="span12">
@@ -77,6 +94,7 @@
                                 <tr>
                                     <td>{{ fase.nombre }}</td>
                                     <td class="right">{{ fase.descripcion }}</td>
+                                    <td class="right" width>{{ fase.posicionFase }}</td>
                                     <td class="right" width>{{ fase.estado }}</td>
                                     <td class="right" width>{{ fase.fechaInicio}}</td>
                                     <td class="right" width>{{ fase.fechaFin }}</td>

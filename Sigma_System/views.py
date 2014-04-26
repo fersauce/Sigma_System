@@ -13,7 +13,7 @@ from Sigma_System import forms
 from Sigma_System.forms import RecuperarPassForm, AltaProyectoForm, \
     BusquedaProyectoForm, BusquedaFasesForm
 from Sigma_System.models import FormLogin, FormAltaUsuario, Usuario, Proyecto, \
-    Fase
+    Fase, TipoDeItem
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -253,6 +253,9 @@ def baja_proyecto(request, idProyecto):
         if proyecto.estado == 'Iniciado':
             return render(request, 'proyectobaja.html', {
                 'alerta': 'No se puede suprimir el proyecto'})
+        elif Fase.objects.filter(proyecto=proyecto).__len__() > 0:
+            return render(request, 'proyectobaja.html', {
+                'alerta': 'No se puede suprimir el proyecto'})
         else:
             proyecto.delete()
     return HttpResponseRedirect('/ss/proyecto/')
@@ -304,7 +307,7 @@ def administrar_fases(request, idProyect):
     fases.
     """
     proyecto = Proyecto.objects.get(pk=idProyect)
-    fases = Fase.objects.filter(proyecto=proyecto)
+    fases = Fase.objects.filter(proyecto=proyecto).order_by('posicionFase')
     return render(request, 'administrarfases.html',
                   {'proyecto': proyecto, 'fases': fases,
                    'form': BusquedaFasesForm(),
@@ -323,7 +326,7 @@ def alta_fase(request, idProyect):
         proyecto = Proyecto.objects.get(pk=idProyect)
         fase = Fase.objects.filter(proyecto=proyecto).filter(
             nombre=request.POST['nombre'])
-        if fase.__len__() == 0:
+        if fase.__len__() > 0:
             ultFase = Fase(fase.last())
             if request.POST['fechaInicio'] > request.POST['fechaFin']:
                 messages.error(request, 'La fecha de Inicio se encuentra'
@@ -356,6 +359,7 @@ def alta_fase(request, idProyect):
                           {'proyecto': idProyect,
                            'alerta': 'Nombre de Fase ya existente '
                                      'en este proyecto'})
+
     return render(request, 'fasealta.html', {'usuarios': usuarios,
                                              'proyecto': idProyect})
 
@@ -384,16 +388,16 @@ def modificar_fase(request, idProyect, idFase):
             if fase.posicionFase < Proyecto.objects.get(pk=idProyect).nroFases:
                 faseSig = Fase.objects.get(posicionFase=fase.posicionFase + 1)
                 if str(faseSig.fechaInicio) > request.POST['fechaFin']:
+                    messages.error(request, 'La fecha de fin de esta fase '
+                                            'es superior a la fecha de '
+                                            'inicio de la fase siguiente')
                     return render(request, 'fasemodificar.html',
-                                  {'proyecto': idProyect, 'fase': fase,
-                                   'alerta': 'La fecha de fin de esta fase '
-                                             'es superior a la fecha de '
-                                             'inicio de la fase siguiente'})
+                                  {'proyecto': idProyect, 'fase': fase})
             if request.POST['fechaInicio'] > request.POST['fechaFin']:
+                messages.error(request, 'La fecha de Inicio se encuentra '
+                                        'mas adelantada que la fecha de fin')
                 return render(request, 'fasemodificar.html',
-                              {'proyecto': idProyect, 'fase': fase,
-                               'alerta': 'La fecha de Inicio se encuentra '
-                                         'mas adelantada que la fecha de fin'})
+                              {'proyecto': idProyect, 'fase': fase})
             fase.nombre = request.POST['nombre']
             fase.descripcion = request.POST['descripcion']
             fase.fechaInicio = request.POST['fechaInicio']
@@ -409,8 +413,35 @@ def modificar_fase(request, idProyect, idFase):
 def baja_fase(request, idProyect, idFase):
     """
     Vista para realizar la baja de una fase
+    :param idProyect: pk del proyecto sobre el cual se esta trabajando
+    :param idFase: pk de la fase que se quiere dar de baja
     """
-    pass
+    if request.method == 'GET':
+        proyecto = Proyecto.objects.get(pk=idProyect)
+        fase = Fase.objects.get(pk=idFase)
+        if fase.estado != 'Pendiente':
+            return render(request, 'fasebaja.html',
+                          {'alerta': 'No se puede suprimir la fase: '
+                                     'se encuentra activa',
+                           'proyecto': idProyect})
+        elif TipoDeItem.objects.filter(fase=fase).__len__() > 0:
+            return render(request, 'fasebaja.html',
+                          {'alerta': 'No se puede suprimir la fase: '
+                                     'contiene Tipos de Items Asociados.',
+                           'proyecto': idProyect})
+        else:
+            fase.delete()
+            fases = Fase.objects.filter(proyecto=proyecto).order_by(
+                'posicionFase')
+            posicion = 1
+            for fas in fases:
+                fas.posicionFase == posicion
+                fas.save()
+                posicion += 1
+            proyecto.nroFases = posicion - 1
+            proyecto.save()
+        print 'Hola'
+    return HttpResponseRedirect('/ss/proyecto/' + str(idProyect) + '/fase/')
 
 
 def buscar_fase(request, idProyect):

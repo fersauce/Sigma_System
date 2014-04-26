@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -53,8 +54,8 @@ ROOT_URLCONF = 'CRF_Project.urls'
 
 WSGI_APPLICATION = 'CRF_Project.wsgi.application'
 
-ADMINS= (
-    ('Fernando Saucedo','carlifer.fernando@gmail.com'),
+ADMINS = (
+    ('Fernando Saucedo', 'carlifer.fernando@gmail.com'),
     ('Cristian Candia', 'kandia88@gmail.com'),
     ('Ruth Centurion', 'ruthiccr@gmail.com'),
 )
@@ -68,8 +69,8 @@ DATABASES = {
         'NAME': 'ss_des',
         'USER': 'sigmasystem',
         'PASSWORD': 'SS_is2.',
-        'HOST':'localhost',
-        'PORT':'5432',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 """Configuracion de la BD del sistema, ahora mismo en desarrollo"""
@@ -100,7 +101,6 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
@@ -111,3 +111,6 @@ EMAIL_HOST_USER = 'sigmasystem21@gmail.com'
 EMAIL_HOST_PASSWORD = 'useruser'
 EMAIL_PORT = 587
 """Configuracion del servidor de correo de la aplicacion"""
+
+TEMPLATE_CONTEX_PROCESSORS = (
+    'django.contrib.messages.context_processors.messages',)
