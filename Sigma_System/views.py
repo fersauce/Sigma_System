@@ -13,6 +13,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django_datatables_view.base_datatable_view import BaseDatatableView
+from django.db.models import Q
 
 def iniciarsesion(request):
     if request.method == 'POST':
@@ -123,7 +125,7 @@ def modificar_usuario(request, us):
 
 @login_required(login_url='/login/')
 def adm_usuario(request):
-    user_list = User.objects.filter(is_active=True)
+    """user_list = User.objects.filter(is_active=True)
     paginator = Paginator(user_list, 2)
     page = request.GET.get('page')
     request.session['pag_actual'] = page
@@ -134,8 +136,8 @@ def adm_usuario(request):
         users = paginator.page(1)
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
-        users = paginator.page(paginator.num_pages)
-    return render(request, 'Administrador Usuario.html', {"user": users})
+        users = paginator.page(paginator.num_pages)"""
+    return render(request, 'ListarUsr.html')
 
 
 def recuperarPass(request):
@@ -282,3 +284,14 @@ def buscar_roles(request):
             messages.error(request, 'No existen coincidencias')
         return render(request, 'BusquedaRol.html', {'roles': rol})
     return HttpResponseRedirect('/ss/adm_r/')
+
+
+class ListaJsonUsuarios(BaseDatatableView):
+    model = User
+    columns = ['username', 'email']
+    order_columns = ['username', 'email']
+    def filter_queryset(self, qs):
+        sSearch = self.request.GET.get('sSearch', None)
+        if sSearch:
+            qs = qs.filter(Q(username__istartswith=sSearch) | Q(email__istartswith=sSearch))
+        return qs

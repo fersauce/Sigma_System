@@ -1,5 +1,6 @@
 from django.conf.urls import patterns
 from django.conf.urls import url
+from Sigma_System.views import ListaJsonUsuarios
 
 
 urlpatterns = patterns('',
@@ -19,4 +20,5 @@ urlpatterns = patterns('',
     url(r'^adm_r_baja/(?P<id>\d+)$', 'Sigma_System.views.del_roles', name='adm_r_baja'),
     url(r'^adm_r_buscar/$', 'Sigma_System.views.buscar_roles', name='adm_r_buscar'),
     url(r'^adm_r_buscar/$', 'Sigma_System.views.buscar_roles', name='adm_r_buscar'),
+    url(r'^adm_u_listar/$', ListaJsonUsuarios.as_view(), name='adm_u_listar'),
 )
