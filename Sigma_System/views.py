@@ -301,7 +301,7 @@ def administrar_proyecto(request):
                               {'proyectos': proyectos,
                                'vacio': 'No se encuentran proyectos '
                                         'registrados',
-                               'form': forms.BusquedaProyectoForm()}
+                               'form': BusquedaProyectoForm()}
                               , context_instance=RequestContext(request))
     '''proyecto_list = Proyecto.objects.all()
     paginator = Paginator(proyecto_list, 2)
