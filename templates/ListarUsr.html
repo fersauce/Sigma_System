@@ -39,41 +39,26 @@
                         <tr>
                             <td>{{ u.username }}</td>
                             <td class="right">{{ u.email }}</td>
-
-                            <td class="right>{{ u.date_joined }}</td>
-
-                            <!--td class="text-center"><a class="pull-menu" href="#"></a>
-                                 <div class="element-menu">
-                                    <a class="dropdown-toggle" href="#"><span class="icon-cog"></span></a>
-                                    <ul class="dropdown-menu" data-role="dropdown">
-                                        <li class="text-left"><a href="{% url 'sigma:adm_u_mod' u.id %}">
-                                            <i class="icon-pencil on-left"></i>Modificar</a></li>
-                                        <li class="text-left"><a href="{% url 'sigma:adm_u_baja' u.id %}">
-                                            <i class="icon-remove on-left"></i>Eliminar</a></li>
-                                        <li class="text-left"><a href="{% url 'sigma:adm_u_ver' u.id %}">
-                                            <i class="icon-eye on-left"></i>Ver detalle</a></li>
-                                    </ul>
-                                </div>
-                            </td-->
+                            <td class="right">{{ u.date_joined }}</td>
                             <td align="center">
                                 <div class="span1 text-center">
-                                <nav class="navigation-bar">
-                                    <div class="navigation-bar-content">
-                                        <ul class="element-menu text-center">
-                                            <li>
-                                                <a class="dropdown-toggle"><span class="icon-cog"></span></a>
-                                                <ul class="dropdown-menu" data-role="dropdown">
-                                                    <li class="text-left"><a href="{% url 'sigma:adm_u_mod' u.id %}">
-                                                        <i class="icon-pencil on-left"></i>Modificar</a></li>
-                                                    <li class="text-left"><a href="{% url 'sigma:adm_u_baja' u.id %}">
-                                                        <i class="icon-remove on-left"></i>Eliminar</a></li>
-                                                    <li class="text-left"><a href="{% url 'sigma:adm_u_ver' u.id %}">
-                                                        <i class="icon-eye on-left"></i>Ver detalle</a></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </nav>
+                                    <nav class="navigation-bar">
+                                        <div class="navigation-bar-content">
+                                            <ul class="element-menu text-center">
+                                                <li>
+                                                    <a class="dropdown-toggle" href="#"><span class="icon-cog"></span></a>
+                                                    <ul class="dropdown-menu" data-role="dropdown">
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_u_mod' u.id %}">
+                                                            <i class="icon-pencil on-left"></i>Modificar</a></li>
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_u_baja' u.id %}">
+                                                            <i class="icon-remove on-left"></i>Eliminar</a></li>
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_u_ver' u.id %}">
+                                                            <i class="icon-eye on-left"></i>Ver detalle</a></li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </nav>
                                 </div>
                             </td>
                         </tr>
