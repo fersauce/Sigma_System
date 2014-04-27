@@ -4275,7 +4275,7 @@ a {
   right: 0;
   height: 45px;
   width: 40px;
-  line-height: 20px;
+  line-height: 10px;
   margin: 0;
 }
 .metro .navigation-bar .pull-menu:before,
@@ -8440,7 +8440,7 @@ a {
 }
 .metro .example:before {
   position: absolute;
-  content: "example";
+  content: "";
   left: -21px;
   top: 30px;
   color: #999999 !important;

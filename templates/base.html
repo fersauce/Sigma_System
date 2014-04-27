@@ -19,8 +19,8 @@
         <script src="/static/MetroBoostrap/js/jquery/jquery.min.js"></script>
         <script src="/static/MetroBoostrap/js/jquery/jquery.widget.min.js"></script>
         <script src="/static/MetroBoostrap/js/jquery/jquery.mousewheel.js"></script>
+        <script src="/static/MetroBoostrap/js/jquery/jquery.dataTables.js"></script>
         <script src="/static/MetroBoostrap/js/prettify/prettify.js"></script>
-
         <!-- Metro UI CSS JavaScript plugins -->
         <!--script src="{{ STATIC_URL }}MetroBoostrap/js/load-metro.js"></script>
 
@@ -43,7 +43,36 @@
             }
         }
         </script>
-
+        {% if messages %}
+            <script>
+                window.onload = function() {
+                    notificar();
+                };
+            </script>
+            <script type="text/javascript">
+                function notificar()
+                {
+                    {% for message in messages %}
+                        $.Notify
+                        (
+                            {
+                                {% if message.tags == 'success' %}
+                                    style: {background: '#1ba1e2', color: 'white'},
+                                {% endif %}
+                                {% if message.tags == 'error' %}
+                                    style: {background: 'red', color: 'white'},
+                                {% endif %}
+                                {% if message.tags == 'info' %}
+                                    style: {background: 'orange', color: 'black'},
+                                {% endif %}
+                                caption: '', content: "{{message}}",
+                                timeout:3000
+                            }
+                        );
+                    {% endfor %}
+                }
+            </script>
+        {% endif %}
         <title>{% block titulo %}{% endblock %}</title>
     </head>
     <body class="metro">

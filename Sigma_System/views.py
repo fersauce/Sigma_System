@@ -13,6 +13,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django_datatables_view.base_datatable_view import BaseDatatableView
+from django.db.models import Q
 
 def iniciarsesion(request):
     if request.method == 'POST':
@@ -66,20 +68,19 @@ def alta_usuario(request):
                                                        direccion=form.cleaned_data['direccion'],
                                                        tel=form.cleaned_data['tel'],
                                                        estado=True)
-                        messages.success(request, 'El usuario: '+usuario.username+', ha sido creado con exito')
-                        user = User.objects.filter(is_active=True)
-                        return render(request, 'Administrador Usuario.html', {'user': user})
+                        messages.success(request, 'El usuario "'+usuario.username+'" ha sido creado con exito')
+                        return HttpResponseRedirect('/ss/adm_u/')
                     else:
                         form = FormAltaUsuario()
-                        messages.error(request, 'El ci: '+cid+', ya existe')
+                        messages.error(request, 'El ci "'+cid+'" ya existe')
                         return render(request, 'Alta Usuario.html', {'form': form})
                 else:
                     form = FormAltaUsuario()
-                    messages.error(request, 'El e-mail: '+e_mail+', ya existe')
+                    messages.error(request, 'El e-mail "'+e_mail+'" ya existe')
                     return render(request, 'Alta Usuario.html', {'form': form})
             else:
                 form = FormAltaUsuario()
-                messages.error(request, 'El username: '+user_n+', ya existe')
+                messages.error(request, 'El username "'+user_n+'" ya existe')
                 return render(request, 'Alta Usuario.html', {'form': form})
         else:
             messages.error(request, 'Formulario invalido')
@@ -100,7 +101,7 @@ def baja_usuario(request, us):
     nombre = user.username
     user.save()
     user = User.objects.filter(is_active=True)
-    messages.error(request, 'El useario: '+nombre+', fue dado de baja')
+    messages.error(request, 'El usuario "'+nombre+'" ha sido eliminado')
     return render(request, 'Administrador Usuario.html', {'user': user})
 
 
@@ -110,22 +111,24 @@ def modificar_usuario(request, us):
     vista utilizada para dar de baja a un usuario, baja logica
     """
     user = User.objects.get(id=us)
+    direccion = '/ss/adm_u/?page='+request.session['pag_actual']
     if request.method == 'POST':
         user.usuario.direccion = request.POST['direccion']
         user.usuario.tel = request.POST['tel']
         user.usuario.save()
         nombre = user.username
-        messages.success(request, 'usuario: '+nombre+', modificado correctamente')
+        messages.info(request, 'usuario: '+nombre+', modificado correctamente')
     else:
         return render(request, 'modificarUsuario.html', {'user': user})
-    return HttpResponseRedirect('/ss/adm_u/')
+    return HttpResponseRedirect(direccion)
 
 
 @login_required(login_url='/login/')
 def adm_usuario(request):
     user_list = User.objects.filter(is_active=True)
-    paginator = Paginator(user_list, 2)
+    """paginator = Paginator(user_list, 2)
     page = request.GET.get('page')
+    request.session['pag_actual'] = page
     try:
         users = paginator.page(page)
     except PageNotAnInteger:
@@ -133,8 +136,8 @@ def adm_usuario(request):
         users = paginator.page(1)
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
-        users = paginator.page(paginator.num_pages)
-    return render(request, 'Administrador Usuario.html', {"user": users})
+        users = paginator.page(paginator.num_pages)"""
+    return render(request, 'ListarUsr.html', {'user_list': user_list})
 
 
 def recuperarPass(request):
@@ -154,7 +157,6 @@ def recuperarPass(request):
             correo = EmailMessage('Restablecimiento de Pass de SS', contenido,
                                   to=[formulario.cleaned_data['correo']])
             correo.content_subtype = "html"
-
             correo.send()
             return HttpResponseRedirect('/ss/login/')
     else:
@@ -286,6 +288,17 @@ def buscar_roles(request):
             messages.error(request, 'No existen coincidencias')
         return render(request, 'BusquedaRol.html', {'roles': rol})
     return HttpResponseRedirect('/ss/adm_r/')
+
+
+class ListaJsonUsuarios(BaseDatatableView):
+    model = User
+    columns = ['username', 'email']
+    order_columns = ['username', 'email']
+    def filter_queryset(self, qs):
+        sSearch = self.request.GET.get('sSearch', None)
+        if sSearch:
+            qs = qs.filter(Q(username__istartswith=sSearch) | Q(email__istartswith=sSearch))
+        return qs    return HttpResponseRedirect('/ss/adm_r/')
 
 ################################################################################
 ################################################################################

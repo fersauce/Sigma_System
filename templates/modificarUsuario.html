@@ -15,7 +15,7 @@
                     <span class="icon-cog"></span>
                 </a>
                 <ul class="dropdown-menu place-right" data-role="dropdown">
-                    <li><a href={% url 'sigma:finalizar' %}>Cerrar Sesión</a></li>
+                    <li><a href={ url 'sigma:finalizar' %}>Cerrar Sesión</a></li>
                 </ul>
             </div>
         </div-->
@@ -32,11 +32,9 @@
                         {%  if alerta %}
                             <p> {{ alerta }}</p>
                         {% endif %}
-
                         <label>Nombre</label>
                         <div class="input-control text"  data-role="input-control" >
                             <input type="text" placeholder=" " name="nombre" required value={{user.first_name }} disabled>
-
                         </div>
 
 
