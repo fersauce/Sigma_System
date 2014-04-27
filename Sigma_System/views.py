@@ -83,8 +83,7 @@ def alta_usuario(request):
                 return render(request, 'Alta Usuario.html', {'form': form})
         else:
             messages.error(request, 'Formulario invalido')
-            user = User.objects.filter(is_active=True)
-            return render(request, 'Administrador Usuario.html', {'user': user})
+            return HttpResponseRedirect('/ss/adm_u/')
     else:
         form = FormAltaUsuario()
     return render(request, 'Alta Usuario.html', {'form': form})
@@ -99,9 +98,8 @@ def baja_usuario(request, us):
     user.is_active=False
     nombre = user.username
     user.save()
-    user = User.objects.filter(is_active=True)
     messages.error(request, 'El usuario "'+nombre+'" ha sido eliminado')
-    return render(request, 'Administrador Usuario.html', {'user': user})
+    return HttpResponseRedirect('/ss/adm_u/')
 
 
 @login_required(login_url='/login/')
@@ -110,7 +108,7 @@ def modificar_usuario(request, us):
     vista utilizada para dar de baja a un usuario, baja logica
     """
     user = User.objects.get(id=us)
-    direccion = '/ss/adm_u/?page='+request.session['pag_actual']
+    #direccion = '/ss/adm_u/?page='+request.session['pag_actual']
     if request.method == 'POST':
         user.usuario.direccion = request.POST['direccion']
         user.usuario.tel = request.POST['tel']
@@ -119,7 +117,7 @@ def modificar_usuario(request, us):
         messages.info(request, 'usuario: '+nombre+', modificado correctamente')
     else:
         return render(request, 'modificarUsuario.html', {'user': user})
-    return HttpResponseRedirect(direccion)
+    return HttpResponseRedirect('/ss/adm_u/')
 
 
 @login_required(login_url='/login/')
