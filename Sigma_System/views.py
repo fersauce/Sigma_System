@@ -13,8 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django_datatables_view.base_datatable_view import BaseDatatableView
-from django.db.models import Q
+
 
 def iniciarsesion(request):
     if request.method == 'POST':
@@ -288,26 +287,4 @@ def buscar_roles(request):
             messages.error(request, 'No existen coincidencias')
         return render(request, 'BusquedaRol.html', {'roles': rol})
     return HttpResponseRedirect('/ss/adm_r/')
-
-
-class ListaJsonUsuarios(BaseDatatableView):
-    model = User
-    columns = ['username', 'email']
-    order_columns = ['username', 'email']
-    def filter_queryset(self, qs):
-        sSearch = self.request.GET.get('sSearch', None)
-        if sSearch:
-            qs = qs.filter(Q(username__istartswith=sSearch) | Q(email__istartswith=sSearch))
-        return qs    return HttpResponseRedirect('/ss/adm_r/')
-
-################################################################################
-################################################################################
-#######################       PROYECTO        ##################################
-################################################################################
-################################################################################
-################################################################################
-################################################################################
-#########################          FASES          ##############################
-################################################################################
-################################################################################
 

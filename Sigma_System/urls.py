@@ -1,6 +1,5 @@
 from django.conf.urls import patterns
 from django.conf.urls import url
-from Sigma_System.views import ListaJsonUsuarios
 
 
 urlpatterns = patterns('',
