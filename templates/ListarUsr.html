@@ -41,12 +41,12 @@
                             <td class="right">{{ u.email }}</td>
                             <td class="right">{{ u.date_joined }}</td>
                             <td align="center">
-                                <div class="span1 text-center">
+                                <div class="span1">
                                     <nav class="navigation-bar">
                                         <div class="navigation-bar-content">
-                                            <ul class="element-menu text-center">
+                                            <ul class="element-menu">
                                                 <li>
-                                                    <a class="dropdown-toggle" href="#"><span class="icon-cog"></span></a>
+                                                    <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
                                                     <ul class="dropdown-menu" data-role="dropdown">
                                                         <li class="text-left"><a href="{% url 'sigma:adm_u_mod' u.id %}">
                                                             <i class="icon-pencil on-left"></i>Modificar</a></li>
@@ -76,9 +76,6 @@
             <script>
                 $(document).ready(function() {
                     $('#datatable2').dataTable( {
-                        //"bProcessing": true,
-                        //"bServerSide": true,
-                        //"sAjaxSource": "{% url 'sigma:adm_u_listar' %}",
                         "oLanguage": {
                             "sUrl": "/static/MetroBoostrap/data/spanish.txt"
                         }
