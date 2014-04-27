@@ -68,8 +68,7 @@ def alta_usuario(request):
                                                        tel=form.cleaned_data['tel'],
                                                        estado=True)
                         messages.success(request, 'El usuario "'+usuario.username+'" ha sido creado con exito')
-                        user = User.objects.filter(is_active=True)
-                        return render(request, 'Administrador Usuario.html', {'user': user})
+                        return HttpResponseRedirect('/ss/adm_u/')
                     else:
                         form = FormAltaUsuario()
                         messages.error(request, 'El ci "'+cid+'" ya existe')
@@ -125,8 +124,8 @@ def modificar_usuario(request, us):
 
 @login_required(login_url='/login/')
 def adm_usuario(request):
-    """user_list = User.objects.filter(is_active=True)
-    paginator = Paginator(user_list, 2)
+    user_list = User.objects.filter(is_active=True)
+    """paginator = Paginator(user_list, 2)
     page = request.GET.get('page')
     request.session['pag_actual'] = page
     try:
@@ -137,7 +136,7 @@ def adm_usuario(request):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         users = paginator.page(paginator.num_pages)"""
-    return render(request, 'ListarUsr.html')
+    return render(request, 'ListarUsr.html', {'user_list': user_list})
 
 
 def recuperarPass(request):

@@ -19,41 +19,87 @@
 {% endblock %}
 {% block contenido %}
     <div class="container">
-        <div class="grid">
-            <div class="row">
-                  <!--=====================================tabla=================================-->
-                <div class="span9">
-                    <div class="">
-                        <h1><a href="#"></a>Administrador<small class="on-right">de Usuario</small></h1>
-                        <table class="datatable">
-                            <thead>
-                                <th>Username</th>
-                                <th>E-mail</th>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    <script>
-                        $(document).ready(function() {
-                            var oTable = $('.datatable').dataTable({
-                                // ...
-                                "bProcessing": true,
-                                "bServerSide": true,
-                                "sAjaxSource": "{% url 'sigma:adm_u_listar' %}"
-                            });
-                            // ...
-                        });
-                    </script>
-                    </div><!--div de la tabla 1-->
+        <h1><a href="#"></a>Administrador<small class="on-right">de Usuario</small></h1>
+        <div class="example">
+            <a href="{%  url 'sigma:adm_u_altas' %}">
+                <button class="command-button primary">
+                    <i class="icon-new on-left"></i><b>Agregar</b>
+                    <small>Usuario</small>
+                </button>
+            </a>
+            <table class="table striped hovered dataTable" id="datatable2">
+                <thead>
+                    <th class="text-left">Username</th>
+                    <th class="text-left">E-mail</th>
+                    <th class="text-left">Fecha de Registro</th>
+                    <th class="text-center">Editar</th>
+                </thead>
+                <tbody>
+                    {% for u in user_list %}
+                        <tr>
+                            <td>{{ u.username }}</td>
+                            <td class="right">{{ u.email }}</td>
 
-                    <a href="{%  url 'sigma:adm_u_altas' %}">
-                        <button class="command-button primary">
-                            <i class=""></i>Agregar Usuario
-                            <small></small>
-                        </button>
-                    </a>
-                </div>
-            </div>
+                            <td class="right">{{ u.date_joined }}</td>
+
+                            <!--td class="text-center"><a class="pull-menu" href="#"></a>
+                                 <div class="element-menu">
+                                    <a class="dropdown-toggle" href="#"><span class="icon-cog"></span></a>
+                                    <ul class="dropdown-menu" data-role="dropdown">
+                                        <li class="text-left"><a href="{% url 'sigma:adm_u_mod' u.id %}">
+                                            <i class="icon-pencil on-left"></i>Modificar</a></li>
+                                        <li class="text-left"><a href="{% url 'sigma:adm_u_baja' u.id %}">
+                                            <i class="icon-remove on-left"></i>Eliminar</a></li>
+                                        <li class="text-left"><a href="{% url 'sigma:adm_u_ver' u.id %}">
+                                            <i class="icon-eye on-left"></i>Ver detalle</a></li>
+                                    </ul>
+                                </div>
+                            </td-->
+                            <td class="text-center">
+                                <div class="span1 text-center">
+                                <nav class="navigation-bar">
+                                    <div class="navigation-bar-content">
+                                        <ul class="element-menu text-center">
+                                            <li>
+                                                <a class="dropdown-toggle"><span class="icon-cog"></span></a>
+                                                <ul class="dropdown-menu" data-role="dropdown">
+                                                    <li class="text-left"><a href="{% url 'sigma:adm_u_mod' u.id %}">
+                                                        <i class="icon-pencil on-left"></i>Modificar</a></li>
+                                                    <li class="text-left"><a href="{% url 'sigma:adm_u_baja' u.id %}">
+                                                        <i class="icon-remove on-left"></i>Eliminar</a></li>
+                                                    <li class="text-left"><a href="{% url 'sigma:adm_u_ver' u.id %}">
+                                                        <i class="icon-eye on-left"></i>Ver detalle</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </nav>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-left">Username</th>
+                        <th class="text-left">E-mail</th>
+                        <th class="text-left">Fecha de Registro</th>
+                        <th class="text-center">Editar</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <script>
+                $(document).ready(function() {
+                    $('#datatable2').dataTable( {
+                        //"bProcessing": true,
+                        //"bServerSide": true,
+                        //"sAjaxSource": "{% url 'sigma:adm_u_listar' %}",
+                        "oLanguage": {
+                            "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                        }
+                    } );
+                } );
+            </script>
         </div>
     </div>
 {% endblock %}
