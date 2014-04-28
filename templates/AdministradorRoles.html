@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block definicion_script %}
 <script>
-    function confirmar(id)
+    function confirmar(url_aux)
     {
-        var url_aux = '/ss/rol/eliminar/'+id;
+        //var url_aux = '/ss/rol/eliminar/'+id;
         $.Dialog({
             shadow: true,
             overlay: true,
@@ -84,7 +84,8 @@
                                                 <ul class="dropdown-menu" data-role="dropdown">
                                                     <li class="text-left"><a href="{% url 'sigma:adm_r_mod' r.id %}">
                                                         <i class="icon-pencil on-left"></i>Modificar</a></li>
-                                                    <li class="text-left" onclick="confirmar({{r.id}})"><a href="#">
+                                                    <li class="text-left" onclick="confirmar('{% url 'sigma:adm_r_baja' r.id %}')">
+                                                        <a href="#">
                                                         <i class="icon-remove on-left"></i>Eliminar</a></li>
                                                     <li class="text-left">
                                                         <a class="dropdown-toggle" href="#">

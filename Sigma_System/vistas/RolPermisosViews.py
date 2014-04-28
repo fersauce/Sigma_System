@@ -23,7 +23,7 @@ def add_roles(request):
         permisos = request.POST.getlist('permisos')
         for p in permisos:
             rol.permisos.add(Permiso.objects.get(id=p))
-        messages.success(request, 'El rol: '+rol.nombre+', ha sido creado con exito')
+        messages.success(request, 'El rol: '+rol.nombre+', ha sido creado con \u00E9xito')
     else:
         permisos = Permiso.objects.all()
         return render(request, 'Agregar_Rol.html', {'permisos': permisos})
@@ -59,7 +59,7 @@ def mod_roles(request, id):
         permisos = request.POST.getlist('permisos')
         for p in permisos:
                 rol.permisos.add(Permiso.objects.get(id=p))
-        messages.success(request, 'El rol: '+rol.nombre+' ha sido modificado con exito')
+        messages.info(request, 'El rol: '+rol.nombre+' ha sido modificado con \u00E9xito')
     else:
         return render(request, 'ModificarRol.html', {'rol': rol, 'permisos': permisosAux})
     return HttpResponseRedirect('/ss/rol/')
