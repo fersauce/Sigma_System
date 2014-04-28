@@ -1,4 +1,32 @@
 {% extends 'base.html' %}
+{% block definicion_script %}
+<script>
+    function confirmar(id)
+    {
+        var url_aux = '/ss/rol/eliminar/'+id;
+        $.Dialog({
+            shadow: true,
+            overlay: true,
+            flat: true,
+            draggable: true,
+            icon: '<i class="icon-warning"></span>',
+            title: 'Draggable window',
+            width: 500,
+            padding: 10,
+            content: 'This Window is draggable by caption.',
+            onShow: function(){
+                var content = '<form>' +
+                        '<p>¿Est&aacute; seguro de querer eliminar este rol?</p>' +
+                        '<a class="button warning" href="' + url_aux + '"> S&iacute; </a>' +
+                        '<input type="button" value="No" onclick=$.Dialog.close()>'+
+                        '</form>';
+                $.Dialog.title("Confirmar Eliminaci&oacute;n");
+                $.Dialog.content(content);
+            }
+        });
+    }
+</script>
+{% endblock %}
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}">Pagina Principal</a>
@@ -19,80 +47,77 @@
 {% endblock %}
 {% block contenido %}
     <div class="container">
-        <div class="grid">
-            <div class="row">
-                  <!--=====================================tabla=================================-->
-                <div class="span10">
-                    <div class="">
-                        <h1><a href="#"></a>Administrador<small class="on-right">de Roles</small></h1>
-                        <form action="{%  url 'sigma:adm_r_buscar' %}" method="post">
-                        {% csrf_token %}
-                            <div class="span5">
-                                <div class="input-control text" data-role="input-control">
-                                    <input type="text" name="busqueda" placeholder="nombre del rol">
-                                    <button class="btn-search"></button>
-                                </div>
+        <h1><a href="#"></a>Administrador<small class="on-right">de Roles</small></h1>
+        <div class="example">
+            <a href="{%  url 'sigma:adm_r_altas' %}">
+                <button class="command-button primary">
+                    <i class="icon-new on-left"></i><b>Agregar</b>
+                    <small>Rol</small>
+                </button>
+            </a>
+            <table class="table striped hovered dataTable" id="datatable_rol">
+                <thead>
+                    <tr>
+                        <th class="text-left">Nombre</th>
+                        <th class="text-left">Descripcion</th>
+                        <th class="text-left">Editar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for r in roles_list %}
+                    <tr>
+                        <td>{{ r.nombre }}</td>
+                        <td class="right">{{ r.descripcion }}</td>
+                        <td align="center">
+                            <div class="span1">
+                                <nav class="navigation-bar">
+                                    <div class="navigation-bar-content">
+                                        <ul class="element-menu">
+                                            <li>
+                                                <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
+                                                <ul class="dropdown-menu" data-role="dropdown">
+                                                    <li class="text-left"><a href="{% url 'sigma:adm_r_mod' r.id %}">
+                                                        <i class="icon-pencil on-left"></i>Modificar</a></li>
+                                                    <li class="text-left" onclick="confirmar({{r.id}})"><a href="#">
+                                                        <i class="icon-remove on-left"></i>Eliminar</a></li>
+                                                    <li class="text-left">
+                                                        <a class="dropdown-toggle" href="#">
+                                                        <i class="icon-eye"></i>
+                                                        Ver Permisos</a>
+                                                        <ul class="dropdown-menu" data-role="dropdown">
+                                                            {% for p in r.permisos.all %}
+                                                                <li>{{p.nombre}}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </nav>
                             </div>
-                        </form>
-                        <table class="table hovered" >
-                            <thead>
-                                <tr><!--quinta tabla--la que se selecciona al pasar encima-->
-                                    <th class="text-left">Id</th>
-                                    <th class="text-left">Nombre</th>
-                                    <th class="text-left">Descripcion</th>
-                                    <th class="text-left">Edicion</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for r in roles %}
-                                <tr>
-                                    <td>{{ r.id }}</td>
-                                    <td>{{ r.nombre }}</td>
-                                    <td class="right">{{ r.descripcion }}</td>
-                                    <td class="right">
-                                        <div class="element-menu">
-                                            <a class="dropdown-toggle" href="#"><span class="icon-cog"></span></a>
-                                            <ul class="dropdown-menu default" data-role="dropdown">
-                                                <li><a href="{%  url 'sigma:adm_r_mod' r.id %}">Modificar</a></li>
-                                                <li><a href="{%  url 'sigma:adm_r_baja' r.id %}">Eliminar</a></li>
-                                                <li>
-                                                    <a class="dropdown-toggle" href="#">Permisos</a>
-                                                    <ul class="dropdown-menu" data-role="dropdown" style="display:none;">
-                                                        {% for p in r.permisos.all %}
-                                                            <li>{{p.nombre}}</li>
-                                                        {% endfor %}
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                            <tfoot></tfoot>
-                        </table>
-                    </div><!--div de la tabla 1-->
-                    <div class="pagination">
-                        <span class="step-links">
-                            {% if roles.has_previous %}
-                                <a href="?page={{ roles.previous_page_number }}">Previous</a>
-                            {% endif %}
-                            <span class="current">
-                                Pag. {{ roles.number }} de {{ roles.paginator.num_pages }}.
-                            </span>
-                            {% if roles.has_next %}
-                                <a href="?page={{ roles.next_page_number }}">Next</a>
-                            {% endif %}
-                        </span>
-                    </div>
-                    <a href="{%  url 'sigma:adm_r_altas' %}">
-                        <button class="command-button primary">
-                            <i class=""></i>Agregar Rol
-                            <small></small>
-                        </button>
-                    </a>
-                </div>
-            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-left">Nombre</th>
+                        <th class="text-left">Descripcion</th>
+                        <th class="text-center">Editar</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <script>
+                $(document).ready(function() {
+                    $('#datatable_rol').dataTable( {
+                        "oLanguage": {
+                            "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                        }
+                    } );
+                } );
+            </script>
         </div>
     </div>
 {% endblock %}
