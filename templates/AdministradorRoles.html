@@ -15,11 +15,17 @@
             padding: 10,
             content: 'This Window is draggable by caption.',
             onShow: function(){
-                var content = '<form>' +
-                        '<p>¿Est&aacute; seguro de querer eliminar este rol?</p>' +
-                        '<a class="button warning" href="' + url_aux + '"> S&iacute; </a>' +
-                        '<input type="button" value="No" onclick=$.Dialog.close()>'+
-                        '</form>';
+                var content =
+                    '<div class="example">'+
+                        '<form>' +
+                            '<h2>Est&aacute; a punto de eliminar este rol?</h2>' +
+                            '<div class="form-actions">'+
+                                '<a class="button danger" href="' + url_aux + '"> Aceptar </a>' +
+                                '<button class="button" onclick=$.Dialog.close()>'+
+                                    'Cancelar</button>'+
+                            '</div>'+
+                        '</form>'+
+                    '</div>';
                 $.Dialog.title("Confirmar Eliminaci&oacute;n");
                 $.Dialog.content(content);
             }
