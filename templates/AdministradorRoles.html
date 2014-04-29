@@ -3,7 +3,6 @@
 <script>
     function confirmar(url_aux)
     {
-        //var url_aux = '/ss/rol/eliminar/'+id;
         $.Dialog({
             shadow: true,
             overlay: true,
@@ -20,7 +19,7 @@
                         '<form>' +
                             '<h2>Est&aacute; a punto de eliminar este rol...</h2>' +
                             '<div class="form-actions" align="center">'+
-                                '<a class="button danger" href="' + url_aux + '"> Aceptar </a>' +
+                                '<a class="button" href="' + url_aux + '"> Aceptar </a>' + ' ' +
                                 '<button class="button" onclick=$.Dialog.close()>'+
                                     'Cancelar</button>'+
                             '</div>'+

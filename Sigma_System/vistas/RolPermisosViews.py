@@ -23,7 +23,7 @@ def add_roles(request):
         permisos = request.POST.getlist('permisos')
         for p in permisos:
             rol.permisos.add(Permiso.objects.get(id=p))
-        messages.success(request, 'El rol: '+rol.nombre+', ha sido creado con \u00E9xito')
+        messages.success(request, 'El rol "'+rol.nombre+'" ha sido creado con \u00E9xito')
     else:
         permisos = Permiso.objects.all()
         return render(request, 'Agregar_Rol.html', {'permisos': permisos})
@@ -34,7 +34,7 @@ def add_roles(request):
 def del_roles(request, id):
     nombre = Rol.objects.get(id=id).nombre
     Rol.objects.get(id=id).delete()
-    messages.error(request, 'El rol: '+nombre+', ha sido eliminado')
+    messages.error(request, 'El rol "'+nombre+'" ha sido eliminado')
     return HttpResponseRedirect('/ss/rol/')
 
 
