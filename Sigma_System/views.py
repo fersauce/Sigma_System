@@ -1,7 +1,6 @@
 from random import choice
 import string
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 from django.shortcuts import render, render_to_response
 from django.http import *
@@ -94,8 +93,8 @@ def baja_usuario(request, us):
     """
     vista utilizada para dar de baja un usuario, baja logica
     """
-    user=User.objects.get(id=us)
-    user.is_active=False
+    user = User.objects.get(id=us)
+    user.is_active = False
     nombre = user.username
     user.save()
     messages.error(request, 'El usuario "'+nombre+'" ha sido eliminado')
@@ -200,89 +199,4 @@ def ver_detalle(request, us):
     """
     user = User.objects.filter(is_active=True, id = us)
     return render(request, 'verDetalle.html', {'user': user })
-
-@login_required(login_url='/login/')
-def adm_roles(request):
-    roles_list = Rol.objects.order_by('id')
-    paginator = Paginator(roles_list, 2)
-
-    page = request.GET.get('page')
-    try:
-        roles = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        roles = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        roles = paginator.page(paginator.num_pages)
-
-    return render(request, 'AdministradorRoles.html', {'roles': roles})
-
-
-@login_required(login_url='/login/')
-def add_roles(request):
-    """
-    Vista que maneja la asignacion de roles.
-    """
-    if request.method == 'POST':
-        nombre = request.POST['nombre']
-        descripcion = request.POST['descripcion']
-        rol = Rol.objects.create(nombre=nombre, descripcion=descripcion)
-        permisos = request.POST.getlist('permisos')
-        for p in permisos:
-            rol.permisos.add(Permiso.objects.get(id=p))
-        messages.success(request, 'El rol: '+rol.nombre+', ha sido creado con exito')
-    else:
-        permisos = Permiso.objects.all()
-        return render(request, 'Agregar_Rol.html', {'permisos': permisos})
-    return HttpResponseRedirect('/ss/adm_r/')
-
-
-@login_required(login_url='/login/')
-def del_roles(request, id):
-    nombre = Rol.objects.get(id=id).nombre
-    Rol.objects.get(id=id).delete()
-    messages.error(request, 'El rol: '+nombre+', ha sido eliminado')
-    return HttpResponseRedirect('/ss/adm_r/')
-
-
-@login_required(login_url='/login/')
-def mod_roles(request, id):
-    rol = Rol.objects.get(id=id)
-    todoLosPermisos = Permiso.objects.all()
-    permisosDelRol = rol.permisos.all()
-    permisosAux = []
-    for p in todoLosPermisos:
-        if p in permisosDelRol:
-            diccionario = {'nombre': p.nombre, 'id': p.id, 'ban': "checked"}
-            permisosAux.append(diccionario)
-        else:
-            diccionario = {'nombre': p.nombre, 'id': p.id, 'ban': ""}
-            permisosAux.append(diccionario)
-    rol.permisos.clear()
-    if request.method == 'POST':
-        rol.nombre = request.POST['nombre']
-        rol.descripcion = request.POST['descripcion']
-        rol.save()
-        permisos = request.POST.getlist('permisos')
-        for p in permisos:
-                rol.permisos.add(Permiso.objects.get(id=p))
-        messages.success(request, 'El rol: '+rol.nombre+' ha sido modificado con exito')
-    else:
-        return render(request, 'ModificarRol.html', {'rol': rol, 'permisos': permisosAux})
-    return HttpResponseRedirect('/ss/adm_r/')
-
-
-@login_required(login_url='/login/')
-def buscar_roles(request):
-    """
-    Vista que maneja la busqueda de roles.
-    """
-    if request.method == 'POST':
-        buscar = request.POST['busqueda']
-        rol = Rol.objects.filter(nombre=buscar)
-        if rol.__len__() == 0:
-            messages.error(request, 'No existen coincidencias')
-        return render(request, 'BusquedaRol.html', {'roles': rol})
-    return HttpResponseRedirect('/ss/adm_r/')
 
