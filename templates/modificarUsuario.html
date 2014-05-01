@@ -28,59 +28,118 @@
             <form action = "{% url 'sigma:adm_u_mod' user.id %}" method="post">
                 {% csrf_token %}
                 <fieldset>
-                    <div class="span3">
+                    <div class="span9">
                         {%  if alerta %}
                             <p> {{ alerta }}</p>
                         {% endif %}
-                        <label>Nombre</label>
-                        <div class="input-control text"  data-role="input-control" >
-                            <input type="text" placeholder=" " name="nombre" required value={{user.first_name }} disabled>
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Nombre</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text"  data-role="input-control" >
+                                        <input type="text" placeholder=" " name="nombre" required value={{user.first_name }} disabled>
+                                    </div>
+                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Apellido</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control">
+                                        <input type="text" placeholder=" " name="apellido" required value={{user.last_name }} disabled>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
 
-                        <label>Apellido</label>
-                        <div class="input-control text" data-role="input-control">
-                            <input type="text" placeholder=" " name="apellido" required value={{user.last_name }} disabled>
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Cédula de Identidad</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control">
+                                        <input type="text" placeholder=" " name="ci" required value={{user.usuario.ci }} disabled>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
 
-                        <label>Cedula de Identidad</label>
-                        <div class="input-control text" data-role="input-control">
-                            <input type="text" placeholder=" " name="ci" required value={{user.usuario.ci }} disabled>
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Dirección</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control" >
+                                        <input type="text" placeholder=" " name="direccion" required value={{user.usuario.direccion }}>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Núumero de teléfono</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control" >
+                                        <input type="text" placeholder=" " name="tel" required value={{user.usuario.tel }}>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
 
-                        <label>Direccion</label>
-                        <div class="input-control text" data-role="input-control" >
-                            <input type="text" placeholder=" " name="direccion" required value={{user.usuario.direccion }}>
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Dirección de e-mail</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control" >
+                                        <input type="text" placeholder=" " name="email" required value={{user.email }} disabled>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
 
-                        <label>Numero de telefono</label>
-                        <div class="input-control text" data-role="input-control" >
-                            <input type="text" placeholder=" " name="tel" required value={{user.usuario.tel }}>
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Nombre de la cuenta</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control" >
+                                        <input type="text" placeholder=" " name="username" required value={{user.username }} disabled>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-
-                        <label>Direccion de e-mail</label>
-                        <div class="input-control text" data-role="input-control" >
-                            <input type="text" placeholder=" " name="email" required value={{user.email }} disabled>
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Contraseña</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control password" data-role="input-control">
+                                        <input type="text" placeholder="la contraseña no se puede visualizar" name="pass" disabled>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-
-                        <label>Nombre de la cuenta</label>
-                        <div class="input-control text" data-role="input-control" >
-                            <input type="text" placeholder=" " name="username" required value={{user.username }} disabled>
-                        </div>
-
-
-                        <label>Contraseña</label>
-                        <div class="input-control password" data-role="input-control">
-                            <input type="text" placeholder="la contraseña no se puede visualizar" name="pass" disabled>
-                        </div>
-                        <br>
-                        <br>
-                        <br>
                         <input type="submit" value="Aceptar" onclick="mensaje()">
                         <a href="{% url 'sigma:adm_u' %}"><input type="button" value="Cancelar" ></a>
                     </div>
