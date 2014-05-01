@@ -288,5 +288,8 @@ def buscar_roles(request):
 
 
 def redireccion(request):
-    return HttpResponseRedirect('/ss/login/')
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/ss/inicio')
+    else:
+        return HttpResponseRedirect('/ss/login/')
 
