@@ -286,3 +286,7 @@ def buscar_roles(request):
         return render(request, 'BusquedaRol.html', {'roles': rol})
     return HttpResponseRedirect('/ss/adm_r/')
 
+
+def redireccion(request):
+    return HttpResponseRedirect('/ss/login/')
+
