@@ -1,4 +1,41 @@
 {% extends 'base.html' %}
+
+{% block definicion_script %}
+<script>
+    function confirmar(url_aux)
+    {
+        $.Dialog({
+            shadow: true,
+            overlay: true,
+            flat: true,
+            draggable: true,
+            icon: '<i class="icon-warning"></span>',
+            title: 'Draggable window',
+            width: 500,
+            padding: 10,
+            content: 'This Window is draggable by caption.',
+            onShow: function(){
+                var content =
+                    '<div class="example">'+
+                        '<form>' +
+                            '<h2>Est&aacute; a punto de eliminar este usuario...</h2>' +
+                            '<div class="form-actions" align="center">'+
+                                '<a class="button" href="' + url_aux + '"> Aceptar </a>' + ' ' +
+                                '<button class="button" onclick=$.Dialog.close()>' +
+                                    'Cancelar</button>'+
+                            '</div>'+
+                        '</form>'+
+                    '</div>';
+                $.Dialog.title("Confirmar Eliminaci&oacute;n");
+                $.Dialog.content(content);
+            }
+        });
+    }
+</script>
+{% endblock %}
+
+
+
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
@@ -50,7 +87,8 @@
                                                     <ul class="dropdown-menu" data-role="dropdown">
                                                         <li class="text-left"><a href="{% url 'sigma:adm_u_mod' u.id %}">
                                                             <i class="icon-pencil on-left"></i>Modificar</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_u_baja' u.id %}">
+                                                        <li class="text-left" onclick="confirmar('{% url 'sigma:adm_u_baja' u.id %}')">
+                                                            <a href="#">
                                                             <i class="icon-remove on-left"></i>Eliminar</a></li>
                                                         <li class="text-left"><a href="{% url 'sigma:adm_u_ver' u.id %}">
                                                             <i class="icon-eye on-left"></i>Ver detalle</a></li>
