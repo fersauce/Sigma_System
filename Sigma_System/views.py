@@ -6,12 +6,11 @@ from django.shortcuts import render, render_to_response
 from django.http import *
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from Sigma_System.models import *
 from Sigma_System.forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from decoradores import permisos_requeridos
 
 
 def iniciarsesion(request):
@@ -24,8 +23,11 @@ def iniciarsesion(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
+                    request.session['permisos'] = ['crear_us', 'modficar_us', 'eliminar_us']
                     return render(request, 'principal.html',
                                   {'user': username, })
+            else:
+                messages.error(request, 'Username o contrasenha incorrecto')
     else:
         form = FormLogin()
     return render(request, 'login.html', {'form': form, })
@@ -43,6 +45,7 @@ def cerrarsesion(request):
 
 
 @login_required(login_url='/login/')
+@permisos_requeridos(['crear_us'], 'sigma:adm_u', 'modificar usuario')
 def alta_usuario(request):
     if request.method == 'POST':
         form = FormAltaUsuario(request.POST, request.FILES)
@@ -85,10 +88,11 @@ def alta_usuario(request):
             return HttpResponseRedirect('/ss/adm_u/')
     else:
         form = FormAltaUsuario()
-    return render(request, 'Alta Usuario.html', {'form': form})
+        return render(request, 'Alta Usuario.html', {'form': form})
 
 
 @login_required(login_url='/login/')
+@permisos_requeridos(['eliminar_us'], 'sigma:adm_u', 'eliminar usuario')
 def baja_usuario(request, us):
     """
     vista utilizada para dar de baja un usuario, baja logica
@@ -102,6 +106,7 @@ def baja_usuario(request, us):
 
 
 @login_required(login_url='/login/')
+@permisos_requeridos(['modificar_us'], 'sigma:adm_u', 'agregar usuario')
 def modificar_usuario(request, us):
     """
     vista utilizada para dar de baja a un usuario, baja logica
@@ -198,5 +203,4 @@ def ver_detalle(request, us):
     pero sin modificarlos
     """
     user = User.objects.filter(is_active=True, id = us)
-    return render(request, 'verDetalle.html', {'user': user })
-
+    return render(request, 'verDetalle.html', {'user': user})
