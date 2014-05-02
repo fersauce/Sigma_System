@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block titulo %}Modificar Tipo de &Iacute;tem{% endblock %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}"> P&aacute;gina Principal</a>
+    <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
+    <a class="element" href="{% url 'sigma:adm_fase' pkProyecto %}">Fases</a>
+    <a class="pull-menu" href="#"></a>
+    <ul class="element-menu">
+        <li></li>
+        <div class="no-tablet-portrait">
+            <div class="element place-right">
+                <a class="dropdown-toggle" href="#">
+                    <span class="icon-cog"></span>
+                </a>
+                <ul class="dropdown-menu place-right" data-role="dropdown">
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesi&oacute;n</a></li>
+                </ul>
+            </div>
+        </div>
+    </ul>
+{% endblock %}
+{% block contenido %}
+    <div class="container" align = "center">
+        <h1><a href="#"></a>Crear<small class="on-right">Fase</small></h1>
+        <div class="">
+            <form action = "{% url 'sigma:adm_ti_mod' pkProyecto pkFase tipoItem.pk %}" method="post">
+                {% csrf_token %}
+                <fieldset>
+                    <div class="span3">
+                        <div class="input-control text" data-role="input-control">
+                            <label class="label">Nombre del Tipo de Item</label>
+                            <input type="text" required="true" name="nombre" value="{{ tipoItem.nombre }}">
+                            <button class="btn-clear" tabindex="-1" type="button"> </button>
+                        </div><br><br>
+                        <div class="input-control textarea" data-role="input-control">
+                            <label class="label">Descripci&oacute;n</label>
+                            <textarea cols="60" id="id_descripcion" name="descripcion" required="true" rows="3">{{ tipoItem.descripcion }}</textarea>
+                        </div><br><br><br>
+                        <div class="example">
+                            Permitir Importaci&oacute;n
+                            <div class="input-control radio margin10" data-role="input-control">
+                                <label>
+                                    <input type="radio" name="importar" value="True" {% if tipoItem.importar %} checked {% endif %}/>
+                                    <span class="check"></span>
+                                    S&iacute;
+                                </label>
+                            </div>
+                            <div class="input-control radio margin10" data-role="input-control">
+                                <label>
+                                    <input type="radio" name="importar" value="False" {% if tipoItem.importar %} checked {% endif %}/>
+                                    <span class="check"></span>
+                                    No
+                                </label>
+                            </div>
+                        </div>
+                        <input type="submit" value="Aceptar">
+                        <a href="{% url 'sigma:adm_ti' pkProyecto pkFase %}"><input type="button" value="Cancelar" ></a>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}

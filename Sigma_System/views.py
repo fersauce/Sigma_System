@@ -25,6 +25,7 @@ def iniciarsesion(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
+                    request.session['userpk'] = username
                     return render(request, 'principal.html',
                                   {'user': username, })
     else:
