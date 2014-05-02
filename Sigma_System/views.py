@@ -209,20 +209,30 @@ def cambiarPass(request):
     """
     Metodo en el que el usuario cambia su pass
     """
+    us = request.user
     if request.method == 'POST':
-        user = User.objects.get(username=request.POST['un'])
-        passVieja= request.POST['passVieja']
-        viejoConHash=make_password(passVieja)
-        valor=user.password
-        passNueva=request.POST['passNueva']
-        confirmacion=request.POST['passNueva2']
-        if passNueva == confirmacion:
-            nuevo=make_password(confirmacion)
-            user.password = nuevo
-            user.save()
-            messages.info(request, 'Contrasenha cambiada con exito')
-        else:
-            messages.error(request, 'Las contrasenhas no coinciden')
+        #user = User.objects.filter(username=request.POST['un'])
+
+        #if user:
+
+            passVieja= request.POST['passVieja']
+            viejoConHash=make_password(passVieja)
+            #valor=user.password
+            #valor=us.password
+            passNueva=request.POST['passNueva']
+            confirmacion=request.POST['passNueva2']
+            if passNueva == confirmacion:
+
+                nuevo=make_password(confirmacion)
+                us.password = nuevo
+                us.save()
+                messages.info(request, 'Contrasenha cambiada con exito')
+            else:
+                messages.error(request, 'Las contrasenhas no coinciden')
+                return render(request, 'cambiarPass.html')
+        #else:
+         #   messages.error(request,'El usuario no existe' )
+          #  return render(request, 'cambiarPass.html')
     else:
         return render(request, 'cambiarPass.html')
     return HttpResponseRedirect('/ss/inicio/')
