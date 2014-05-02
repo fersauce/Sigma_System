@@ -204,3 +204,25 @@ def ver_detalle(request, us):
     user = User.objects.filter(is_active=True, id = us)
     return render(request, 'verDetalle.html', {'user': user })
 
+
+def cambiarPass(request):
+    """
+    Metodo en el que el usuario cambia su pass
+    """
+    if request.method == 'POST':
+        user = User.objects.get(username=request.POST['un'])
+        passVieja= request.POST['passVieja']
+        viejoConHash=make_password(passVieja)
+        valor=user.password
+        passNueva=request.POST['passNueva']
+        confirmacion=request.POST['passNueva2']
+        if passNueva == confirmacion:
+            nuevo=make_password(confirmacion)
+            user.password = nuevo
+            user.save()
+            messages.info(request, 'Contrasenha cambiada con exito')
+        else:
+            messages.error(request, 'Las contrasenhas no coinciden')
+    else:
+        return render(request, 'cambiarPass.html')
+    return HttpResponseRedirect('/ss/inicio/')
