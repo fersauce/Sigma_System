@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
+    <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
+    <a class="element" href="{% url 'sigma:adm_fase' ti_asoc.fase.proyecto.pk %}">Fases</a>
+    <a class="element" href="{% url 'sigma:adm_ti' ti_asoc.fase.proyecto.pk ti_asoc.fase.pk %}">Tipos de &Iacute;tems</a>
+    <a class="pull-menu" href="#"></a>
+    <ul class="element-menu">
+        <li></li>
+        <div class="no-tablet-portrait">
+            <div class="element place-right">
+                <a class="dropdown-toggle" href="#">
+                    <span class="icon-cog"></span>
+                </a>
+                <ul class="dropdown-menu place-right" data-role="dropdown">
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </ul>
+{% endblock %}
+{% block titulo %}Administrar Atributos{% endblock %}
+{% block contenido %}
+    <div class="container">
+        <h1><a href="#"></a>Administrador<small class="on-right">de Atributos del TI {{ ti_asoc.nombre }}</small></h1>
+        <div class="example">
+            <a href="{%  url 'sigma:adm_atrib_alta' ti_asoc.pk %}">
+                <button class="command-button primary">
+                    <i class="icon-new on-left"></i><b>Agregar</b>
+                    <small>Atributo</small>
+                </button>
+            </a>
+            <table class="table striped hovered dataTable" id="tablaTI">
+                <thead>
+                    <th class="text-left">Nombre</th>
+                    <th class="text-left">Tipo</th>
+                </thead>
+                <tbody>
+                    {% for atrib in atrib_list %}
+                        <tr>
+                            <td>{{ atrib.nombre }}</td>
+                            <td class="right">{{ atrib.atributos.tipo}}</td>
+                            <td align="center">
+                                <div class="span1">
+                                    <nav class="navigation-bar">
+                                        <div class="navigation-bar-content">
+                                            <ul class="element-menu">
+                                                <li>
+                                                    <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
+                                                    <ul class="dropdown-menu" data-role="dropdown">
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_atrib_mod' ti_asoc.pk atrib.pk %}">
+                                                            <i class="icon-pencil on-left"></i>Modificar</a></li>
+                                                        <li class="text-left"><a id="botBaja{{ atrib.pk }}">
+                                                            <i class="icon-remove on-left"></i>Eliminar</a></li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </nav>
+                                </div>
+                            </td>
+                        </tr>
+                        <script>
+                            $("#botBaja{{ atrib.pk }}").on('click', function(){
+                            $.Dialog({
+                                shadow: true,
+                                overlay: true,
+                                flat: true,
+                                draggable: true,
+                                icon: '<span class="icon-bus"></span>',
+                                title: 'Draggable window',
+                                width: 500,
+                                padding: 10,
+                                content: 'This Window is draggable by caption.',
+                                onShow: function(){
+                                    var content = '<form>' +
+                                            '<p>¿Est&aacute; seguro de querer eliminar este atributo?</p>' +
+                                            '<a class="button primary" href="{% url 'sigma:adm_atrib_baja' ti_asoc.pk atrib.pk %}"> S&iacute; </a>' +
+                                            '<a href="{% url 'sigma:adm_atrib' ti_asoc.pk %}"><input type="button" value="No" ></a>'+
+                                            '</form>';
+                                    $.Dialog.title("Confirmar Eliminaci&oacute;n");
+                                    $.Dialog.content(content);
+                                }
+
+                            });
+                        });
+                        </script>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-left">Nombre</th>
+                        <th class="text-left">Tipo</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <script>
+                $(document).ready(function() {
+                    $('#tablaTI').dataTable( {
+                        "oLanguage": {
+                            "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                        }
+                    } );
+                } );
+            </script>
+        </div>
+    </div>
+{% endblock %}

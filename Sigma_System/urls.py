@@ -50,16 +50,37 @@ urlpatterns = patterns('',
        'Sigma_System.vistas.FaseViews.baja_fase',
        name='adm_fase_baja'),
     ### Urls de Tipos de Item de una fase
-    url(r'^proyecto/(?P<idProyect>\d+)/fase/(?P<idFase>\d+)/tipoItem/$',
+    url(r'^proyecto/(?P<idProyect>\d+)/fase/(?P<idFase>\d+)'
+        r'/tipoItem/$',
         'Sigma_System.vistas.TIViews.administrarTI',
         name='adm_ti'),
-    url(r'^proyecto/(?P<idProyect>\d+)/fase/(?P<idFase>\d+)/tipoItem/alta$',
+    url(r'^proyecto/(?P<idProyect>\d+)/fase/(?P<idFase>\d+)'
+        r'/tipoItem/alta$',
         'Sigma_System.vistas.TIViews.altaTI',
         name='adm_ti_alta'),
-    url(r'^proyecto/(?P<idProyect>\d+)/fase/(?P<idFase>\d+)/tipoItem/mod/(?P<idTI>\d+)/$',
+    url(r'^proyecto/(?P<idProyect>\d+)/fase/(?P<idFase>\d+)'
+        r'/tipoItem/mod/(?P<idTI>\d+)/$',
         'Sigma_System.vistas.TIViews.modificarTI',
         name='adm_ti_mod'),
-    url(r'^proyecto/(?P<idProyect>\d+)/fase/(?P<idFase>\d+)/tipoItem/baja/(?P<idTI>\d+)/$',
+    url(r'^proyecto/(?P<idProyect>\d+)/fase/(?P<idFase>\d+)'
+        r'/tipoItem/baja/(?P<idTI>\d+)/$',
         'Sigma_System.vistas.TIViews.bajaTI',
         name='adm_ti_baja'),
+    #Urls de atributos
+    url(r'^proyecto/fase/tipoItem/(?P<idTI>\d+)'
+        r'/atributo/$',
+        'Sigma_System.vistas.AtributoViews.administrarAtributos',
+        name='adm_atrib'),
+    url(r'^proyecto/fase/tipoItem/(?P<idTI>\d+)'
+        r'/atributo/alta/$',
+        'Sigma_System.vistas.AtributoViews.altaAtributo',
+        name='adm_atrib_alta'),
+    url(r'^proyecto/fase/tipoItem/(?P<idTI>\d+)'
+        r'/atributo/mod/(?P<idAtributo>\d+)/$',
+        'Sigma_System.vistas.AtributoViews.modificarAtributo',
+        name='adm_atrib_mod'),
+    url(r'^proyecto/fase/tipoItem/(?P<idTI>\d+)'
+        r'/atributo/baja/(?P<idAtributo>\d+)/$',
+        'Sigma_System.vistas.AtributoViews.bajaAtributo',
+        name='adm_atrib_baja'),
     )
