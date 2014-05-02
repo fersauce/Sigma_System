@@ -109,11 +109,15 @@ def modificar_usuario(request, us):
     user = User.objects.get(id=us)
     #direccion = '/ss/adm_u/?page='+request.session['pag_actual']
     if request.method == 'POST':
+        user.first_name=request.POST['nombre']
+        user.last_name=request.POST['apellido']
         user.usuario.direccion = request.POST['direccion']
+        user.usuario.ci=request.POST['ci']
         user.usuario.tel = request.POST['tel']
         user.usuario.save()
+        user.save()
         nombre = user.username
-        messages.info(request, 'usuario: '+nombre+', modificado correctamente')
+        messages.info(request, 'usuario "'+nombre+'" modificado correctamente')
     else:
         return render(request, 'modificarUsuario.html', {'user': user})
     return HttpResponseRedirect('/ss/adm_u/')
