@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
+{% block titulo %}Agregar nueva Fase{% endblock %}
 {% block navegacion %}
-    <a class="element place-right" href={% url 'sigma:finalizar' %}> Cerrar Sesion </a>
     <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
+    <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
         <li></li>
@@ -11,7 +13,7 @@
                     <span class="icon-cog"></span>
                 </a>
                 <ul class="dropdown-menu place-right" data-role="dropdown">
-                    <li><a href="Iniciar Sesion.html">Cerrar Sesión</a></li>
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
                 </ul>
             </div>
         </div>
@@ -25,32 +27,6 @@
                 {% csrf_token %}
                 <fieldset>
                     <div class="span3">
-                        {% if messages %}
-                            {% for message in messages %}
-                                <dialog id="hola" onshow="true"></dialog>
-                                <script>
-                                    $('#hola').on('show', function (){
-                                        $.Notify({
-                                            shadow: true,
-                                            position: 'bottom-right',
-                                            content: {{ message }},
-                                            timeout: 10000
-                                        });
-                                    });
-                                </script>
-                            {% endfor %}
-                        {% endif %}
-
-                            <!--script>
-                                $(function (){
-                                    $.Notify({
-                                        shadow: true,
-                                        position: 'bottom-right',
-                                        content: {{ alerta }},
-                                        timeout: 10000
-                                    });
-                                })
-                            </script-->
                         <div class="input-control text" data-role="input-control">
                             <label class="label">Nombre del proyecto</label>
                             <input type="text" required="true" name="nombre">

@@ -12,28 +12,10 @@ def administrar_proyecto(request):
     Vista para acceder a la administracion de proyectos.
     """
     proyectos = Proyecto.objects.all().order_by('-nombre')
-    return render_to_response('administrarproyectos.html',
-                              {'proyectos': proyectos,
-                               'vacio': 'No se encuentran proyectos '
-                                        'registrados',
-                               'form': BusquedaProyectoForm()}
-                              , context_instance=RequestContext(request))
-    '''proyecto_list = Proyecto.objects.all()
-    paginator = Paginator(proyecto_list, 2)
-
-    page = request.GET.get('page')
-    try:
-        proyectos = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        proyectos = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        proyectos = paginator.page(paginator.num_pages)
     return render(request, 'administrarproyectos.html',
-                  {"proyectos": proyectos,
+                  {'proyectos': proyectos,
                    'vacio': 'No se encuentran proyectos registrados',
-                   'form': forms.BusquedaProyectoForm()})'''
+                   'form': BusquedaProyectoForm()})
 
 
 def alta_proyecto(request):

@@ -8,7 +8,7 @@ Ver que el administrador resetee el pass.
 Los label se tienen que colocarse al costado del input.
 Falta permiso de visualizar proyecto y demas.
 Mantener consistencia entre interfaces.
-Ver la paginacion y los mensajes de confirmacion
+Ver la paginacion y los mensajes de confirmacion (OK)
 Borrar el proyecto si no tiene fases asociadas.
 Evitar cascada.
 Tipos de item, tipos de atributos.

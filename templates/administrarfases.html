@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block navegacion %}
-    <a class="element place-right" href={% url 'sigma:finalizar' %}> Cerrar Sesion </a>
     <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
+    <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
         <li></li>
@@ -11,7 +12,7 @@
                     <span class="icon-cog"></span>
                 </a>
                 <ul class="dropdown-menu place-right" data-role="dropdown">
-                    <li><a href="Iniciar Sesion.html">Cerrar Sesión</a></li>
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
                 </ul>
             </div>
         </div>
@@ -20,127 +21,136 @@
 {% block titulo %}Administraci&oacute;n de Fases del proyecto {{ proyecto.nombre }}{% endblock %}
 {% block contenido %}
     <div class="container">
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                <div {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
-                {% endfor %}
-            </ul>
-            <script type="javascript">
-                $(function hola(mensaje){
-                    $.Notify({
-                        shadow: true,
-                        position: 'bottom-right',
-                        content: mensaje,
-                        timeout: 2500
-                    });
-                });
-            </script>
-        {% endif %}
-        <div class="grid">
-            <div class="row">
-                <div class="span12">
-                    <div class="">
-                        <h1><a href="#"></a>Administrador<small class="on-right">de Fases</small></h1>
-                        <form action = "{% url 'sigma:adm_fase_busq' proyecto.pk %}" method="post">{% csrf_token %}
-                                <div class="" id="formBusqueda" >
-                                    <div class="input-control select" id="columna">
-                                        {{ form.columna }}
-                                    </div>
-                                    <div class="input-control text" data-role="input-control" id="busqueda">
-                                        {{ form.busqueda }}
-                                        <button class="btn-search"> </button>
-                                    </div><br><br>
-                                    <div id="">
-                                        <a class="button info" href="{% url 'sigma:adm_fase' proyecto.pk %}" id="botLimpiar">Limpiar</a>
-                                    </div>
-                                    <style type="text/css">
-                                        #formBusqueda{
-                                            width: 600px;
-                                        }
-                                        #columna{
-                                            float: left;
-                                            margin-left: 10px;
-                                            margin-right: 10px;
-                                            width: 200px;
-                                        }
-                                        #busqueda{
-                                            float: left;
-                                            margin-left: 10px;
-                                            height: 35px;
-                                            width: 200px;
-                                        }
-                                        #limp{
-                                            float: left;
-                                            margin-left: 10px;
-                                            width: 15px;
-                                            height: 35px;
-                                        }
-                                    </style>
+        <h1><a href="#"></a>Administrador<small class="on-right">de Fases del Proyecto </small> {{ proyecto.nombre }}</h1>
+        <div class="example">
+            <a href="{%  url 'sigma:adm_fase_alta' proyecto.id %}">
+                <button class="command-button primary">
+                    <i class="icon-new on-left"></i><b>Agregar</b>
+                    <small>Fase</small>
+                </button>
+            </a>
+            <table class="table striped hovered dataTable" id="tablaFase">
+                <thead>
+                     <tr>
+                         <th class="text-left">Nombre</th>
+                         <th class="text-left">Posici&oacute;n</th>
+                         <th class="text-left">Estado</th>
+                         <th class="text-left">Fecha de Inicio</th>
+                         <th class="text-left">Fecha de Fin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fase in fases %}
+                        <tr>
+                            <td><a href="{% url 'sigma:adm_ti' fase.proyecto.pk fase.pk %}">{{ fase.nombre }}</a></td>
+                            <td class="right" width>{{ fase.posicionFase }}</td>
+                            <td class="right" width>{{ fase.estado }}</td>
+                            <td class="right" width>{{ fase.fechaInicio}}</td>
+                            <td class="right" width>{{ fase.fechaFin }}</td>
+                            <td align="center">
+                                <div class="span1">
+                                    <nav class="navigation-bar">
+                                        <div class="navigation-bar-content">
+                                            <ul class="element-menu">
+                                                <li>
+                                                    <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
+                                                    <ul class="dropdown-menu" data-role="dropdown">
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_fase_mod' proyecto.pk fase.pk %}">
+                                                            <i class="icon-pencil on-left"></i>Modificar</a></li>
+                                                        <li class="text-left"><a id="botBaja{{ fase.pk }}" >
+                                                            <i class="icon-remove on-left"></i>Eliminar</a></li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </nav>
                                 </div>
-                            </form>
-                        <table class="table hovered" >
-                            <thead>
-                                <tr>
-                                    <th class="text-left">Nombre</th>
-                                    <th class="text-left">Descripci&oacute;n</th>
-                                    <th class="text-left">Estado</th>
-                                    <th class="text-left">Fecha de Inicio</th>
-                                    <th class="text-left">Fecha de Fin</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for fase in fases %}
-                                <tr>
-                                    <td>{{ fase.nombre }}</td>
-                                    <td class="right">{{ fase.descripcion }}</td>
-                                    <td class="right" width>{{ fase.posicionFase }}</td>
-                                    <td class="right" width>{{ fase.estado }}</td>
-                                    <td class="right" width>{{ fase.fechaInicio}}</td>
-                                    <td class="right" width>{{ fase.fechaFin }}</td>
-                                    <td class="button warning"><a href="{% url 'sigma:adm_fase_mod' proyecto.pk fase.pk %}">Modificar</a></td>
-                                    <td class="button danger"><a id="botBaja{{ fase.pk }}" >Eliminar</a></td>
-                                    <script>
-                                        $("#botBaja{{ fase.pk }}").on('click', function(){
-                                        $.Dialog({
-                                            shadow: true,
-                                            overlay: true,
-                                            flat: true,
-                                            draggable: true,
-                                            icon: '<span class="icon-bus"></span>',
-                                            title: 'Draggable window',
-                                            width: 500,
-                                            padding: 10,
-                                            content: 'This Window is draggable by caption.',
-                                            onShow: function(){
-                                                var content = '<form>' +
-                                                        '<p>¿Est&aacute; seguro de querer eliminar esta fase?</p>' +
-                                                        '<a class="button warning" href="{% url 'sigma:adm_fase_baja' proyecto.pk fase.pk %}"> S&iacute; </a>' +
-                                                        '<a href="{% url 'sigma:adm_fase' proyecto.pk %}"><input type="button" value="No" ></a>'+
-                                                        '</form>';
-                                                $.Dialog.title("Confirmar Eliminaci&oacute;n");
-                                                $.Dialog.content(content);
-                                            }
+                            </td>
+                        </tr>
+                        <script>
+                            $("#botBaja{{ fase.pk }}").on('click', function(){
+                            $.Dialog({
+                                shadow: true,
+                                overlay: true,
+                                flat: true,
+                                draggable: true,
+                                icon: '<span class="icon-bus"></span>',
+                                title: 'Draggable window',
+                                width: 500,
+                                padding: 10,
+                                content: 'This Window is draggable by caption.',
+                                onShow: function(){
+                                    var content = '<form>' +
+                                            '<p>¿Est&aacute; seguro de querer eliminar esta fase?</p>' +
+                                            '<a class="button primary" href="{% url 'sigma:adm_fase_baja' proyecto.pk fase.pk %}"> S&iacute; </a>' +
+                                            '<a href="{% url 'sigma:adm_fase' proyecto.pk %}"><input type="button" value="No" ></a>'+
+                                            '</form>';
+                                    $.Dialog.title("Confirmar Eliminaci&oacute;n");
+                                    $.Dialog.content(content);
+                                }
 
-                                        });
-                                    });
-                                    </script>
-                                </tr>
-                            {% empty %}
-                                <tr><td class="text-center">{{ vacio }}</td></tr>
-                            {% endfor %}
-                            </tbody>
-                            <tfoot></tfoot>
-                        </table>
-                    </div>
-                    <a href="{%  url 'sigma:adm_fase_alta' proyecto.pk %}">
-                        <button class="command-button primary">
-                            <i class=""></i>Agregar Fase
-                            <small></small>
-                        </button>
-                    </a>
-                </div>
-            </div>
+                            });
+                        });
+                        </script>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-left">Nombre</th>
+                        <th class="text-left">Descripci&oacute;n</th>
+                        <th class="text-left">Estado</th>
+                        <th class="text-left">Fecha de Inicio</th>
+                        <th class="text-left">Fecha de Fin</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <script>
+                $(document).ready(function() {
+                    $('#tablaFase').dataTable( {
+                        "oLanguage": {
+                            "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                        }
+                    } );
+                } );
+            </script>
         </div>
     </div>
+
+    <!--form action = "{% url 'sigma:adm_fase_busq' proyecto.pk %}" method="post">{% csrf_token %}
+        <div class="" id="formBusqueda" >
+            <div class="input-control select" id="columna">
+                {{ form.columna }}
+            </div>
+            <div class="input-control text" data-role="input-control" id="busqueda">
+                {{ form.busqueda }}
+                <button class="btn-search"> </button>
+            </div><br><br>
+            <div id="">
+                <a class="button info" href="{% url 'sigma:adm_fase' proyecto.pk %}" id="botLimpiar">Limpiar</a>
+            </div>
+            <style type="text/css">
+                #formBusqueda{
+                    width: 600px;
+                }
+                #columna{
+                    float: left;
+                    margin-left: 10px;
+                    margin-right: 10px;
+                    width: 200px;
+                }
+                #busqueda{
+                    float: left;
+                    margin-left: 10px;
+                    height: 35px;
+                    width: 200px;
+                }
+                #limp{
+                    float: left;
+                    margin-left: 10px;
+                    width: 15px;
+                    height: 35px;
+                }
+            </style>
+        </div>
+    </form-->
 {% endblock %}
