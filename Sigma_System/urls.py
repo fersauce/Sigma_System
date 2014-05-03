@@ -44,13 +44,53 @@ urlpatterns = patterns('',
     url(r'^proyecto/(?P<idProyect>\d+)/fase/buscar/$',
        'Sigma_System.vistas.FaseViews.buscar_fase',
        name='adm_fase_busq'),
-    url(r'^proyecto/(?P<idProyect>\d+)/fase/alta',
+    url(r'^proyecto/(?P<idProyect>\d+)/fase/alta/S',
        'Sigma_System.vistas.FaseViews.alta_fase',
        name='adm_fase_alta'),
-    url(r'^proyecto/(?P<idProyect>\d+)/fase/modificar/(?P<idFase>\d+)',
+    url(r'^proyecto/(?P<idProyect>\d+)/fase/modificar/(?P<idFase>\d+)/$',
        'Sigma_System.vistas.FaseViews.modificar_fase',
        name='adm_fase_mod'),
-    url(r'^proyecto/(?P<idProyect>\d+)/fase/baja/(?P<idFase>\d+)',
+    url(r'^proyecto/(?P<idProyect>\d+)/fase/baja/(?P<idFase>\d+)/$',
        'Sigma_System.vistas.FaseViews.baja_fase',
        name='adm_fase_baja'),
+    url(r'^proyecto/(?P<idProyect>\d+)/fase/intercambiar/$',
+       'Sigma_System.vistas.FaseViews.intercambiarFase',
+       name='adm_fase_intercambiar'),
+    ### Urls de Tipos de Item de una fase
+    url(r'^proyecto/(?P<idProyect>\d+)/fase/(?P<idFase>\d+)'
+        r'/tipoItem/$',
+        'Sigma_System.vistas.TIViews.administrarTI',
+        name='adm_ti'),
+    url(r'^proyecto/(?P<idProyect>\d+)/fase/(?P<idFase>\d+)'
+        r'/tipoItem/alta$',
+        'Sigma_System.vistas.TIViews.altaTI',
+        name='adm_ti_alta'),
+    url(r'^proyecto/(?P<idProyect>\d+)/fase/(?P<idFase>\d+)'
+        r'/tipoItem/mod/(?P<idTI>\d+)/$',
+        'Sigma_System.vistas.TIViews.modificarTI',
+        name='adm_ti_mod'),
+    url(r'^proyecto/(?P<idProyect>\d+)/fase/(?P<idFase>\d+)'
+        r'/tipoItem/baja/(?P<idTI>\d+)/$',
+        'Sigma_System.vistas.TIViews.bajaTI',
+        name='adm_ti_baja'),
+    url(r'^proyecto/fase/(?P<idFase>\d+)/tipoItem/importar/$',
+        'Sigma_System.vistas.TIViews.importarTI',
+        name='adm_ti_impor'),
+    #Urls de atributos
+    url(r'^proyecto/fase/tipoItem/(?P<idTI>\d+)'
+        r'/atributo/$',
+        'Sigma_System.vistas.AtributoViews.administrarAtributos',
+        name='adm_atrib'),
+    url(r'^proyecto/fase/tipoItem/(?P<idTI>\d+)'
+        r'/atributo/alta/$',
+        'Sigma_System.vistas.AtributoViews.altaAtributo',
+        name='adm_atrib_alta'),
+    url(r'^proyecto/fase/tipoItem/(?P<idTI>\d+)'
+        r'/atributo/mod/(?P<idAtributo>\d+)/$',
+        'Sigma_System.vistas.AtributoViews.modificarAtributo',
+        name='adm_atrib_mod'),
+    url(r'^proyecto/fase/tipoItem/(?P<idTI>\d+)'
+        r'/atributo/baja/(?P<idAtributo>\d+)/$',
+        'Sigma_System.vistas.AtributoViews.bajaAtributo',
+        name='adm_atrib_baja'),
     )

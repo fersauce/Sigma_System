@@ -25,37 +25,16 @@
                 {% csrf_token %}
                 <fieldset>
                     <div class="span3">
-                        {%  if alerta %}
-                            <!--script>
-                                $(function (){
-                                    $.Notify({
-                                        shadow: true,
-                                        position: 'bottom-right',
-                                        content: {{ alerta }},
-                                        timeout: 10000
-                                    });
-                                })
-                            </script-->
-                            <p>{{ alerta }}</p>
-                        {% endif %}
                         <div class="input-control text" data-role="input-control">
-                            <label class="label">{{ form.nombreProyecto.label }}</label>
-                            {{ form.nombreProyecto }}
+                            <label class="label">Nombre del Proyecto</label>
+                            <input type="text" required="true" name="nombreProyecto">
                             <button class="btn-clear" tabindex="-1" type="button"> </button>
                         </div><br><br>
-                        <div class="input-control text" data-role="input-control">
-                            <label class="label">{{ form.descripcion.label }}</label>
-                            {{ form.descripcion }}
+                        <div class="input-control textarea" data-role="input-control">
+                            <label class="label">Descripci&oacute;n</label>
+                            <textarea cols="60" id="id_descripcion" name="descripcion" required="true" rows="3"></textarea>
                             <button class="btn-clear" tabindex="-1" type="button"> </button>
                         </div><br><br><br>
-                        <div class="input-control number" data-role="input-control">
-                            <label class="label">{{ form.duracion.label }}</label>
-                            {{ form.duracion }}
-                        </div><br><br>
-                        <div class="input-control select">
-                            <label class="label">{{ form.lider.label }}</label>
-                            {{ form.lider }}
-                        </div>
                         <input type="submit" value="Aceptar" onclick="">
                         <a href="{% url 'sigma:adm_proy' %}"><input type="button" value="Cancelar" ></a>
                     </div>
@@ -63,4 +42,14 @@
             </form>
         </div>
     </div>
+    <script>
+        $('#fullDate').datepicker({
+            onSelect: function(dateText, inst) {
+                var pieces = dateText.split('/');
+                $('#day').val(pieces[0]);
+                $('#month').val(pieces[1]);
+                $('#year').val(pieces[2]);
+            }
+        })
+    </script>
 {% endblock %}

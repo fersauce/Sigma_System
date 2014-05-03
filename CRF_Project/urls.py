@@ -8,5 +8,6 @@ urlpatterns = patterns('',
     url(r'^ss/', include('Sigma_System.urls', namespace="sigma")),
     url(r'^login/', 'Sigma_System.views.iniciarsesion', name="log_in"),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^$', 'Sigma_System.views.redireccion'),
 )
 

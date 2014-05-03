@@ -10,9 +10,8 @@ class Proyecto(models.Model):
     nombre = models.CharField(max_length=30, unique=True)
     descripcion = models.CharField(max_length=200)
     fechaCreacion = models.DateField(default=datetime.datetime.now())
-    fechaInicio = models.DateField(default=datetime.datetime.now())
-    fechaFinalizacion = models.DateField(
-        default=(datetime.datetime.now() + datetime.timedelta(days=1)))
+    fechaInicio = models.DateField(default='')
+    fechaFinalizacion = models.DateField(default='')
     duracion = models.IntegerField()
     complejidad = models.IntegerField()
     costo = models.IntegerField()
@@ -73,17 +72,25 @@ class UsuarioRol(models.Model):
 
 
 class Atributo(models.Model):
-    tipo = models.CharField(max_length=10)
+    """
+        Clase que define el modelo Atributo
+    """
+    tipo = models.CharField(max_length=20)
+    default = models.CharField(max_length=100, default='')
 
 
 class TipoDeItem(models.Model):
+    """
+    Clase que define el modelo TipoDeItem(TI)
+    """
     fase = models.ForeignKey(Fase)
-    usuario = models.IntegerField()
+    usuario = models.ForeignKey(Usuario)
     nombre = models.CharField(max_length=30)
     codigo = models.CharField(max_length=10, unique=True)
     descripcion = models.CharField(max_length=100)
     importar = models.BooleanField(default=True)
     atributos = models.ManyToManyField(Atributo, through='AtribTipoDeItem')
+    fechaCreacion = models.DateField(default=datetime.datetime.now())
 
 
 class AtribTipoDeItem(models.Model):

@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% block navegacion %}
     <span class="element-divider"></span>
-    <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
+    <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
     <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
+    <a class="element" href="{% url 'sigma:adm_fase' pkProyecto %}">Fases</a>
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
         <li></li>
@@ -18,36 +19,36 @@
         </div>
     </ul>
 {% endblock %}
-{% block titulo %}Administraci&oacute;n de Fases del proyecto {{ proyecto.nombre }}{% endblock %}
+{% block titulo %}Administrar Tipos de &Iacute;tem{% endblock %}
 {% block contenido %}
     <div class="container">
-        <h1><a href="#"></a>Administrador<small class="on-right">de Fases del Proyecto </small> {{ proyecto.nombre }}</h1>
+        <h1><a href="#"></a>Administrador<small class="on-right">de Tipos de &Iacute;tem de la Fase {{ fase.nombre }}</small></h1>
         <div class="example">
-            <a href="{%  url 'sigma:adm_fase_alta' proyecto.id %}">
+            <a href="{%  url 'sigma:adm_ti_alta' fase.proyecto.pk fase.pk %}">
                 <button class="command-button primary">
                     <i class="icon-new on-left"></i><b>Agregar</b>
-                    <small>Fase</small>
+                    <small>Tipo de &Iacute;tem</small>
                 </button>
             </a>
-            <table class="table striped hovered dataTable" id="tablaFase">
+            <a href="{%  url 'sigma:adm_ti_impor' fase.pk%}" id="importarLink">
+                <button class="command-button primary">
+                    <i class="icon-new on-left"></i><b>Importar</b>
+                    <small>Tipo de &Iacute;tem</small>
+                </button>
+            </a>
+            <table class="table striped hovered dataTable" id="tablaTI">
                 <thead>
-                     <tr>
-                         <th class="text-left">Nombre</th>
-                         <th class="text-left">Posici&oacute;n</th>
-                         <th class="text-left">Estado</th>
-                         <th class="text-left">Fecha de Inicio</th>
-                         <th class="text-left">Fecha de Fin</th>
-                         <th class="text-left">Editar</th>
-                    </tr>
+                    <th class="text-left">Nombre</th>
+                    <th class="text-left">Descripci&oacute;n</th>
+                    <th class="text-left">Puede Importar?</th>
+                    <th class="text-left">Editar</th>
                 </thead>
                 <tbody>
-                    {% for fase in fases %}
+                    {% for ti in listaTI %}
                         <tr>
-                            <td>{{ fase.nombre }}</td>
-                            <td class="right" width>{{ fase.posicionFase }}</td>
-                            <td class="right" width>{{ fase.estado }}</td>
-                            <td class="right" width>{{ fase.fechaInicio}}</td>
-                            <td class="right" width>{{ fase.fechaFin }}</td>
+                            <td>{{ ti.nombre }}</td>
+                            <td class="right">{{ ti.descripcion }}</td>
+                            <td class="right">{% if ti.importar %}S&iacute;{% else %}No{% endif %}</td>
                             <td align="center">
                                 <div class="span1">
                                     <nav class="navigation-bar">
@@ -56,12 +57,12 @@
                                                 <li>
                                                     <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
                                                     <ul class="dropdown-menu" data-role="dropdown">
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_fase_mod' proyecto.pk fase.pk %}">
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_ti_mod' pkProyecto fase.pk ti.pk %}">
                                                             <i class="icon-pencil on-left"></i>Modificar</a></li>
-                                                        <li class="text-left"><a id="botBaja{{ fase.pk }}" >
+                                                        <li class="text-left"><a id="botBaja{{ ti.pk }}">
                                                             <i class="icon-remove on-left"></i>Eliminar</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_ti' fase.proyecto.pk fase.pk %}">
-                                                            <i class="icon-accessibility"></i>Tipos de &Iacute;tem</a></li>
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_atrib' ti.pk %}">
+                                                            <i class="icon-book on-left"></i>Atributos</a></li>
                                                     </ul>
                                                 </li>
                                             </ul>
@@ -71,7 +72,7 @@
                             </td>
                         </tr>
                         <script>
-                            $("#botBaja{{ fase.pk }}").on('click', function(){
+                            $("#botBaja{{ ti.pk }}").on('click', function(){
                             $.Dialog({
                                 shadow: true,
                                 overlay: true,
@@ -84,14 +85,13 @@
                                 content: 'This Window is draggable by caption.',
                                 onShow: function(){
                                     var content = '<form>' +
-                                            '<p>¿Est&aacute; seguro de querer eliminar esta fase?</p>' +
-                                            '<a class="button primary" href="{% url 'sigma:adm_fase_baja' proyecto.pk fase.pk %}"> S&iacute; </a>' +
-                                            '<a href="{% url 'sigma:adm_fase' proyecto.pk %}"><input type="button" value="No" ></a>'+
+                                            '<p>¿Est&aacute; seguro de querer eliminar este Tipo de &Iacute;tem?</p>' +
+                                            '<a class="button primary" href="{% url 'sigma:adm_ti_baja' pkProyecto fase.pk ti.pk %}"> S&iacute; </a>' +
+                                            '<a href="{% url 'sigma:adm_ti' pkProyecto fase.pk %}"><input type="button" value="No" ></a>'+
                                             '</form>';
                                     $.Dialog.title("Confirmar Eliminaci&oacute;n");
                                     $.Dialog.content(content);
                                 }
-
                             });
                         });
                         </script>
@@ -101,16 +101,14 @@
                     <tr>
                         <th class="text-left">Nombre</th>
                         <th class="text-left">Descripci&oacute;n</th>
-                        <th class="text-left">Estado</th>
-                        <th class="text-left">Fecha de Inicio</th>
-                        <th class="text-left">Fecha de Fin</th>
+                        <th class="text-left">Puede Importar?</th>
                         <th class="text-left">Editar</th>
                     </tr>
                 </tfoot>
             </table>
             <script>
                 $(document).ready(function() {
-                    $('#tablaFase').dataTable( {
+                    $('#tablaTI').dataTable( {
                         "oLanguage": {
                             "sUrl": "/static/MetroBoostrap/data/spanish.txt"
                         }
@@ -119,42 +117,4 @@
             </script>
         </div>
     </div>
-
-    <!--form action = "{% url 'sigma:adm_fase_busq' proyecto.pk %}" method="post">{% csrf_token %}
-        <div class="" id="formBusqueda" >
-            <div class="input-control select" id="columna">
-                {{ form.columna }}
-            </div>
-            <div class="input-control text" data-role="input-control" id="busqueda">
-                {{ form.busqueda }}
-                <button class="btn-search"> </button>
-            </div><br><br>
-            <div id="">
-                <a class="button info" href="{% url 'sigma:adm_fase' proyecto.pk %}" id="botLimpiar">Limpiar</a>
-            </div>
-            <style type="text/css">
-                #formBusqueda{
-                    width: 600px;
-                }
-                #columna{
-                    float: left;
-                    margin-left: 10px;
-                    margin-right: 10px;
-                    width: 200px;
-                }
-                #busqueda{
-                    float: left;
-                    margin-left: 10px;
-                    height: 35px;
-                    width: 200px;
-                }
-                #limp{
-                    float: left;
-                    margin-left: 10px;
-                    width: 15px;
-                    height: 35px;
-                }
-            </style>
-        </div>
-    </form-->
 {% endblock %}

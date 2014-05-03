@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block navegacion %}
-    <a class="element place-right" href={% url 'sigma:finalizar' %}> Cerrar Sesion </a>
     <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}"> P&aacute;gina Principal</a>
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
         <li></li>
@@ -11,7 +11,7 @@
                     <span class="icon-cog"></span>
                 </a>
                 <ul class="dropdown-menu place-right" data-role="dropdown">
-                    <li><a href="Iniciar Sesion.html">Cerrar Sesión</a></li>
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
                 </ul>
             </div>
         </div>
@@ -20,132 +20,108 @@
 {% block titulo %}Administraci&oacute;n de Proyectos{% endblock %}
 {% block contenido %}
     <div class="container">
-        <div class="grid">
-            <div class="row">
-                <div class="span12">
-                    <div class="">
-                        <h1><a href="#"></a>Administrador<small class="on-right">de Proyectos</small></h1>
-                        <form action = "{% url 'sigma:adm_proy_busq' %}" method="post">{% csrf_token %}
-                            <div class="" id="formBusqueda" >
-                                <div class="input-control select" id="columna">
-                                    {{ form.columna }}
+        <h1><a href="#"></a>Administrador<small class="on-right">de Proyectos</small></h1>
+        <div class="example">
+            <a href="{%  url 'sigma:adm_proy_alta' %}">
+                <button class="command-button primary">
+                    <i class="icon-new on-left"></i><b>Agregar</b>
+                    <small>Proyecto</small>
+                </button>
+            </a>
+            <table class="table striped hovered dataTable" id="tablaProyecto">
+                <thead>
+                    <th class="text-left">Nombre</th>
+                    <th class="text-left">Descripci&oacute;n</th>
+                    <th class="text-left">Fecha de Inicio</th>
+                    <th class="text-left">Fecha Finalizaci&oacute;n</th>
+                    <th class="text-left">Nº de Fases</th>
+                    <th class="text-left">Nº de Miembros</th>
+                    <th class="text-left">Editar</th>
+                </thead>
+                <tbody>
+                    {% for proyecto in proyectos %}
+                        <tr>
+                            <td>{{ proyecto.nombre }}</td>
+                            <td class="right">{{ proyecto.descripcion }}</td>
+                            <td class="right">{{ proyecto.fechaInicio }}</td>
+                            <td class="right">{{ proyecto.fechaFinalizacion }}</td>
+                            <td class="right">{{ proyecto.nroFases }}</td>
+                            <td class="right">{{ proyecto.nroMiembros }}</td>
+                            <td align="center">
+                                <div class="span1">
+                                    <nav class="navigation-bar">
+                                        <div class="navigation-bar-content">
+                                            <ul class="element-menu">
+                                                <li>
+                                                    <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
+                                                    <ul class="dropdown-menu" data-role="dropdown">
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_proy_mod' proyecto.pk %}">
+                                                            <i class="icon-pencil on-left"></i>Modificar</a></li>
+                                                        <li class="text-left"><a id="botBaja{{ proyecto.pk }}">
+                                                            <i class="icon-remove on-left"></i>Eliminar</a></li>
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_fase' proyecto.pk %}">
+                                                            <i class="icon-book on-left"></i>Fases</a></li>
+                                                        <li class="text-left"><a href="#">
+                                                            <i class="icon-user on-left"></i>Asignar Usuarios</a></li>
+                                                        <li class="text-left"><a href="#">
+                                                            <i class="icon-eye on-left"></i>Comit&eacute;</a></li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </nav>
                                 </div>
-                                <div class="input-control text" data-role="input-control" id="busqueda">
-                                    {{ form.busqueda }}
-                                    <button class="btn-search"> </button>
-                                </div><br><br>
-                                <div>
-                                    <a class="button info" href="{% url 'sigma:adm_proy' %}" id="botLimpiar">Limpiar</a>
-                                </div>
-                                <style type="text/css">
-                                    #formBusqueda{
-                                        width: 600px;
+                            </td>
+                        </tr>
+                        <script>
+                            $("#botBaja{{ proyecto.pk }}").on('click', function(){
+                                $.Dialog({
+                                    shadow: true,
+                                    overlay: true,
+                                    flat: true,
+                                    draggable: true,
+                                    icon: '<span class="icon-bus"></span>',
+                                    title: 'Draggable window',
+                                    width: 500,
+                                    padding: 10,
+                                    content: 'This Window is draggable by caption.',
+                                    onShow: function(){
+                                        var content = '<form>' +
+                                                '<p>¿Est&aacute; seguro de querer eliminar este proyecto?</p>' +
+                                                '<a class="button primary" href="{% url 'sigma:adm_proy_baja' proyecto.pk %}"> S&iacute; </a>' +
+                                                '<a href="{% url 'sigma:adm_proy' %}"><input type="button" value="No" ></a>'+
+                                                '</form>';
+                                        $.Dialog.title("Confirmar Eliminaci&oacute;n");
+                                        $.Dialog.content(content);
                                     }
-                                    #columna{
-                                        float: left;
-                                        margin-left: 10px;
-                                        margin-right: 10px;
-                                        width: 200px;
-                                    }
-                                    #busqueda{
-                                        float: left;
-                                        margin-left: 10px;
-                                        height: 35px;
-                                        width: 200px;
-                                    }
-                                    #limp{
-                                        float: left;
-                                        margin-left: 10px;
-                                        width: 15px;
-                                        height: 35px;
-                                    }
-                                </style>
-                            </div>
-                        </form>
-                        <!--div class="pagination">
-                         <span class="step-links">
-                             {% if roles.has_previous %}
-                                 <a href="?page={{ roles.previous_page_number }}">Previous</a>
-                             {% endif %}
-                             <span class="current">
-                                 Pag. {{ roles.number }} de {{ roles.paginator.num_pages }}.
-                             </span>
-                             {% if roles.has_next %}
-                                 <a href="?page={{ roles.next_page_number }}">Next</a>
-                             {% endif %}
-                         </span>
-                     </div-->
-                        <table class="table hovered" >
-                            <thead>
-                                <tr>
-                                    <th class="text-left">Nombre</th>
-                                    <th class="text-left">Fecha de Creaci&oacute;n</th>
-                                    <th class="text-left">Nº de Fases</th>
-                                    <th class="text-left">Nº de Miembros</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for proyecto in proyectos %}
-                                <tr>
-                                    <td><a href="{% url 'sigma:adm_fase' proyecto.pk %}">{{ proyecto.nombre }}</a></td>
-                                    <td class="right">{{ proyecto.fechaCreacion }}</td>
-                                    <td class="right">{{ proyecto.nroFases }}</td>
-                                    <td class="right">{{ proyecto.nroMiembros }}</td>
-                                    <td class="button warning"><a href="{% url 'sigma:adm_proy_mod' proyecto.pk %}">Modificar</a></td>
-                                    <td class="button danger"><a id="botBaja{{ proyecto.pk }}" >Eliminar</a></td>
-                                    <script>
-                                        $("#botBaja{{ proyecto.pk }}").on('click', function(){
-                                        $.Dialog({
-                                            shadow: true,
-                                            overlay: true,
-                                            flat: true,
-                                            draggable: true,
-                                            icon: '<span class="icon-bus"></span>',
-                                            title: 'Draggable window',
-                                            width: 500,
-                                            padding: 10,
-                                            content: 'This Window is draggable by caption.',
-                                            onShow: function(){
-                                                var content = '<form>' +
-                                                        '<p>¿Est&aacute; seguro de querer eliminar este proyecto?</p>' +
-                                                        '<a class="button warning" href="{% url 'sigma:adm_proy_baja' proyecto.pk %}"> S&iacute; </a>' +
-                                                        '<a href="{% url 'sigma:adm_proy' %}"><input type="button" value="No" ></a>'+
-                                                        '</form>';
-                                                $.Dialog.title("Confirmar Eliminaci&oacute;n");
-                                                $.Dialog.content(content);
-                                            }
 
-                                        });
-                                    });
-                                    </script>
-                                </tr>
-                            {% empty %}
-                                <tr><td class="text-center">{{ vacio }}</td></tr>
-                            {% endfor %}
-                            </tbody>
-                            <tfoot></tfoot>
-                        </table>
-                    </div>
-                    <a href="{%  url 'sigma:adm_proy_alta' %}">
-                        <button class="command-button primary">
-                            <i class=""></i>Agregar Proyecto
-                            <small></small>
-                        </button>
-                    </a>
-                </div>
-            </div>
+                                });
+                            });
+                        </script>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-left">Nombre</th>
+                        <th class="text-left">Descripci&oacute;n</th>
+                        <th class="text-left">Fecha de Inicio</th>
+                        <th class="text-left">Fecha Finalizaci&oacute;n</th>
+                        <th class="text-left">Nº de Fases</th>
+                        <th class="text-left">Nº de Miembros</th>
+                        <th class="text-left">Editar</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <script>
+                $(document).ready(function() {
+                    $('#tablaProyecto').dataTable( {
+                        "oLanguage": {
+                            "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                        }
+                    } );
+                } );
+            </script>
         </div>
     </div>
-    <!--div class="window" id="win-baja">
-        <div class="caption">
-            <span class="icon icon-windows"></span>
-            <div class="title">Confirmar Eliminaci&oacute;n</div>
-            <button class="btn-min"></button>
-            <button class="btn-max"></button>
-            <button class="btn-close"></button>
-        </div>
-        <div class="content">
-            Window content
-        </div>
-    </div-->
+
 {% endblock %}

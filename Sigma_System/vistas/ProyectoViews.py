@@ -1,10 +1,10 @@
-from django.contrib.auth.models import User
+from django.contrib import messages
 from django.shortcuts import render, render_to_response
 from django.http import *
 from django.template import RequestContext
 from Sigma_System.forms import BusquedaProyectoForm, AltaProyectoForm
 from Sigma_System.models import Proyecto, Usuario, Fase
-import datetime
+import datetime, time
 
 
 def administrar_proyecto(request):
@@ -12,71 +12,58 @@ def administrar_proyecto(request):
     Vista para acceder a la administracion de proyectos.
     """
     proyectos = Proyecto.objects.all().order_by('-nombre')
-    return render_to_response('administrarproyectos.html',
-                              {'proyectos': proyectos,
-                               'vacio': 'No se encuentran proyectos '
-                                        'registrados',
-                               'form': BusquedaProyectoForm()}
-                              , context_instance=RequestContext(request))
-    '''proyecto_list = Proyecto.objects.all()
-    paginator = Paginator(proyecto_list, 2)
-
-    page = request.GET.get('page')
-    try:
-        proyectos = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        proyectos = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        proyectos = paginator.page(paginator.num_pages)
     return render(request, 'administrarproyectos.html',
-                  {"proyectos": proyectos,
+                  {'proyectos': proyectos,
                    'vacio': 'No se encuentran proyectos registrados',
-                   'form': forms.BusquedaProyectoForm()})'''
+                   'form': BusquedaProyectoForm()})
 
 
 def alta_proyecto(request):
     """
     Vista que realiza la creacion de un nuevo proyecto
+    @type request: django.http.HttpRequest.
+    @param request: Contiene la informacion sobre la solicitud de la pagina
+    que lo llamo
+
+    @rtype django.shortcuts.render
+    @return: AdministrarProyecto.html, pagina en la cual se trabaja con los
+    proyectos.
     """
     if request.method == 'POST':
-        form = AltaProyectoForm(request.POST, request.FILES)
-        if form.is_valid():
-            proyecto = Proyecto.objects.filter(
-                nombre=form.cleaned_data['nombreProyecto'])
-            if proyecto.__len__() == 0:
-                fecha = datetime.datetime.now()
-                fecha2 = fecha + datetime.timedelta(
-                    days=form.cleaned_data['duracion'])
-                print str(fecha) + '\n' + str(fecha2)
-                nuevoProyecto = Proyecto.objects.create(
-                    nombre=form.cleaned_data['nombreProyecto'],
+        proyecto = Proyecto.objects.filter(
+            nombre=request.POST['nombreProyecto'])
+        if proyecto.__len__() == 0:
+            fecha = datetime.datetime.now()
+            try:
+                print request.POST['fechaInicio']
+                nuevoProyecto = Proyecto(
+                    nombre=request.POST['nombreProyecto'],
                     fechaCreacion=fecha,
-                    descripcion=form.cleaned_data['descripcion'],
-                    duracion=form.cleaned_data['duracion'],
+                    descripcion=request.POST['descripcion'],
                     complejidad=0,
                     costo=0,
                     estado='Pendiente',
                     nroFases=0,
-                    nroMiembros=0,
-                    fechaInicio=fecha,
-                    fechaFinalizacion=fecha2)
-                print Usuario.objects.get(user=User.objects.get(
-                    username=form.cleaned_data['lider'])).__str__()
-                print str(form.cleaned_data['duracion'])
-                print str(form.cleaned_data['lider'])
-                return HttpResponseRedirect('/ss/proyecto/')
-            else:
-                form = AltaProyectoForm()
-                return render(request, 'proyectoalta.html',
-                              {'form': form,
-                               'alerta': 'Proyecto ya existente '
-                                         'con ese nombre'})
-    else:
-        print '3'
-        form = AltaProyectoForm()
-    return render_to_response('proyectoalta.html', {'form': form},
+                    nroMiembros=1,
+                    duracion=0,
+                    fechaInicio='',
+                    fechaFinalizacion=''
+                )
+                nuevoProyecto.save()
+                messages.success(request, 'Proyecto ' + str(
+                    nuevoProyecto.nombre) + ' creado con exito')
+            except Exception as error:
+                messages.error(request, 'Ocurrio un error al crear el '
+                                        'proyecto')
+                print error.args
+            return HttpResponseRedirect('/ss/proyecto/')
+        else:
+            messages.error(request,
+                           'No se pudo crear el proyecto: El nombre ya '
+                           'existe en el sistema.')
+            return render(request, 'proyectoalta.html')
+
+    return render_to_response('proyectoalta.html',
                               context_instance=RequestContext(request))
 
 
@@ -85,23 +72,29 @@ def modificar_proyecto(request, idProyecto):
     Vista para realizar la modificacion de datos del proyecto
     """
     proyecto = Proyecto.objects.get(pk=idProyecto)
-    usuarios = Usuario.objects.all()
     if request.method == 'POST':
         if proyecto.estado == 'Iniciado':
-            proyecto.duracion = request.POST['duracion']
+            messages.error(request, 'No se puede modificar mas, ya que el '
+                                    'proyecto ya se ha iniciado.')
         else:
+            list_proyecto = Proyecto.objects.exclude(pk=idProyecto)
+            for proy in list_proyecto:
+                if proy.nombre == request.POST['nombre']:
+                    messages.error(request, 'El nombre de ese proyecto ya '
+                                            'existe, escriba otro')
+                    return render(request, 'proyectomodificar.html',
+                                  {'proyecto': proyecto})
             proyecto.nombre = request.POST['nombre']
             proyecto.descripcion = request.POST['descripcion']
-            proyecto.duracion = request.POST['duracion']
-            proyecto.fechaFinalizacion = proyecto.fechaInicio + \
-                                         datetime.timedelta(
-                                             days=int(proyecto.duracion))
-            print str(proyecto.fechaFinalizacion) + 'hola' + str(
-                datetime.timedelta(days=int(proyecto.duracion)))
-        proyecto.save()
+        try:
+            proyecto.save()
+        except Exception as error:
+            messages.error(request, 'Ocurrio un error al intentar modificar '
+                                    'el proyecto')
+            return render(request, 'proyectomodificar.html',
+                          {'proyecto': proyecto})
         return HttpResponseRedirect('/ss/proyecto')
-    return render(request, 'proyectomodificar.html', {'proyecto': proyecto,
-                                                      'choices': usuarios})
+    return render(request, 'proyectomodificar.html', {'proyecto': proyecto})
 
 
 def baja_proyecto(request, idProyecto):
@@ -112,13 +105,20 @@ def baja_proyecto(request, idProyecto):
     if request.method == 'GET':
         proyecto = Proyecto.objects.get(pk=idProyecto)
         if proyecto.estado == 'Iniciado':
-            return render(request, 'proyectobaja.html', {
-                'alerta': 'No se puede suprimir el proyecto'})
+            messages.error(request, 'No se puede suprimir el proyecto: ya esta '
+                                    'iniciado')
         elif Fase.objects.filter(proyecto=proyecto).__len__() > 0:
-            return render(request, 'proyectobaja.html', {
-                'alerta': 'No se puede suprimir el proyecto'})
+            messages.error(request, 'No se puede suprimir el proyecto: '
+                                    'tiene fases creadas')
         else:
-            proyecto.delete()
+            try:
+                nombre = proyecto.nombre
+                proyecto.delete()
+                messages.success(request,
+                                 'Proyecto ' + str(nombre) + ' eliminado')
+            except Exception as error:
+                messages.error(request, 'Ocurrio un error al intentar suprimir'
+                                        'el proyecto.')
     return HttpResponseRedirect('/ss/proyecto/')
 
 
@@ -154,5 +154,3 @@ def buscar_proyecto(request):
                    'vacio': 'No se encuentran proyectos con ese '
                             'patron de busqueda',
                    'form': BusquedaProyectoForm()})
-
-
