@@ -60,8 +60,8 @@ urlpatterns = patterns('',
        'Sigma_System.vistas.FaseViews.baja_fase',
        name='adm_fase_baja'),
 
-    url(r'^adm_i_alta/$', 'Sigma_System.vistas.ItemViews.altaItem', name='adm_i_alta'),
-    url(r'^adm_i/$', 'Sigma_System.vistas.ItemViews.administrarItem', name='adm_i'),
+    url(r'^adm_i_alta/(?P<idFase>\d+)$', 'Sigma_System.vistas.ItemViews.altaItem', name='adm_i_alta'),
+    url(r'^adm_i/(?P<idFase>\d+)$', 'Sigma_System.vistas.ItemViews.administrarItem', name='adm_i'),
     url(r'^adm_i_mod/(?P<it>\d+)/$', 'Sigma_System.vistas.ItemViews.modificar_item', name='adm_i_mod'),
     url(r'^adm_i_baja/(?P<it>\d+)/$', 'Sigma_System.vistas.ItemViews.baja_item', name='adm_i_baja'),
 

@@ -3,7 +3,7 @@
     <span class="element-divider"></span>
     <a class="element" href={% url 'sigma:inicio' %}> Página Principal</a>
     <span class="element-divider"></span>
-    <a class="element" href={% url 'sigma:adm_i' %}> Administrar Item</a>
+    <a class="element" href={% url 'sigma:adm_i' fase %}> Administrar Item</a>
     <a class="element place-right" href={% url 'sigma:finalizar' %}>   </a>
     <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
@@ -26,7 +26,7 @@
 
         <h1><a href="#"></a>Crear<small class="on-right">Item</small></h1>
         <div class="">
-            <form action = "{% url 'sigma:adm_i_alta' %}" method="post">
+            <form action = "{% url 'sigma:adm_i_alta' fase %}" method="post">
                 {% csrf_token %}
                 <fieldset>
                     <div class="span9">
@@ -37,14 +37,20 @@
                                 </div>
                                 <div class="span6">
                                     <div class="input-control text" data-role="input-control">
-                                        {{ i.nombre }}
                                         <input type="text" name="nombre"  required>
-
                                     </div>
                                 </div>
                             </div>
                         </div>
-
+                        <div class="input-control select" data-role="input-control">
+                            <label class="inline-block">Tipo de &iacute;tem:</label>
+                            <select name="tipo">
+                                {% for tip in tipos %}
+                                    <option value="{{ tip.pk }}">{{ tip.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                            <button class="btn-clear" tabindex="-1" type="button"> </button>
+                        </div><br><br>
                         <div class="grid fluid">
                             <div class="row">
                                 <div class="span3">
@@ -52,9 +58,7 @@
                                 </div>
                                 <div class="span6">
                                     <div class="input-control text" data-role="input-control">
-                                        {{ form.nombre }}
                                         <input type="text" name="complejidad"  required>
-
                                     </div>
                                 </div>
                             </div>
@@ -67,9 +71,7 @@
                                 </div>
                                 <div class="span6">
                                     <div class="input-control text" data-role="input-control">
-                                        {{ form.nombre }}
                                         <input type="text" name="prior" required>
-
                                     </div>
                                 </div>
                             </div>
@@ -78,13 +80,11 @@
                         <div class="grid fluid">
                             <div class="row">
                                 <div class="span3">
-                                    <label class="text-right">Versión</label>
+                                    <label class="text-right">Versi&oacute;n</label>
                                 </div>
                                 <div class="span6">
                                     <div class="input-control text" data-role="input-control">
-                                        {{ form.nombre }}
                                         <input type="text" name="vers" required>
-
                                     </div>
                                 </div>
                             </div>
@@ -98,9 +98,7 @@
                                 </div>
                                 <div class="span6">
                                     <div class="input-control text" data-role="input-control">
-                                        {{ form.nombre }}
                                         <input type="text" name="estado" required>
-
                                     </div>
                                 </div>
                             </div>
@@ -111,7 +109,7 @@
                         <br>
                         <br>
                         <input type="submit" value="Aceptar" onclick="mensaje()">
-                        <a href="{% url 'sigma:adm_i' %}"><input type="button" value="Cancelar" ></a>
+                        <a href="{% url 'sigma:adm_i' fase %}"><input type="button" value="Cancelar" ></a>
                     </div>
                 </fieldset>
             </form>
