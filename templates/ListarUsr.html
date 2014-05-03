@@ -52,6 +52,12 @@
                                                             <i class="icon-pencil on-left"></i>Modificar</a></li>
                                                         <li class="text-left"><a href="{% url 'sigma:adm_u_baja' u.id %}">
                                                             <i class="icon-remove on-left"></i>Eliminar</a></li>
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_u_asig_rol' u.id %}">
+                                                            <i class="icon-plus-2 on-left"></i>
+                                                            <i class="icon-user-3 on-left"></i>Asig. Roles</a></li>
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_u_desasig_rol' u.id %}">
+                                                            <i class="icon-minus-2 on-left"></i>
+                                                            <i class="icon-user-3 on-left"></i>Desasig. Roles</a></li>
                                                         <li class="text-left"><a href="{% url 'sigma:adm_u_ver' u.id %}">
                                                             <i class="icon-eye on-left"></i>Ver detalle</a></li>
                                                     </ul>

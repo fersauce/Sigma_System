@@ -9,7 +9,6 @@ def permisos_requeridos(permisos_var, redirec, mensaje):
             c = 0
             for p in permisos_var:
                 if p in request.session['permisos']:
-                    print "Se encontro el permiso " + p
                     c = c + 1
             if c == permisos_var.__len__():
                 return vista(request, *args, **kwargs)
