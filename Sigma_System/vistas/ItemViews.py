@@ -23,6 +23,9 @@ def administrarItem(request):
 
 @login_required(login_url='/login/')
 def altaItem(request):
+    """
+    vista utilizada para crear un item
+    """
     its=Item.objects.all()
     if request.method == 'POST':
         ti=TipoDeItem.objects.get(id=1)
@@ -43,16 +46,21 @@ def altaItem(request):
 @login_required(login_url='/login/')
 def modificar_item(request, it):
     """
-    vista utilizada para dar de baja a un usuario, baja logica
+    vista utilizada para modificar un item
     """
-    user = User.objects.get(id=us)
-    #direccion = '/ss/adm_u/?page='+request.session['pag_actual']
+
+    its=Item.objects.get(id=it)
     if request.method == 'POST':
-        user.usuario.direccion = request.POST['direccion']
-        user.usuario.tel = request.POST['tel']
-        user.usuario.save()
-        nombre = user.username
-        messages.info(request, 'usuario: '+nombre+', modificado correctamente')
+        print(it)
+        its.complejidad=request.POST['complejidad']
+        its.prioridad=request.POST['prior']
+        #its.version=request.POST['version']
+        vers=its.version + 1
+        its.version=vers
+        its.estado=request.POST['estado']
+
+        its.save()
+        messages.info(request, 'Item modificado correctamente')
     else:
-        return render(request, 'modificarUsuario.html', {'user': user})
-    return HttpResponseRedirect('/ss/adm_u/')
+        return render(request, 'ModificarItem.html', {'item': its})
+    return HttpResponseRedirect('/ss/adm_i/')
