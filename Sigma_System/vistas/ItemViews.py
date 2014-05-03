@@ -17,7 +17,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 @login_required(login_url='/login/')
 def administrarItem(request):
-    its=Item.objects.all()
+
+    its=Item.objects.exclude(estado ='baja')
     return render(request,'AdministrarItem.html', {'items':its})
 
 
@@ -26,7 +27,7 @@ def altaItem(request):
     """
     vista utilizada para crear un item
     """
-    its=Item.objects.all()
+    its=Item.objects.exclude(estado ='baja')
     if request.method == 'POST':
         ti=TipoDeItem.objects.get(id=1)
         name=request.POST['nombre']
@@ -64,3 +65,19 @@ def modificar_item(request, it):
     else:
         return render(request, 'ModificarItem.html', {'item': its})
     return HttpResponseRedirect('/ss/adm_i/')
+
+
+@login_required(login_url='/login/')
+def baja_item(request, it):
+    """
+    vista utilizada para dar de baja un item, baja logica
+    """
+    #user = User.objects.get(id=us)
+
+    its=Item.objects.get(id=it)
+    its.estado="baja"
+
+    its.save()
+    messages.error(request, 'El item  ha sido eliminado')
+    return HttpResponseRedirect('/ss/adm_i/')
+
