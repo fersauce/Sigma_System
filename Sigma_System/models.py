@@ -10,9 +10,8 @@ class Proyecto(models.Model):
     nombre = models.CharField(max_length=30, unique=True)
     descripcion = models.CharField(max_length=200)
     fechaCreacion = models.DateField(default=datetime.datetime.now())
-    fechaInicio = models.DateField(default=datetime.datetime.now())
-    fechaFinalizacion = models.DateField(
-        default=(datetime.datetime.now() + datetime.timedelta(days=1)))
+    fechaInicio = models.DateField(default='')
+    fechaFinalizacion = models.DateField(default='')
     duracion = models.IntegerField()
     complejidad = models.IntegerField()
     costo = models.IntegerField()
@@ -82,7 +81,7 @@ class Atributo(models.Model):
 
 class TipoDeItem(models.Model):
     """
-        Clase que define el modelo TipoDeItem(TI)
+    Clase que define el modelo TipoDeItem(TI)
     """
     fase = models.ForeignKey(Fase)
     usuario = models.ForeignKey(Usuario)

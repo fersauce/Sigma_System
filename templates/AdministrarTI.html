@@ -30,11 +30,18 @@
                     <small>Tipo de &Iacute;tem</small>
                 </button>
             </a>
+            <a href="{%  url 'sigma:adm_ti_impor' fase.pk%}" id="importarLink">
+                <button class="command-button primary">
+                    <i class="icon-new on-left"></i><b>Importar</b>
+                    <small>Tipo de &Iacute;tem</small>
+                </button>
+            </a>
             <table class="table striped hovered dataTable" id="tablaTI">
                 <thead>
                     <th class="text-left">Nombre</th>
                     <th class="text-left">Descripci&oacute;n</th>
                     <th class="text-left">Puede Importar?</th>
+                    <th class="text-left">Editar</th>
                 </thead>
                 <tbody>
                     {% for ti in listaTI %}
@@ -54,7 +61,7 @@
                                                             <i class="icon-pencil on-left"></i>Modificar</a></li>
                                                         <li class="text-left"><a id="botBaja{{ ti.pk }}">
                                                             <i class="icon-remove on-left"></i>Eliminar</a></li>
-                                                        <li class="text-left"><a href="#">
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_atrib' ti.pk %}">
                                                             <i class="icon-book on-left"></i>Atributos</a></li>
                                                     </ul>
                                                 </li>
@@ -78,14 +85,13 @@
                                 content: 'This Window is draggable by caption.',
                                 onShow: function(){
                                     var content = '<form>' +
-                                            '<p>¿Est&aacute; seguro de querer eliminar esta fase?</p>' +
+                                            '<p>¿Est&aacute; seguro de querer eliminar este Tipo de &Iacute;tem?</p>' +
                                             '<a class="button primary" href="{% url 'sigma:adm_ti_baja' pkProyecto fase.pk ti.pk %}"> S&iacute; </a>' +
                                             '<a href="{% url 'sigma:adm_ti' pkProyecto fase.pk %}"><input type="button" value="No" ></a>'+
                                             '</form>';
                                     $.Dialog.title("Confirmar Eliminaci&oacute;n");
                                     $.Dialog.content(content);
                                 }
-
                             });
                         });
                         </script>
@@ -96,6 +102,7 @@
                         <th class="text-left">Nombre</th>
                         <th class="text-left">Descripci&oacute;n</th>
                         <th class="text-left">Puede Importar?</th>
+                        <th class="text-left">Editar</th>
                     </tr>
                 </tfoot>
             </table>

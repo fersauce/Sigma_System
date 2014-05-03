@@ -2,25 +2,25 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from Sigma_System.models import TipoDeItem, Fase, Usuario, Item
+from Sigma_System.models import TipoDeItem, Fase, Item, AtribTipoDeItem
 
 
 def administrarTI(request, idProyect, idFase):
     """
-        Vista que se encarga de mostrar los TI de la fase.
-        @type request: django.http.HttpRequest.
-        @param request: Contiene la informacion sobre la solicitud de la pagina que lo llamo
+    Vista que se encarga de mostrar los TI de la fase.
+    @type request: django.http.HttpRequest.
+    @param request: Contiene la informacion sobre la solicitud de la pagina que lo llamo
 
-        @type idProyect: string.
-        @param idProyect: Contiene el id del proyecto sobre el cual se esta trabajando.
+    @type idProyect: string.
+    @param idProyect: Contiene el id del proyecto sobre el cual se esta trabajando.
 
-        @type idFase: string.
-        @param idFase: Contiene el id de la fase sobre la cual se esta trabajando.
+    @type idFase: string.
+    @param idFase: Contiene el id de la fase sobre la cual se esta trabajando.
 
-        @rtype django.shortcuts.render
-        @return: AdministrarTI.html, pagina en la cual se trabaja con los TI de la fase.
+    @rtype django.shortcuts.render
+    @return: AdministrarTI.html, pagina en la cual se trabaja con los TI de la fase.
 
-        @author: Fernando Saucedo
+    @author: Fernando Saucedo
     """
     fase = Fase.objects.get(pk=idFase)
     tiposItem = TipoDeItem.objects.filter(fase=fase)
@@ -131,6 +131,10 @@ def modificarTI(request, idProyect, idFase, idTI):
                     return render(request, 'timodificar.html',
                                   {'pkProyecto': idProyect, 'pkFase': idFase,
                                    'tipoItem': TImodificado})
+        item = Item.objects.filter(tipoItems=TImodificado)
+        if item.__len__() > 0:
+            messages.error(request, 'No se puede modificar, el tipo de item ya'
+                                    'se encuentra instanciado')
         if request.POST['importar'] == 'True':
             importar = True
         else:
@@ -177,17 +181,82 @@ def bajaTI(request, idProyect, idFase, idTI):
     """
     TIEliminado = TipoDeItem.objects.get(pk=idTI)
     itemsInstanciados = Item.objects.filter(tipoItems=TIEliminado)
-    if request.method == 'POST':
+    if request.method == 'GET':
         if itemsInstanciados.__len__() > 0:
             messages.error(request, 'No se puede suprimir este tipo de item, ya'
                                     'se encuentra instanciado')
             return administrarTI(request, idProyect, idFase)
         try:
             TIEliminado.delete()
-            messages.success(request, 'Tipo de Item'+str(TIEliminado.nombre)+'eliminado')
+            messages.success(request, 'Tipo de Item ' + str(
+                TIEliminado.nombre) + ' eliminado')
         except Exception as error:
-            messages.error(request, 'Ha ocurrido un error en el sistema, el tipo'
-                                    'de item no ha podido ser eliminado')
-            print error.message
+            messages.error(request,
+                           'Ha ocurrido un error en el sistema, el tipo'
+                           'de item no ha podido ser eliminado')
+            print error.args
             return administrarTI(request, idProyect, idFase)
     return administrarTI(request, idProyect, idFase)
+
+
+def importarTI(request, idFase):
+    """
+    Vista que se encarga de importar el Tipo de Item selccionado
+    @type request: django.http.HttpRequest.
+    @param request: Contiene la informacion sobre la solicitud de la pagina
+    que lo llamo
+
+    @type idFase: unicode.
+    @param idFase: Contiene el id de la fase sobre la cual se esta
+    trabajando.
+
+    @rtype django.shortcuts.render
+    @return: AdministrarTI.html, pagina en la cual se trabaja con los TI de
+    la fase
+
+    @author: Fernando Saucedo
+    """
+    listaImportados = TipoDeItem.objects.filter(importar=True)
+    for lista in listaImportados:
+        print lista.nombre
+    print idFase
+    fase = Fase.objects.get(pk=idFase)
+    username = str(request.META['USER'])
+    user = User.objects.get(username=username)
+    usuario = user.usuario
+    if request.method == 'POST':
+        tiAImportar = TipoDeItem.objects.get(pk=request.POST['ti'])
+        listaTIFase = TipoDeItem.objects.filter(fase=fase).exclude(
+            pk=tiAImportar.pk)
+        for ti in listaTIFase:
+            if ti.nombre == request.POST['nombre']:
+                messages.error(request, 'Este nombre ya esta siendo utilizado, '
+                                        'por favor, cambielo.')
+                return render(request, 'faseintercambiar.html',
+                              {'fase': fase, 'tipos': listaImportados})
+
+        tiNuevo = TipoDeItem.objects.create(
+            fase=fase,
+            usuario=usuario,
+            nombre=request.POST['nombre'],
+            descripcion=request.POST['descripcion'],
+            importar=request.POST['importar']
+        )
+        tiNuevo.codigo = 'SS_' + str(fase.proyecto.pk) + '_' + str(
+            idFase) + '_' + str(tiNuevo.pk)
+        tiNuevo.save()
+        listaAtributos = AtribTipoDeItem.objects.filter(tipoDeItem=tiAImportar)
+        for atrib in listaAtributos:
+            atributo = AtribTipoDeItem()
+            atributo.tipoDeItem = tiNuevo
+            atributo.atributos = atrib.atributos
+            atributo.nombre = atrib.nombre
+            atributo.save()
+        messages.success(request, 'tipo importado correctamente')
+    else:
+        messages.success(request, 'hola')
+        return render(request, 'faseintercambiar.html',
+                      {'fase': fase, 'tipos': listaImportados})
+    return HttpResponseRedirect(
+        '/ss/proyecto/' + str(fase.proyecto.pk) + '/fase/' + str(
+            fase.pk) + '/tipoItem/')
