@@ -38,3 +38,21 @@ def altaItem(request):
         return render(request, 'AltaItems.html',)
 
     return render(request,'AdministrarItem.html', {'items':its})
+
+
+@login_required(login_url='/login/')
+def modificar_item(request, it):
+    """
+    vista utilizada para dar de baja a un usuario, baja logica
+    """
+    user = User.objects.get(id=us)
+    #direccion = '/ss/adm_u/?page='+request.session['pag_actual']
+    if request.method == 'POST':
+        user.usuario.direccion = request.POST['direccion']
+        user.usuario.tel = request.POST['tel']
+        user.usuario.save()
+        nombre = user.username
+        messages.info(request, 'usuario: '+nombre+', modificado correctamente')
+    else:
+        return render(request, 'modificarUsuario.html', {'user': user})
+    return HttpResponseRedirect('/ss/adm_u/')
