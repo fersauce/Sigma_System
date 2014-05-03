@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_u' %}"> Administrar Usuario</a>
+    <span class="element-divider"></span>
+    <a class="element" href="#"> Usuario: {{ user.username }}</a>
+    <a class="pull-menu" href="#"></a>
+    <ul class="element-menu">
+        <div class="no-tablet-portrait">
+            <div class="element place-right">
+                <a class="dropdown-toggle" href="#">
+                    <span class="icon-cog"></span>
+                </a>
+                <ul class="dropdown-menu place-right" data-role="dropdown">
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </ul>
+{% endblock %}
+{% block contenido %}
+    <div class="container" align="center">
+        <h1>Asignar<small class="on-right">Roles</small></h1>
+        <div class="">
+            <form action="{%  url 'sigma:adm_u_desasig_rol' user.id %}" method="post">
+                {% csrf_token %}
+                <fieldset>
+                    <div class="input-control switch" data-role="input-control" align="left">
+                        <label class="inline-block" align="left">
+                            <input type="checkbox" name="mar_desmar" value="" onclick=marcar(this);>
+                            <span class="check"></span>
+                            Marcar/Desmarcar
+                        </label>
+                        <br><br>
+                        {% for rol in roles %}
+                        <label class="inline-block" align="left">
+                            <input type="checkbox" name="roles" value="{{ rol.id }}" align="left" checked>
+                            <span class="check"></span>
+                            {{ rol.nombre }}
+                        </label>
+                        <br>
+                        {% endfor %}
+                    </div>
+                    <div class="span3">
+                        <input type="submit" value="Aceptar" onclick="">
+                        <a href="{% url 'sigma:adm_u' %}"><input type="button" value="Cancelar" ></a>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}

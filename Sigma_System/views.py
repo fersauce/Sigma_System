@@ -6,12 +6,14 @@ from django.shortcuts import render, render_to_response
 from django.http import *
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from Sigma_System.models import *
 from Sigma_System.forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from decoradores import permisos_requeridos
+from funciones_aux import permisos_disponibles
+from django.core.urlresolvers import reverse
+from Sigma_System.models import Rol, UsuarioRol
 
 
 def iniciarsesion(request):
@@ -25,16 +27,23 @@ def iniciarsesion(request):
                 if user.is_active:
                     login(request, user)
                     request.session['userpk'] = username
-                    return render(request, 'principal.html',
-                                  {'user': username, })
+                    request.session['permisos'] = permisos_disponibles(user)
+                    if 'super_us' in request.session['permisos']:
+                        return HttpResponseRedirect(reverse('sigma:inicio'))
+                    else:
+                        return HttpResponseRedirect(reverse('sigma:adm_proy'))
+            else:
+                messages.error(request, 'Username o contrasenha incorrecta')
     else:
         form = FormLogin()
     return render(request, 'login.html', {'form': form, })
 
 
 @login_required(login_url='/login/')
+@permisos_requeridos(['super_us'], 'sigma:adm_proy', 'administrar el sistema')
 def inicio(request):
-    return render(request, 'principal.html')
+    return render(request, 'principal.html', {'user': request.user.username,
+                                              'permisos': request.session['permisos']})
 
 
 @login_required(login_url='/login/')
@@ -44,6 +53,7 @@ def cerrarsesion(request):
 
 
 @login_required(login_url='/login/')
+@permisos_requeridos(['crear_us'], 'sigma:adm_u', 'agregar usuario')
 def alta_usuario(request):
     if request.method == 'POST':
         form = FormAltaUsuario(request.POST, request.FILES)
@@ -54,7 +64,7 @@ def alta_usuario(request):
                 e_mail = form.cleaned_data['email']
                 user = User.objects.filter(email=form.cleaned_data['email'])
                 if user.__len__() == 0:
-                    cid=form.cleaned_data['ci']
+                    cid = form.cleaned_data['ci']
                     user = Usuario.objects.filter(ci=form.cleaned_data['ci'])
                     if user.__len__() == 0:
                         usuario = User.objects.create(username=form.cleaned_data['nombre_usuario'],
@@ -86,10 +96,11 @@ def alta_usuario(request):
             return HttpResponseRedirect('/ss/adm_u/')
     else:
         form = FormAltaUsuario()
-    return render(request, 'Alta Usuario.html', {'form': form})
+        return render(request, 'Alta Usuario.html', {'form': form})
 
 
 @login_required(login_url='/login/')
+@permisos_requeridos('eliminar_us', 'sigma:adm_u', 'eliminar usuario')
 def baja_usuario(request, us):
     """
     vista utilizada para dar de baja un usuario, baja logica
@@ -103,6 +114,7 @@ def baja_usuario(request, us):
 
 
 @login_required(login_url='/login/')
+@permisos_requeridos(['modificar_us'], 'sigma:adm_u', 'modificar usuario')
 def modificar_usuario(request, us):
     """
     vista utilizada para dar de baja a un usuario, baja logica
@@ -121,6 +133,7 @@ def modificar_usuario(request, us):
 
 
 @login_required(login_url='/login/')
+@permisos_requeridos(['ver_us'], 'sigma:inicio', 'administrar usuarios')
 def adm_usuario(request):
     user_list = User.objects.filter(is_active=True)
     """paginator = Paginator(user_list, 2)
@@ -191,7 +204,6 @@ def buscar_usuario(request):
     return HttpResponseRedirect('/ss/adm_u/')
 
 
-
 @login_required(login_url='/login/')
 def ver_detalle(request, us):
     """
@@ -199,7 +211,7 @@ def ver_detalle(request, us):
     pero sin modificarlos
     """
     user = User.objects.filter(is_active=True, id = us)
-    return render(request, 'verDetalle.html', {'user': user })
+    return render(request, 'verDetalle.html', {'user': user})
 
 @login_required(login_url='/login/')
 def adm_roles(request):
@@ -293,3 +305,45 @@ def redireccion(request):
     else:
         return HttpResponseRedirect('/ss/login/')
 
+
+@login_required(login_url='/login/')
+
+def asignar_roles(request, id):
+    user = User.objects.get(id=id)
+    if request.method == 'POST':
+        roles = request.POST.getlist('roles')
+        for rol_i in roles:
+            rol = Rol.objects.get(id=rol_i)
+            UsuarioRol.objects.create(usuario=user.usuario, rol=rol, idProyecto=0, idFase=0, idItem=0)
+        messages.success(request, 'Asignacion correcta de roles del usuario "' + user.username + '"')
+    else:
+        roles = Rol.objects.all()
+        roles_usr = user.usuario.roles.all()
+        if roles.__len__() != roles_usr.__len__():
+            rol2 = []
+            for r in roles:
+                if r not in roles_usr:
+                    rol2.append(r)
+            return render(request, 'AsignarRol.html', {'roles': rol2, 'user': user})
+        else:
+            messages.info(request, 'El usuario "' + user.username + '" posee todos los roles')
+    return HttpResponseRedirect(reverse('sigma:adm_u'))
+
+
+@login_required(login_url='/login/')
+def desasignar_roles(request, id):
+    user = User.objects.get(id=id)
+    if request.method == 'POST':
+        roles = request.POST.getlist('roles')
+        user.usuario.roles.clear()
+        for rol_i in roles:
+            rol = Rol.objects.get(id=rol_i)
+            UsuarioRol.objects.create(usuario=user.usuario, rol=rol, idProyecto=0, idFase=0, idItem=0)
+        messages.success(request, 'Desasignacion correcta de roles del usuario "' + user.username + '"')
+    else:
+        roles = user.usuario.roles.all()
+        if roles.__len__() != 0:
+            return render(request, 'DesasignarRol.html', {'roles': roles, 'user': user})
+        else:
+            messages.info(request, 'El usuario "' + user.username + '" no posee ningun rol')
+    return HttpResponseRedirect(reverse('sigma:adm_u'))

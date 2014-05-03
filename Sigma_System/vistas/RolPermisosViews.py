@@ -14,7 +14,7 @@ def adm_roles(request):
 @login_required(login_url='/login/')
 def add_roles(request):
     """
-    Vista que maneja la asignacion de roles.
+    Vista que maneja la asignacion de permisos.
     """
     if request.method == 'POST':
         nombre = request.POST['nombre']
