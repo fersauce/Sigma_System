@@ -41,8 +41,6 @@ def alta_fase(request, idProyect):
                 return render(request, 'fasealta.html',
                               {'proyecto': idProyect})
 
-        print fase.last().__getattribute__('nombre')
-
         if request.POST['fechaInicio'] > request.POST['fechaFin']:
             messages.error(request, 'La fecha de Inicio no puede ser'
                                     'superior a la fecha de fin')
