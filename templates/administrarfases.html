@@ -37,12 +37,13 @@
                          <th class="text-left">Estado</th>
                          <th class="text-left">Fecha de Inicio</th>
                          <th class="text-left">Fecha de Fin</th>
+                         <th class="text-left">Editar</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for fase in fases %}
                         <tr>
-                            <td><a href="{% url 'sigma:adm_ti' fase.proyecto.pk fase.pk %}">{{ fase.nombre }}</a></td>
+                            <td>{{ fase.nombre }}</td>
                             <td class="right" width>{{ fase.posicionFase }}</td>
                             <td class="right" width>{{ fase.estado }}</td>
                             <td class="right" width>{{ fase.fechaInicio}}</td>
@@ -59,6 +60,8 @@
                                                             <i class="icon-pencil on-left"></i>Modificar</a></li>
                                                         <li class="text-left"><a id="botBaja{{ fase.pk }}" >
                                                             <i class="icon-remove on-left"></i>Eliminar</a></li>
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_ti' fase.proyecto.pk fase.pk %}">
+                                                            <i class="icon-accessibility"></i>Tipos de &Iacute;tem</a></li>
                                                     </ul>
                                                 </li>
                                             </ul>
@@ -101,6 +104,7 @@
                         <th class="text-left">Estado</th>
                         <th class="text-left">Fecha de Inicio</th>
                         <th class="text-left">Fecha de Fin</th>
+                        <th class="text-left">Editar</th>
                     </tr>
                 </tfoot>
             </table>
