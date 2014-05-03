@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href={% url 'sigma:inicio' %}> Página Principal</a>
+    <a class="element place-right" href={% url 'sigma:finalizar' %}></a>
+    <span class="element-divider"></span>
+    <a class="pull-menu" href="#"></a>
+    <ul class="element-menu">
+        <li></li>
+        <div class="no-tablet-portrait">
+            <div class="element place-right">
+                <a class="dropdown-toggle" href="#">
+                    <span class="icon-cog"></span>
+                </a>
+                <ul class="dropdown-menu place-right" data-role="dropdown">
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
+                    <!--li><a href="{ url 'sigma:' %}">Cambiar Contraseña</a></li-->
+                </ul>
+            </div>
+        </div>
+    </ul>
+{% endblock %}
+
+{% block contenido %}
+    <div class="container" align="center">
+        <h1>Cambiar<small class="on-right">Contraseña</small></h1>
+        <div class="">
+            <form action="{%  url 'sigma:cambiarPass' %}" method="post">
+                {% csrf_token %}
+                <fieldset>
+                    <div class="span9">
+
+                        <!--div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Usuario</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control" >
+                                         <!--input type="text" placeholder="usuario" id ="username" required-->
+
+
+                                        <!--input type="text" placeholder=" " name="un" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div-->
+
+
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Contraseña Actual</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control">
+                                         <!--input type="text" placeholder="usuario" id ="username" required-->
+
+
+                                        <input type="text" placeholder=" " name="passVieja" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Contraseña Nueva</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control">
+                                         <!--input type="text" placeholder="usuario" id ="username" required-->
+
+
+                                        <input type="text" placeholder=" " name="passNueva" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Confirme Contraseña</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control">
+                                         <!--input type="text" placeholder="usuario" id ="username" required-->
+
+
+                                        <input type="text" placeholder=" " name="passNueva2" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="submit" value="Aceptar" onclick="">
+                    <a href="{% url 'sigma:inicio' %}"><input type="button" value="Cancelar" ></a>
+                </fieldset>
+            </form>
+        </div>
+        <br>
+    </div>
+{% endblock %}

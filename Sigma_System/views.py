@@ -110,11 +110,15 @@ def modificar_usuario(request, us):
     user = User.objects.get(id=us)
     #direccion = '/ss/adm_u/?page='+request.session['pag_actual']
     if request.method == 'POST':
+        user.first_name=request.POST['nombre']
+        user.last_name=request.POST['apellido']
         user.usuario.direccion = request.POST['direccion']
+        user.usuario.ci=request.POST['ci']
         user.usuario.tel = request.POST['tel']
         user.usuario.save()
+        user.save()
         nombre = user.username
-        messages.info(request, 'usuario: '+nombre+', modificado correctamente')
+        messages.info(request, 'usuario "'+nombre+'" modificado correctamente')
     else:
         return render(request, 'modificarUsuario.html', {'user': user})
     return HttpResponseRedirect('/ss/adm_u/')
@@ -293,3 +297,35 @@ def redireccion(request):
     else:
         return HttpResponseRedirect('/ss/login/')
 
+
+def cambiarPass(request):
+    """
+    Metodo en el que el usuario cambia su pass
+    """
+    us = request.user
+    if request.method == 'POST':
+        #user = User.objects.filter(username=request.POST['un'])
+
+        #if user:
+
+            passVieja= request.POST['passVieja']
+            viejoConHash=make_password(passVieja)
+            #valor=user.password
+            #valor=us.password
+            passNueva=request.POST['passNueva']
+            confirmacion=request.POST['passNueva2']
+            if passNueva == confirmacion:
+
+                nuevo=make_password(confirmacion)
+                us.password = nuevo
+                us.save()
+                messages.info(request, 'Contrasenha cambiada con exito')
+            else:
+                messages.error(request, 'Las contrasenhas no coinciden')
+                return render(request, 'cambiarPass.html')
+        #else:
+         #   messages.error(request,'El usuario no existe' )
+          #  return render(request, 'cambiarPass.html')
+    else:
+        return render(request, 'cambiarPass.html')
+    return HttpResponseRedirect('/ss/inicio/')
