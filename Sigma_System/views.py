@@ -27,7 +27,10 @@ def iniciarsesion(request):
                 if user.is_active:
                     login(request, user)
                     request.session['permisos'] = permisos_disponibles(user)
-                    return HttpResponseRedirect(reverse('sigma:inicio'))
+                    if 'super_us' in request.session['permisos']:
+                        return HttpResponseRedirect(reverse('sigma:inicio'))
+                    else:
+                        return HttpResponseRedirect(reverse('sigma:adm_proy'))
             else:
                 messages.error(request, 'Username o contrasenha incorrecta')
     else:
@@ -36,7 +39,7 @@ def iniciarsesion(request):
 
 
 @login_required(login_url='/login/')
-@permisos_requeridos(['crear_pr','crear_us','crear_fa'], 'sigma:login', 'administrar el sistema')
+@permisos_requeridos(['super_us'], 'sigma:adm_proy', 'administrar el sistema')
 def inicio(request):
     return render(request, 'principal.html', {'user': request.user.username,
                                               'permisos': request.session['permisos']})
@@ -211,6 +214,7 @@ def ver_detalle(request, us):
 
 
 @login_required(login_url='/login/')
+
 def asignar_roles(request, id):
     user = User.objects.get(id=id)
     if request.method == 'POST':
