@@ -13,6 +13,8 @@ urlpatterns = patterns('',
     url(r'^adm_u_mod/(?P<us>\d+)/$', 'Sigma_System.views.modificar_usuario', name='adm_u_mod'),
     url(r'^adm_u_bus/$', 'Sigma_System.views.buscar_usuario', name='adm_u_bus'),
     url(r'^adm_u_ver/(?P<us>\d+)$', 'Sigma_System.views.ver_detalle', name='adm_u_ver'),
+    url(r'^adm_u_cambiar/(?P<us>\d+)$', 'Sigma_System.views.cambiar', name='adm_u_cambiar'),
+
     url(r'^rol/$', 'Sigma_System.vistas.RolPermisosViews.adm_roles',
         name='adm_r'),
     url(r'^rol/nuevo/$', 'Sigma_System.vistas.RolPermisosViews.add_roles',
