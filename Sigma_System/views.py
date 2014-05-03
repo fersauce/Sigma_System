@@ -234,7 +234,10 @@ def cambiar(request, us):
     else:
         return render(request, 'cambiarPass2.html', {'id':us})
 
-    return HttpResponseRedirect('/ss/inicio/')@login_required(login_url='/login/')
+    return HttpResponseRedirect('/ss/inicio/')
+
+
+@login_required(login_url='/login/')
 def adm_roles(request):
     roles_list = Rol.objects.order_by('id')
     paginator = Paginator(roles_list, 2)
