@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
+    <a class="pull-menu" href="#"></a>
+    <a class="element place-right" href="#">   </a>
+    <span class="element-divider"></span>
+    <ul class="element-menu">
+        <li></li>
+        <div class="no-tablet-portrait">
+            <div class="element place-right">
+                <a class="dropdown-toggle" href="#">
+                    <span class="icon-cog"></span>
+                </a>
+                <ul class="dropdown-menu place-right" data-role="dropdown">
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </ul>
+{% endblock %}
+{% block contenido %}
+    <div class="container" align="center">
+        <h1><a href="#"></a>Administrador<small class="on-right">de Items</small></h1>
+        <div class="example">
+            <a href="{%  url 'sigma:adm_i_alta' %}">
+                <button class="command-button primary">
+                    <i class="icon-new on-left"></i><b>Agregar</b>
+                    <small>Item</small>
+                </button>
+            </a>
+            <table class="table striped hovered dataTable" id="datatable2">
+                <thead>
+                    <th class="text-left">Nombre del Item</th>
+                    <th class="text-left">Version</th>
+                    <th class="text-left">Estado</th>
+                    <th class="text-center">Editar</th>
+                </thead>
+                <tbody>
+                    {% for i in items %}
+                        <tr>
+                            <td class="right">{{ i.tipoItems.nombre }}</td>
+                            <td class="right">{{ i.version }}</td>
+                            <td class="right">{{ i.estado }}</td>
+                            <td align="center">
+                                <div class="span1">
+                                    <nav class="navigation-bar">
+                                        <div class="navigation-bar-content">
+                                            <ul class="element-menu">
+                                                <li>
+                                                    <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
+                                                    <ul class="dropdown-menu" data-role="dropdown">
+                                                        <li class="text-left"><a href="#">
+                                                            <i class="icon-pencil on-left"></i>Modificar</a></li>
+                                                        <li class="text-left"><a href="#">
+                                                            <i class="icon-remove on-left"></i>Eliminar</a></li>
+                                                        <li class="text-left"><a href="#">
+                                                            <i class="icon-eye on-left"></i>Ver detalle</a></li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </nav>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-left">Nombre del Item</th>
+                        <th class="text-left">Version</th>
+                        <th class="text-left">Estado</th>
+                        <th class="text-center">Editar</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <script>
+                $(document).ready(function() {
+                    $('#datatable2').dataTable( {
+                        "oLanguage": {
+                            "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                        }
+                    } );
+                } );
+            </script>
+        </div>
+    </div>
+{% endblock %}

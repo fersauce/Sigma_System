@@ -53,4 +53,8 @@ urlpatterns = patterns('',
     url(r'^proyecto/(?P<idProyect>\d+)/fase/baja/(?P<idFase>\d+)',
        'Sigma_System.vistas.FaseViews.baja_fase',
        name='adm_fase_baja'),
+
+    url(r'^adm_i_alta/$', 'Sigma_System.vistas.ItemViews.altaItem', name='adm_i_alta'),
+    url(r'^adm_i/$', 'Sigma_System.vistas.ItemViews.administrarItem', name='adm_i'),
+
     )
