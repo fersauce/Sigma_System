@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href={% url 'sigma:inicio' %}> Página Principal</a>
+    <span class="element-divider"></span>
+    <a class="element" href={% url 'sigma:adm_u' %}> Administrar Usuario </a>
+    <a class="element place-right" href="#">   </a>
+    <span class="element-divider"></span>
+    <a class="pull-menu" href="#"></a>
+    <ul class="element-menu">
+        <li></li>
+        <div class="no-tablet-portrait">
+            <div class="element place-right">
+                <a class="dropdown-toggle" href="#">
+                    <span class="icon-cog"></span>
+                </a>
+                <ul class="dropdown-menu place-right" data-role="dropdown">
+                    <li><a href={% url 'sigma:finalizar' %}>Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </ul>
+{% endblock %}
+{% block contenido %}
+    <div class="container" align = "center">
+        <h1><a href="#"></a>Modificar<small class="on-right">Item</small></h1>
+        <div class="">
+            <form action = "{% url 'sigma:adm_i_mod'  item.id %}" method="post">
+                {% csrf_token %}
+                <fieldset>
+                    <div class="span9">
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label>Nombre</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text"  data-role="input-control" >
+                                        <input type="text"  name="nombre" required value={{item.tipoItems.nombre }} >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label>Complejidad</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control">
+                                        <input type="text" placeholder=" " name="complejidad" required value={{item.complejidad }} >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label>Prioridad</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control">
+                                        <input type="text"  name="prior" required value={{item.prioridad }} >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label>Version</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control">
+                                        <input type="text"  name="version" required value={{item.version }} disabled >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label>Estado</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control" >
+                                        <input type="text" name="estado" required value={{item.estado }}>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br>
+                        <br>
+                        <br>
+                        <input type="submit" value="Aceptar" onclick="mensaje()">
+                        <a href="{% url 'sigma:adm_i' %}"><input type="button" value="Cancelar" ></a>
+                    </div>
+                </fieldset>
+            </form>
+        </div><!--DIV DEL CLASS VACIO-->
+    </div><!--======div de container-->
+{% endblock %}

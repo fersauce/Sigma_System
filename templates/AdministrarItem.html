@@ -18,7 +18,7 @@
                 var content =
                     '<div class="example">'+
                         '<form>' +
-                            '<h2>Est&aacute; a punto de eliminar este usuario...</h2>' +
+                            '<h2>Est&aacute; a punto de eliminar este item...</h2>' +
                             '<div class="form-actions" align="center">'+
                                 '<a class="button" href="' + url_aux + '"> Aceptar </a>' + ' ' +
                                 '<button class="button" onclick=$.Dialog.close()>' +
@@ -35,11 +35,12 @@
 {% endblock %}
 
 
-
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
     <a class="pull-menu" href="#"></a>
+    <a class="element place-right" href="#">   </a>
+    <span class="element-divider"></span>
     <ul class="element-menu">
         <li></li>
         <div class="no-tablet-portrait">
@@ -56,27 +57,27 @@
 {% endblock %}
 {% block contenido %}
     <div class="container" align="center">
-        <h1><a href="#"></a>Administrador<small class="on-right">de Usuario</small></h1>
+        <h1><a href="#"></a>Administrador<small class="on-right">de Items</small></h1>
         <div class="example">
-            <a href="{%  url 'sigma:adm_u_altas' %}">
+            <a href="{%  url 'sigma:adm_i_alta' %}">
                 <button class="command-button primary">
                     <i class="icon-new on-left"></i><b>Agregar</b>
-                    <small>Usuario</small>
+                    <small>Item</small>
                 </button>
             </a>
             <table class="table striped hovered dataTable" id="datatable2">
                 <thead>
-                    <th class="text-left">Username</th>
-                    <th class="text-left">E-mail</th>
-                    <th class="text-left">Fecha de Registro</th>
+                    <th class="text-left">Nombre del Item</th>
+                    <th class="text-left">Version</th>
+                    <th class="text-left">Estado</th>
                     <th class="text-center">Editar</th>
                 </thead>
                 <tbody>
-                    {% for u in user_list %}
+                    {% for i in items %}
                         <tr>
-                            <td>{{ u.username }}</td>
-                            <td class="right">{{ u.email }}</td>
-                            <td class="right">{{ u.date_joined }}</td>
+                            <td class="right">{{ i.tipoItems.nombre }}</td>
+                            <td class="right">{{ i.version }}</td>
+                            <td class="right">{{ i.estado }}</td>
                             <td align="center">
                                 <div class="span1">
                                     <nav class="navigation-bar">
@@ -85,21 +86,13 @@
                                                 <li>
                                                     <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
                                                     <ul class="dropdown-menu" data-role="dropdown">
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_u_mod' u.id %}">
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_i_mod' i.id %}">
                                                             <i class="icon-pencil on-left"></i>Modificar</a></li>
-                                                        <li class="text-left" onclick="confirmar('{% url 'sigma:adm_u_baja' u.id %}')">
+                                                        <li class="text-left" onclick="confirmar('{% url 'sigma:adm_i_baja' i.id %}')">
                                                             <a href="#">
                                                             <i class="icon-remove on-left"></i>Eliminar</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_u_asig_rol' u.id %}">
-                                                            <i class="icon-plus-2 on-left"></i>
-                                                            <i class="icon-user-3 on-left"></i>Asig. Roles</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_u_desasig_rol' u.id %}">
-                                                            <i class="icon-minus-2 on-left"></i>
-                                                            <i class="icon-user-3 on-left"></i>Desasig. Roles</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_u_ver' u.id %}">
-                                                            <i class="icon-eye on-left"></i>Ver detalle</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_u_cambiar' u.id %}">
-                                                            <i class="icon-eye on-left"></i>Set Contraseña</a></li>
+                                                        <!--li class="text-left"><a href="#">
+                                                            <i class="icon-eye on-left"></i>Ver detalle</a></li-->
                                                     </ul>
                                                 </li>
                                             </ul>
@@ -112,9 +105,9 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th class="text-left">Username</th>
-                        <th class="text-left">E-mail</th>
-                        <th class="text-left">Fecha de Registro</th>
+                        <th class="text-left">Nombre del Item</th>
+                        <th class="text-left">Version</th>
+                        <th class="text-left">Estado</th>
                         <th class="text-center">Editar</th>
                     </tr>
                 </tfoot>

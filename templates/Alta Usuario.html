@@ -4,12 +4,12 @@
     <a class="element" href={% url 'sigma:inicio' %}> Página Principal</a>
     <span class="element-divider"></span>
     <a class="element" href={% url 'sigma:adm_u' %}> Administrar Usuario</a>
-    <a class="element place-right" href={% url 'sigma:finalizar' %}> Cerrar Sesion </a>
+    <a class="element place-right" href={% url 'sigma:finalizar' %}>   </a>
     <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
         <li></li>
-        <!--div class="no-tablet-portrait">
+        <!div class="no-tablet-portrait">
             <div class="element place-right">
                 <a class="dropdown-toggle" href="#">
                     <span class="icon-cog"></span>
@@ -18,16 +18,12 @@
                     <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
                 </ul>
             </div>
-        </div-->
+        </div>
     </ul>
 {% endblock %}
 {% block contenido %}
     <div class="container" align = "center">
-        {% if messages %}
-            {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-        {% endif %}
+
         <h1><a href="#"></a>Crear<small class="on-right">Usuario</small></h1>
         <div class="">
             <form action = "{% url 'sigma:adm_u_altas' %}" method="post">
@@ -48,43 +44,109 @@
                                 </div>
                             </div>
                         </div>
-                        <label>Apellido</label>
-                        <div class="input-control text" data-role="input-control">
-                            {{ form.apellido }}
-                            <button class="btn-clear" tabindex="-1" type="button"> </button>
+
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Apellido</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control">
+                                        {{ form.apellido }}
+                                        <button class="btn-clear" tabindex="-1" type="button"> </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <label>Cedula de Identidad</label>
-                        <div class="input-control text" data-role="input-control">
-                            {{ form.ci }}
-                            <button class="btn-clear" tabindex="-1" type="button"> </button>
+
+
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Cédula de Identidad</label>
+                                 </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control">
+                                        {{ form.ci }}
+                                        <button class="btn-clear" tabindex="-1" type="button"> </button>
+                                    </div>
+                                </div>
+                            </div>
+                         </div>
+
+
+
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Direccion</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control" >
+                                        {{ form.direccion }}
+                                        <button class="btn-clear" tabindex="-1" type="button"> </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <label>Direccion</label>
-                        <div class="input-control text" data-role="input-control" >
-                            {{ form.direccion }}
-                            <button class="btn-clear" tabindex="-1" type="button"> </button>
+
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Número de teléfono</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control" >
+                                        {{ form.tel }}
+                                        <button class="btn-clear" tabindex="-1" type="button"> </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <label>Numero de telefono</label>
-                        <div class="input-control text" data-role="input-control" >
-                            {{ form.tel }}
-                            <button class="btn-clear" tabindex="-1" type="button"> </button>
+
+
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Dirección de e-mail</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control" >
+                                        {{ form.email }}
+                                        <button class="btn-clear" tabindex="-1" type="button"> </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <label>Direccion de e-mail</label>
-                        <div class="input-control text" data-role="input-control" >
-                            {{ form.email }}
-                            <button class="btn-clear" tabindex="-1" type="button"> </button>
+
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Nombre de la cuenta</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text" data-role="input-control" >
+                                        {{ form.nombre_usuario }}
+                                        <button class="btn-clear" tabindex="-1" type="button"> </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <label>Nombre de la cuenta</label>
-                        <div class="input-control text" data-role="input-control" >
-                            {{ form.nombre_usuario }}
-                            <button class="btn-clear" tabindex="-1" type="button"> </button>
+
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Contraseña</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control password" data-role="input-control">
+                                        {{ form.contrasenha }}
+                                        <button class="btn-reveal" tabindex="-1" type="button"> </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <label>Contraseña</label>
-                        <div class="input-control password" data-role="input-control">
-                            {{ form.contrasenha }}
-                            <button class="btn-reveal" tabindex="-1" type="button"> </button>
-                        </div>
-                        <br>
-                        <br>
+                        
                         <br>
                         <input type="submit" value="Aceptar" onclick="mensaje()">
                         <a href="{% url 'sigma:adm_u' %}"><input type="button" value="Cancelar" ></a>
