@@ -205,7 +205,36 @@ def ver_detalle(request, us):
     user = User.objects.filter(is_active=True, id = us)
     return render(request, 'verDetalle.html', {'user': user })
 
+
+
 @login_required(login_url='/login/')
+def cambiar(request, us):
+    """
+    vista utilizada para que el administrador cambie la contrasenha
+    de cualquier usuario
+    """
+    if request.method == 'POST':
+        usA=User.objects.get(id=us)
+        direc=usA.email
+        passNueva=request.POST['passNueva']
+        confirmacion=request.POST['conf']
+        if passNueva == confirmacion:
+            contenido = render_to_string('mailing/recuperacion_password.html',
+                                         {'pass': passNueva})
+            correo = EmailMessage('Restablecimiento de Pass de SS', contenido,to=[direc])
+            correo.content_subtype = "html"
+            correo.send()
+            nuevo=make_password(confirmacion)
+            usA.password = nuevo
+            usA.save()
+            messages.info(request, 'Contrasenha cambiada con exito')
+        else:
+            messages.error(request, 'Las contrasenhas no coinciden')
+            return render(request, 'cambiarPass2.html', {'id':us})
+    else:
+        return render(request, 'cambiarPass2.html', {'id':us})
+
+    return HttpResponseRedirect('/ss/inicio/')@login_required(login_url='/login/')
 def adm_roles(request):
     roles_list = Rol.objects.order_by('id')
     paginator = Paginator(roles_list, 2)
