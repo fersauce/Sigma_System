@@ -40,11 +40,11 @@ def altaAtributo(request, idTI):
                 return render(request, 'atributoalta.html',
                               {'atrib_list': listaAtributos,
                                'ti_asoc': tipoItem, 'tipos': tipos})
-        '''AtribTipoDeItem.objects.create(
+        AtribTipoDeItem.objects.create(
             tipoDeItem=tipoItem,
             atributos=atrib,
             nombre=request.POST['nombre']
-        )'''
+        )
         messages.success(request, 'Atributo creado con exito')
         return HttpResponseRedirect(
             '/ss/proyecto/fase/tipoItem/' + str(idTI) + '/atributo/')

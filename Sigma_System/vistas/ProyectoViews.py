@@ -46,8 +46,9 @@ def alta_proyecto(request):
                     nroFases=0,
                     nroMiembros=1,
                     duracion=0,
-                    fechaInicio='',
-                    fechaFinalizacion=''
+                    fechaInicio=datetime.datetime.now(),
+                    fechaFinalizacion=datetime.datetime.now() + datetime.timedelta(
+                        days=10)
                 )
                 nuevoProyecto.save()
                 messages.success(request, 'Proyecto ' + str(

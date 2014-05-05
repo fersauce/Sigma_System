@@ -75,8 +75,7 @@ def altaTI(request, idProyect, idFase):
             descripcion=request.POST['descripcion'],
             importar=importar
         )
-        tipo.codigo = 'SS_' + str(idProyect) + '_' + str(idFase) + '_' + str(
-            tipo.pk)
+        tipo.codigo = 'SS_'+str(idProyect) + '_' + str(idFase) + '_' + str(tipo.pk)
         tipo.save()
         messages.success(request, 'Tipo de item creado con exito')
         return HttpResponseRedirect(

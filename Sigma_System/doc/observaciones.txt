@@ -15,3 +15,10 @@ Tipos de item, tipos de atributos.
 Administrador de sistema le da los permisos.
 Miembros de un proyecto.
 Contexto de roles.
+
+Tag Iteracion 3: SS_iteracion_3_030520140844
+
+Iteracion 3
+Apache
+
+Botones subir y bajar.Longitud y precision numerico y longitud cadena.Importar que este la fase y proyecto al que pertenecen
