@@ -57,77 +57,93 @@
 {% block contenido %}
     <div class="container" align="center">
         <h1><a href="#"></a>Administrador<small class="on-right">de Usuario</small></h1>
-        <div class="example">
-            <a href="{%  url 'sigma:adm_u_altas' %}">
-                <button class="command-button primary">
-                    <i class="icon-new on-left"></i><b>Agregar</b>
-                    <small>Usuario</small>
-                </button>
-            </a>
-            <table class="table striped hovered dataTable" id="datatable2">
-                <thead>
-                    <th class="text-left">Username</th>
-                    <th class="text-left">E-mail</th>
-                    <th class="text-left">Fecha de Registro</th>
-                    <th class="text-center">Editar</th>
-                </thead>
-                <tbody>
-                    {% for u in user_list %}
-                        <tr>
-                            <td>{{ u.username }}</td>
-                            <td class="right">{{ u.email }}</td>
-                            <td class="right">{{ u.date_joined }}</td>
-                            <td align="center">
-                                <div class="span1">
-                                    <nav class="navigation-bar">
-                                        <div class="navigation-bar-content">
-                                            <ul class="element-menu">
-                                                <li>
-                                                    <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
-                                                    <ul class="dropdown-menu" data-role="dropdown">
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_u_mod' u.id %}">
-                                                            <i class="icon-pencil on-left"></i>Modificar</a></li>
-                                                        <li class="text-left" onclick="confirmar('{% url 'sigma:adm_u_baja' u.id %}')">
-                                                            <a href="#">
-                                                            <i class="icon-remove on-left"></i>Eliminar</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_u_asig_rol' u.id %}">
-                                                            <i class="icon-plus-2 on-left"></i>
-                                                            <i class="icon-user-3 on-left"></i>Asig. Roles</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_u_desasig_rol' u.id %}">
-                                                            <i class="icon-minus-2 on-left"></i>
-                                                            <i class="icon-user-3 on-left"></i>Desasig. Roles</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_u_ver' u.id %}">
-                                                            <i class="icon-eye on-left"></i>Ver detalle</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_u_cambiar' u.id %}">
-                                                            <i class="icon-eye on-left"></i>Set Contraseña</a></li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </nav>
-                                </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th class="text-left">Username</th>
-                        <th class="text-left">E-mail</th>
-                        <th class="text-left">Fecha de Registro</th>
-                        <th class="text-center">Editar</th>
-                    </tr>
-                </tfoot>
-            </table>
-            <script>
-                $(document).ready(function() {
-                    $('#datatable2').dataTable( {
-                        "oLanguage": {
-                            "sUrl": "/static/MetroBoostrap/data/spanish.txt"
-                        }
-                    } );
-                } );
-            </script>
+        <div class="grid">
+            <!--div class="row"-->
+                <div class="span1 no-tablet-portrait">
+                    <nav>
+                        <ul>
+                            <li>Administracion</li>
+                            <li>Desarrollo</li>
+                            <li>Gestion de cambio</li>
+                        </ul>
+
+                    </nav>
+                </div>
+                <div class="" align="center">
+                    <div class="example">
+                        <a href="{%  url 'sigma:adm_u_altas' %}">
+                            <button class="command-button primary">
+                                <i class="icon-new on-left"></i><b>Agregar</b>
+                                <small>Usuario</small>
+                            </button>
+                        </a>
+                        <table class="table striped hovered dataTable" id="datatable2">
+                            <thead>
+                                <th class="text-left">Username</th>
+                                <th class="text-left">E-mail</th>
+                                <th class="text-left">Fecha de Registro</th>
+                                <th class="text-center">Editar</th>
+                            </thead>
+                            <tbody>
+                                {% for u in user_list %}
+                                    <tr>
+                                        <td>{{ u.username }}</td>
+                                        <td class="right">{{ u.email }}</td>
+                                        <td class="right">{{ u.date_joined }}</td>
+                                        <td align="center">
+                                            <div class="span1">
+                                                <nav class="navigation-bar">
+                                                    <div class="navigation-bar-content">
+                                                        <ul class="element-menu">
+                                                            <li>
+                                                                <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
+                                                                <ul class="dropdown-menu" data-role="dropdown">
+                                                                    <li class="text-left"><a href="{% url 'sigma:adm_u_mod' u.id %}">
+                                                                        <i class="icon-pencil on-left"></i>Modificar</a></li>
+                                                                    <li class="text-left" onclick="confirmar('{% url 'sigma:adm_u_baja' u.id %}')">
+                                                                        <a href="#">
+                                                                        <i class="icon-remove on-left"></i>Eliminar</a></li>
+                                                                    <li class="text-left"><a href="{% url 'sigma:adm_u_asig_rol' u.id %}">
+                                                                        <i class="icon-plus-2 on-left"></i>
+                                                                        <i class="icon-user-3 on-left"></i>Asig. Roles</a></li>
+                                                                    <li class="text-left"><a href="{% url 'sigma:adm_u_desasig_rol' u.id %}">
+                                                                        <i class="icon-minus-2 on-left"></i>
+                                                                        <i class="icon-user-3 on-left"></i>Desasig. Roles</a></li>
+                                                                    <li class="text-left"><a href="{% url 'sigma:adm_u_ver' u.id %}">
+                                                                        <i class="icon-eye on-left"></i>Ver detalle</a></li>
+                                                                    <li class="text-left"><a href="{% url 'sigma:adm_u_cambiar' u.id %}">
+                                                                        <i class="icon-eye on-left"></i>Set Contraseña</a></li>
+                                                                </ul>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </nav>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th class="text-left">Username</th>
+                                    <th class="text-left">E-mail</th>
+                                    <th class="text-left">Fecha de Registro</th>
+                                    <th class="text-center">Editar</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <script>
+                            $(document).ready(function() {
+                                $('#datatable2').dataTable( {
+                                    "oLanguage": {
+                                        "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                                    }
+                                } );
+                            } );
+                        </script>
+                    </div>
+                </div>
+            <!--/div-->
         </div>
     </div>
 {% endblock %}
