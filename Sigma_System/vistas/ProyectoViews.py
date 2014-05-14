@@ -35,7 +35,6 @@ def alta_proyecto(request):
         if proyecto.__len__() == 0:
             fecha = datetime.datetime.now()
             try:
-                print request.POST['fechaInicio']
                 nuevoProyecto = Proyecto(
                     nombre=request.POST['nombreProyecto'],
                     fechaCreacion=fecha,
