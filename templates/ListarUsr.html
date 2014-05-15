@@ -57,19 +57,39 @@
 {% block contenido %}
     <div class="container" align="center">
         <h1><a href="#"></a>Administrador<small class="on-right">de Usuario</small></h1>
-        <div class="grid">
-            <!--div class="row"-->
-                <div class="span1 no-tablet-portrait">
-                    <nav>
+        <div class="grid fluid">
+            <div class="row">
+                <div class="span2 no-tablet-portrait" align="left">
+                    <nav class="sidebar light">
                         <ul>
-                            <li>Administracion</li>
-                            <li>Desarrollo</li>
-                            <li>Gestion de cambio</li>
+                            <li class="title">Modulos</li>
+                            <li class="active">
+                                <a class="dropdown-toggle" href="#">
+                                    <i class="icon-globe"></i>
+                                    Administracion
+                                </a>
+                                <ul class="dropdown-menu" data-role="dropdown" style="display: none;">
+                                    <li>Proyectos</li>
+                                    <li>Usuarios</li>
+                                    <li>Roles y Permiso</li>
+                                </ul>
+                            </li>
+                            <li class="stick">
+                                <a href="#">
+                                    <i class="icon-tools"></i>
+                                    Desarrollo
+                                </a>
+                            </li>
+                            <li class="stick">
+                                <a href="#">
+                                    <i class="icon-tree-view"></i>
+                                    Gestion de cambio
+                                </a>
+                            </li>
                         </ul>
-
                     </nav>
                 </div>
-                <div class="" align="center">
+                <div class="span10">
                     <div class="example">
                         <a href="{%  url 'sigma:adm_u_altas' %}">
                             <button class="command-button primary">
@@ -90,8 +110,8 @@
                                         <td>{{ u.username }}</td>
                                         <td class="right">{{ u.email }}</td>
                                         <td class="right">{{ u.date_joined }}</td>
-                                        <td align="center">
-                                            <div class="span1">
+                                        <td align="">
+                                            <div class="span10">
                                                 <nav class="navigation-bar">
                                                     <div class="navigation-bar-content">
                                                         <ul class="element-menu">
@@ -143,7 +163,7 @@
                         </script>
                     </div>
                 </div>
-            <!--/div-->
+            </div>
         </div>
     </div>
 {% endblock %}
