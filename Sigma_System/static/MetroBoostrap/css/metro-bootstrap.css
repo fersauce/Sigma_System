@@ -5829,7 +5829,7 @@ a {
 .metro .sidebar > ul li a {
   display: block;
   position: relative;
-  padding: 10px 20px;
+  padding: 5px;
   text-decoration: none;
   color: #eeeeee;
   background-color: #3D3D3D;
@@ -5843,7 +5843,7 @@ a {
   bottom: 5px;
 }
 .metro .sidebar > ul li a [class*="icon-"] {
-  margin-right: 15px;
+  margin-right: 1px;
 }
 .metro .sidebar > ul li.stick {
   position: relative;
@@ -8423,7 +8423,7 @@ a {
   font-style: normal;
 }
 .metro .example {
-  padding: 20px 40px 20px 60px;
+  padding: 15px 15px 15px 15px;
   border: 1px #ccc solid;
   position: relative;
   margin: 0 0 10px 0;
