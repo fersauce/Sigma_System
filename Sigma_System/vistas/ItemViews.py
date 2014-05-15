@@ -84,6 +84,7 @@ def modificar_item(request, it):
 def baja_item(request, it):
     """
     vista utilizada para dar de baja un item, baja logica
+    donde el parametro it es el id del item a dar de baja
     """
     #user = User.objects.get(id=us)
 
@@ -92,5 +93,5 @@ def baja_item(request, it):
 
     its.save()
     messages.error(request, 'El item  ha sido eliminado')
-    return HttpResponseRedirect('/ss/adm_i/')
+    return HttpResponseRedirect('/ss/adm_i/'+str(its.tipoItems.fase.pk))
 
