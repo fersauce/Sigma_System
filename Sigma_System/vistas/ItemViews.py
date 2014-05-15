@@ -18,9 +18,11 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 @login_required(login_url='/login/')
 def administrarItem(request, idFase):
     request.session['fase'] = idFase
+
+    fs = Fase.objects.get(pk=idFase)
+    nameFa=fs.nombre
     its = Item.objects.exclude(estado='baja')
-    return render(request, 'AdministrarItem.html',
-                  {'items': its, 'fase': idFase})
+    return render(request, 'AdministrarItem.html',{'items': its, 'fase': idFase, 'nomb':nameFa})
 
 
 @login_required(login_url='/login/')
@@ -29,16 +31,20 @@ def altaItem(request, idFase):
     vista utilizada para crear un item
     """
     its = Item.objects.exclude(estado='baja')
-    tis = TipoDeItem.objects.filter(
-        fase=Fase.objects.get(pk=idFase))
+
+    tis = TipoDeItem.objects.filter(fase=Fase.objects.get(pk=idFase))
+    fase=Fase.objects.get(pk=idFase)
+    print("ruthi")
+    print(fase.nombre)
     print tis.first().__getattribute__('nombre')
     if request.method == 'POST':
         ti = TipoDeItem.objects.get(id=request.POST['tipo'])
+
         name = request.POST['nombre']
-        versionA = request.POST['vers']
+        versionA = 1
         compl = request.POST['complejidad']
         pri = request.POST['prior']
-        est = request.POST['estado']
+        est = "activo"
         Item.objects.create(
             tipoItems=ti,
             nombre=name,
@@ -95,3 +101,31 @@ def baja_item(request, it):
     messages.error(request, 'El item  ha sido eliminado')
     return HttpResponseRedirect('/ss/adm_i/'+str(its.tipoItems.fase.pk))
 
+
+@login_required(login_url='/login/')
+def revivir_item(request, idFase):
+    """
+    vista utilizada para mostrar los items a ser revividos
+
+    """
+    request.session['fase'] = idFase
+
+    fs = Fase.objects.get(pk=idFase)
+    nameFa=fs.nombre
+    its = Item.objects.filter(estado='baja')
+
+    return render(request, 'RevivirItem.html',{'items': its, 'fase': idFase, 'nomb':nameFa})
+
+
+@login_required(login_url='/login/')
+def revivir(request, it):
+    """
+    vista utilizada para revivir un item eliminado
+    donde el parametro it es el id del item a revivir
+    """
+    #user = User.objects.get(id=us)
+    its = Item.objects.get(id=it)
+    its.estado = "activo"
+    its.save()
+    messages.success(request, 'El item  ha sido revivido')
+    return HttpResponseRedirect('/ss/adm_i_rev/'+str(its.tipoItems.fase.pk))
