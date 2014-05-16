@@ -52,6 +52,7 @@ class Usuario(models.Model):
     tel = models.CharField(max_length=20)
     estado = models.BooleanField(default=True)
     roles = models.ManyToManyField(Rol, through='UsuarioRol')
+    proyectos = models.ManyToManyField(Proyecto, through='UsuariosXProyecto')
 
     def __str__(self):
         return self.user.username.__str__()
@@ -174,5 +175,3 @@ class UsuariosXProyecto(models.Model):
     """
     proyecto = models.ForeignKey(Proyecto)
     usuario = models.ForeignKey(Usuario)
-    fecha_asig = models.DateField()
-    lider = models.BooleanField(default=False)
