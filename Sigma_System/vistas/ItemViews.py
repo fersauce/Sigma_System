@@ -34,7 +34,6 @@ def altaItem(request, idFase):
 
     tis = TipoDeItem.objects.filter(fase=Fase.objects.get(pk=idFase))
     fase=Fase.objects.get(pk=idFase)
-    print("ruthi")
     print(fase.nombre)
     print tis.first().__getattribute__('nombre')
     if request.method == 'POST':
@@ -45,7 +44,7 @@ def altaItem(request, idFase):
         compl = request.POST['complejidad']
         pri = request.POST['prior']
         est = "activo"
-        Item.objects.create(
+        itt=Item.objects.create(
             tipoItems=ti,
             nombre=name,
             version=versionA,
@@ -56,6 +55,17 @@ def altaItem(request, idFase):
         messages.success(request,
                          'El item "' + name + '" ha sido creado con exito')
 
+
+        Historial.objects.create(
+            item=itt,
+            nro_version_act = 1,
+            nro_version_ant = 0,
+            cod_mod = "a",
+            valor_act = 0,
+            valor_ant = 0,
+            descripcion ="alta",
+            fecha_mod = datetime.datetime.now()
+        )
     else:
         return render(request, 'AltaItems.html',
                       {'tipos': tis, 'fase': idFase})
@@ -67,20 +77,97 @@ def altaItem(request, idFase):
 def modificar_item(request, it):
     """
     vista utilizada para modificar un item
+    donde el parametro it es el id del item
     """
 
     its = Item.objects.get(id=it)
     if request.method == 'POST':
         print(it)
+        nAct=its.nombre
+        comAct=its.complejidad
+        priAct=its.prioridad
+        vAct=its.version
+        estAct=its.estado
+
+        nNuevo=request.POST['nombre']
+        comNuevo=request.POST['complejidad']
+        priNuevo=request.POST['prior']
+        estNuevo=request.POST['estado']
+        print "nombre",nNuevo
+        print "complejidad",comNuevo
+        print "prioridad",priNuevo
+        print "estado",estNuevo
+
+        its.nombre=request.POST['nombre']
         its.complejidad = request.POST['complejidad']
         its.prioridad = request.POST['prior']
-        #its.version=request.POST['version']
+
         vers = its.version + 1
+        vNuevo=vers
         its.version = vers
         its.estado = request.POST['estado']
 
+
         its.save()
         messages.info(request, 'Item modificado correctamente')
+
+
+        if nAct != nNuevo:
+            print("entro en el if de nombre")
+            Historial.objects.create(
+                item=its,
+                nro_version_act = vNuevo,
+                nro_version_ant = vAct,
+                cod_mod = "m",
+                valor_act = nNuevo,
+                valor_ant = nAct,
+                descripcion = "nombre modificado",
+                fecha_mod = datetime.datetime.now()
+            )
+        print request.POST['complejidad']
+        if comAct == int(comNuevo):
+            print("entro en el if de complejidad")
+            print("complejidad1" , comAct)
+            print('complejidad2' ,comNuevo)
+        else:
+            Historial.objects.create(
+                item=its,
+                nro_version_act = vNuevo,
+                nro_version_ant = vAct,
+                cod_mod="m",
+                valor_act=comNuevo,
+                valor_ant = comAct,
+                descripcion = "complejidad modificada",
+                fecha_mod = datetime.datetime.now()
+            )
+        suma=int(priNuevo)+9
+        print suma
+        if priAct == int(priNuevo):
+            print("entro en el if de pri")
+        else:
+            Historial.objects.create(
+                item=its,
+                nro_version_act = vNuevo,
+                nro_version_ant = vAct,
+                cod_mod = "m",
+                valor_act = priNuevo,
+                valor_ant = priAct,
+                descripcion = "prioridad modificada",
+                fecha_mod = datetime.datetime.now()
+            )
+        if estAct != estNuevo:
+            print("entro en el if de estado")
+            Historial.objects.create(
+                item=its,
+                nro_version_act = vNuevo,
+                nro_version_ant = vAct,
+                cod_mod = "m",
+                valor_act = estNuevo,
+                valor_ant = estAct,
+                descripcion = "estado modificado",
+                fecha_mod = datetime.datetime.now()
+            )
+
     else:
         return render(request, 'ModificarItem.html', {'item': its})
     return HttpResponseRedirect('/ss/adm_i/'+str(its.tipoItems.fase.pk))
@@ -95,10 +182,31 @@ def baja_item(request, it):
     #user = User.objects.get(id=us)
 
     its = Item.objects.get(id=it)
+    estAct=its.estado
     its.estado = "baja"
+    verActual=its.version
+    nVersion=verActual+1
+    its.version=nVersion
+
 
     its.save()
     messages.error(request, 'El item  ha sido eliminado')
+
+    Historial.objects.create(
+        item=its,
+        nro_version_act = nVersion,
+        nro_version_ant = verActual,
+        cod_mod = "b",
+        valor_act = "baja",
+        valor_ant = estAct,
+        descripcion = "baja",
+        fecha_mod = datetime.datetime.now()
+    )
+
+
+
+
+
     return HttpResponseRedirect('/ss/adm_i/'+str(its.tipoItems.fase.pk))
 
 
@@ -126,6 +234,22 @@ def revivir(request, it):
     #user = User.objects.get(id=us)
     its = Item.objects.get(id=it)
     its.estado = "activo"
+    verActual=its.version
+    verNuevo=verActual+1
+    its.version=verNuevo
     its.save()
     messages.success(request, 'El item  ha sido revivido')
+
+    Historial.objects.create(
+        item=its,
+        nro_version_act = verNuevo,
+        nro_version_ant = verActual,
+        cod_mod = "rev",
+        valor_act = "activo",
+        valor_ant = "baja",
+        descripcion = "item revivido",
+        fecha_mod = datetime.datetime.now()
+    )
+
+
     return HttpResponseRedirect('/ss/adm_i_rev/'+str(its.tipoItems.fase.pk))
