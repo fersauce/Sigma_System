@@ -174,3 +174,5 @@ class UsuariosXProyecto(models.Model):
     """
     proyecto = models.ForeignKey(Proyecto)
     usuario = models.ForeignKey(Usuario)
+    fecha_asig = models.DateField()
+    lider = models.BooleanField(default=False)

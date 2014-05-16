@@ -11,11 +11,14 @@ def administrar_proyecto(request):
     """
     Vista para acceder a la administracion de proyectos.
     """
+
     proyectos = Proyecto.objects.all().order_by('-nombre')
+    permisos = request.session['permisos']
     return render(request, 'administrarproyectos.html',
                   {'proyectos': proyectos,
                    'vacio': 'No se encuentran proyectos registrados',
-                   'form': BusquedaProyectoForm()})
+                   'form': BusquedaProyectoForm(),
+                   'permisos': permisos})
 
 
 def alta_proyecto(request):

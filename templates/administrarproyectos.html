@@ -34,8 +34,10 @@
                     <th class="text-left">Descripci&oacute;n</th>
                     <th class="text-left">Fecha de Inicio</th>
                     <th class="text-left">Fecha Finalizaci&oacute;n</th>
-                    <th class="text-left">Nº de Fases</th>
-                    <th class="text-left">Nº de Miembros</th>
+                    {% if 'super_us' not in permisos %}
+                        <th class="text-left">Nº de Fases</th>
+                        <th class="text-left">Nº de Miembros</th>
+                    {% endif %}
                     <th class="text-left">Editar</th>
                 </thead>
                 <tbody>
@@ -45,10 +47,16 @@
                             <td class="right">{{ proyecto.descripcion }}</td>
                             <td class="right">{{ proyecto.fechaInicio }}</td>
                             <td class="right">{{ proyecto.fechaFinalizacion }}</td>
-                            <td class="right">{{ proyecto.nroFases }}</td>
-                            <td class="right">{{ proyecto.nroMiembros }}</td>
+                            {% if 'super_us' not in permisos %}
+                                <td class="right">{{ proyecto.nroFases }}</td>
+                                <td class="right">{{ proyecto.nroMiembros }}</td>
+                            {% endif %}
                             <td align="center">
-                                <div class="span12">
+                                {% if 'super_us' not in permisos %}
+                                    <div class="span12">
+                                {% else %}
+                                    <div class="span8">
+                                {% endif %}
                                     <nav class="navigation-bar">
                                         <div class="navigation-bar-content">
                                             <ul class="element-menu">
@@ -57,10 +65,12 @@
                                                     <ul class="dropdown-menu" data-role="dropdown">
                                                         <li class="text-left"><a href="{% url 'sigma:adm_proy_mod' proyecto.pk %}">
                                                             <i class="icon-pencil on-left"></i>Modificar</a></li>
-                                                        <li class="text-left"><a id="botBaja{{ proyecto.pk }}">
-                                                            <i class="icon-remove on-left"></i>Eliminar</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_fase' proyecto.pk %}">
-                                                            <i class="icon-book on-left"></i>Fases</a></li>
+                                                        {% if 'super_us' not in permisos %}
+                                                            <li class="text-left"><a id="botBaja{{ proyecto.pk }}">
+                                                                <i class="icon-remove on-left"></i>Eliminar</a></li>
+                                                            <li class="text-left"><a href="{% url 'sigma:adm_fase' proyecto.pk %}">
+                                                                <i class="icon-book on-left"></i>Fases</a></li>
+                                                        {% endif %}
                                                         <li class="text-left"><a href="#">
                                                             <i class="icon-user on-left"></i>Asignar Usuarios</a></li>
                                                         <li class="text-left"><a href="#">
@@ -106,8 +116,10 @@
                         <th class="text-left">Descripci&oacute;n</th>
                         <th class="text-left">Fecha de Inicio</th>
                         <th class="text-left">Fecha Finalizaci&oacute;n</th>
-                        <th class="text-left">Nº de Fases</th>
-                        <th class="text-left">Nº de Miembros</th>
+                        {% if 'super_us' not in permisos %}
+                            <th class="text-left">Nº de Fases</th>
+                            <th class="text-left">Nº de Miembros</th>
+                        {% endif %}
                         <th class="text-left">Editar</th>
                     </tr>
                 </tfoot>
