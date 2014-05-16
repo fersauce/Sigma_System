@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_menu.html' %}
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
@@ -20,8 +20,8 @@
 {% endblock %}
 {% block titulo %}Administraci&oacute;n de Fases del proyecto {{ proyecto.nombre }}{% endblock %}
 {% block contenido %}
-    <div class="container">
-        <h1><a href="#"></a>Administrador<small class="on-right">de Fases del Proyecto </small> {{ proyecto.nombre }}</h1>
+    <div class="span10">
+        <h2><a href="#"></a>Administrador<small class="on-right">de Fases del Proyecto </small> {{ proyecto.nombre }}</h2>
         <div class="example">
             <a href="{%  url 'sigma:adm_fase_alta' proyecto.id %}">
                 <button class="command-button primary">
@@ -49,7 +49,7 @@
                             <td class="right" width>{{ fase.fechaInicio}}</td>
                             <td class="right" width>{{ fase.fechaFin }}</td>
                             <td align="center">
-                                <div class="span1">
+                                <div class="span8">
                                     <nav class="navigation-bar">
                                         <div class="navigation-bar-content">
                                             <ul class="element-menu">
@@ -121,42 +121,4 @@
             </script>
         </div>
     </div>
-
-    <!--form action = "{% url 'sigma:adm_fase_busq' proyecto.pk %}" method="post">{% csrf_token %}
-        <div class="" id="formBusqueda" >
-            <div class="input-control select" id="columna">
-                {{ form.columna }}
-            </div>
-            <div class="input-control text" data-role="input-control" id="busqueda">
-                {{ form.busqueda }}
-                <button class="btn-search"> </button>
-            </div><br><br>
-            <div id="">
-                <a class="button info" href="{% url 'sigma:adm_fase' proyecto.pk %}" id="botLimpiar">Limpiar</a>
-            </div>
-            <style type="text/css">
-                #formBusqueda{
-                    width: 600px;
-                }
-                #columna{
-                    float: left;
-                    margin-left: 10px;
-                    margin-right: 10px;
-                    width: 200px;
-                }
-                #busqueda{
-                    float: left;
-                    margin-left: 10px;
-                    height: 35px;
-                    width: 200px;
-                }
-                #limp{
-                    float: left;
-                    margin-left: 10px;
-                    width: 15px;
-                    height: 35px;
-                }
-            </style>
-        </div>
-    </form-->
 {% endblock %}

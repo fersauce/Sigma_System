@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_menu.html' %}
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> P&aacute;gina Principal</a>
@@ -19,8 +19,8 @@
 {% endblock %}
 {% block titulo %}Administraci&oacute;n de Proyectos{% endblock %}
 {% block contenido %}
-    <div class="container">
-        <h1><a href="#"></a>Administrador<small class="on-right">de Proyectos</small></h1>
+    <div class="span10">
+        <h2><a href="#"></a>Administrador<small class="on-right">de Proyectos</small></h2>
         <div class="example">
             <a href="{%  url 'sigma:adm_proy_alta' %}">
                 <button class="command-button primary">
@@ -48,7 +48,7 @@
                             <td class="right">{{ proyecto.nroFases }}</td>
                             <td class="right">{{ proyecto.nroMiembros }}</td>
                             <td align="center">
-                                <div class="span1">
+                                <div class="span12">
                                     <nav class="navigation-bar">
                                         <div class="navigation-bar-content">
                                             <ul class="element-menu">
@@ -123,5 +123,4 @@
             </script>
         </div>
     </div>
-
 {% endblock %}

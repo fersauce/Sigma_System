@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="product" content="Metro UI CSS Framework">
+        <meta name="description" content="Simple responsive css framework">
+        <meta name="author" content="Sergey S. Pimenov, Ukraine, Kiev">
+
+
+        <link href="/static/MetroBoostrap/css/metro-bootstrap.css" rel="stylesheet">
+        <link href="/static/MetroBoostrap/css/metro-bootstrap-responsive.css" rel="stylesheet">
+        <link href="/static/MetroBoostrap/css/iconFont.css" rel="stylesheet">
+        <link href="/static/MetroBoostrap/css/docs.css" rel="stylesheet">
+        <link href="/static/MetroBoostrap/js/prettify/prettify.css" rel="stylesheet">
+
+
+        <!-- Load JavaScript Libraries -->
+        <script src="/static/MetroBoostrap/js/jquery/jquery.min.js"></script>
+        <script src="/static/MetroBoostrap/js/jquery/jquery.widget.min.js"></script>
+        <script src="/static/MetroBoostrap/js/jquery/jquery.mousewheel.js"></script>
+        <script src="/static/MetroBoostrap/js/jquery/jquery.dataTables.js"></script>
+        <script src="/static/MetroBoostrap/js/prettify/prettify.js"></script>
+        <!-- Metro UI CSS JavaScript plugins -->
+        <!--script src="{{ STATIC_URL }}MetroBoostrap/js/load-metro.js"></script>
+
+        <!-- Local JavaScript -->
+        <script src="/static/MetroBoostrap/js/docs.js"></script>
+        <script src="/static/MetroBoostrap/js/github.info.js"></script>
+        <script src="/static/MetroBoostrap/js/metro.min.js"></script>
+
+        <!-- funciones JavaScript -->
+        <script type="text/javascript">
+        function marcar(source)
+        {
+            checkboxes=document.getElementsByTagName('input');
+            for(i=0;i<checkboxes.length;i++)
+            {
+                if(checkboxes[i].type == "checkbox")
+                {
+                    checkboxes[i].checked=source.checked;
+                }
+            }
+        }
+        </script>
+        {% if messages %}
+            <script>
+                window.onload = function() {
+                    notificar();
+                };
+            </script>
+            <script type="text/javascript">
+                function notificar()
+                {
+                    {% for message in messages %}
+                        $.Notify
+                        (
+                            {
+                                {% if message.tags == 'success' %}
+                                    style: {background: '#1ba1e2', color: 'white'},
+                                {% endif %}
+                                {% if message.tags == 'error' %}
+                                    style: {background: 'red', color: 'white'},
+                                {% endif %}
+                                {% if message.tags == 'info' %}
+                                    style: {background: 'orange', color: 'black'},
+                                {% endif %}
+                                caption: '', content: "{{message}}",
+                                timeout:4000
+                            }
+                        );
+                    {% endfor %}
+                }
+            </script>
+        {% endif %}
+        {% block definicion_script %}
+        {% endblock %}
+        <title>{% block titulo %}{% endblock %}</title>
+    </head>
+    <body class="metro">
+        <header>
+            {% block encabezado %}{% endblock %}
+            <nav class="navigation-bar dark">
+                <div class="navigation-bar-content">
+                    <a class="element"> Sigma System </a>
+                    {% block navegacion %}{% endblock %}
+                </div>
+            </nav>
+        </header>
+        <div class="container" align="center">
+            <div class="grid fluid">
+                <div class="row">
+                    <div class="span2 no-tablet-portrait" align="left">
+                        <h2><a href="#"></a><small class="on-right"></small></h2>
+                        <nav class="sidebar dark">
+                            <ul>
+                                <li class="title">Modulos</li>
+                                <li>
+                                    <a class="dropdown-toggle" href="#">
+                                        <i class="icon-globe"></i>
+                                        Administracion
+                                    </a>
+                                    <ul class="dropdown-menu" data-role="dropdown" style="display: none;">
+                                        <li><a href="{% url 'sigma:adm_proy' %}">Proyectos</a></li>
+                                        <li><a href="{% url 'sigma:adm_u' %}">Usuarios</a></li>
+                                        <li><a href="{% url 'sigma:adm_r' %}">Roles y Permisos</a></li>
+                                    </ul>
+                                </li>
+                                <li class="stick">
+                                    <a href="#">
+                                        <i class="icon-tools"></i>
+                                        Desarrollo
+                                    </a>
+                                </li>
+                                <li class="stick">
+                                    <a href="#">
+                                        <i class="icon-tree-view"></i>
+                                        Gestion de cambio
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    {% block contenido %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </body>
+    <footer>
+        {% block pie %}{% endblock %}
+    </footer>
+</html>

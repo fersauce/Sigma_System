@@ -1,7 +1,7 @@
-{% extends "base.html" %}
+{% extends "base_menu.html" %}
 {% block navegacion %}
-    <a class="element place-right" href={% url 'sigma:finalizar' %}></a>
     <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
         <li></li>
@@ -17,39 +17,4 @@
             </div>
         </div>
     </ul>
-{% endblock %}
-{% block contenido %}
-    <h1>
-        Bienvenido<small class="on-right">{{ user }}</small>
-    </h1>
-    <div class="" style="height:220px;">
-        <nav class="horizontal-menu">
-            <!--ul>
-                <li-->
-                    <ul class="dropdown-menu open keep-open" style="">
-                        <li><a class="dropdown-toggle" href="{% url 'sigma:adm_u' %}">Modulo de administracion</a>
-                            <ul class="dropdown-menu" data-role="dropdown" style="display: none;">
-                                <li><a href="{% url 'sigma:adm_proy' %}">Proyecto</a></li>
-                                <li><a href="{% url 'sigma:adm_u' %}">Usuario</a></li>
-                                <li><a href="{% url 'sigma:adm_r' %}">Roles y Permisos</a></li>
-                                
-                            </ul>
-                        </li>
-                        <li><a class="dropdown-toggle" href="#"> Modulo de Desarrollo</a>
-                            <ul class="dropdown-menu" data-role="dropdown" style="display: none;">
-                                <li class=""><a href=""></a></li>
-                                <li class=""><a href="#"></a></li>
-                            </ul>
-                        </li>
-                        <!--li><a class="dropdown-toggle" href="#"> Modulo de Gestion de Cambio</a>
-                            <ul class="dropdown-menu" data-role="dropdown" style="display: none;">
-                                <li class="disabled"><a href="#">Linea Base</a></li>
-                                <li class="disabled"><a href="#">Historia??</a></li>
-                            </ul>
-                        </li-->
-                    </ul>
-                <!--/li>
-            </ul-->
-        </nav>
-    </div>
 {% endblock %}

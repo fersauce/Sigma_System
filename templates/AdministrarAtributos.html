@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_menu.html' %}
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
@@ -22,8 +22,8 @@
 {% endblock %}
 {% block titulo %}Administrar Atributos{% endblock %}
 {% block contenido %}
-    <div class="container">
-        <h1><a href="#"></a>Administrador<small class="on-right">de Atributos del TI {{ ti_asoc.nombre }}</small></h1>
+    <div class="span10">
+        <h2><a href="#"></a>Administrador<small class="on-right">de Atributos del TI {{ ti_asoc.nombre }}</small></h2>
         <div class="example">
             <a href="{%  url 'sigma:adm_atrib_alta' ti_asoc.pk %}">
                 <button class="command-button primary">
@@ -43,7 +43,7 @@
                             <td>{{ atrib.nombre }}</td>
                             <td class="right">{{ atrib.atributos.tipo}}</td>
                             <td align="center">
-                                <div class="span1">
+                                <div class="span3">
                                     <nav class="navigation-bar">
                                         <div class="navigation-bar-content">
                                             <ul class="element-menu">

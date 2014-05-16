@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_menu.html' %}
 {% block definicion_script %}
 <script>
     function confirmar(url_aux)
@@ -51,8 +51,8 @@
     </ul>
 {% endblock %}
 {% block contenido %}
-    <div class="container" align="center">
-        <h1><a href="#"></a>Administrador<small class="on-right">de Roles</small></h1>
+    <div class="span10">
+        <h2><a href="#"></a>Administrador<small class="on-right">de Roles</small></h2>
         <div class="example">
             <a href="{%  url 'sigma:adm_r_altas' %}">
                 <button class="command-button primary">
@@ -73,8 +73,8 @@
                     <tr>
                         <td>{{ r.nombre }}</td>
                         <td class="right">{{ r.descripcion }}</td>
-                        <td align="center">
-                            <div class="span1">
+                        <td class="left">
+                            <div class="">
                                 <nav class="navigation-bar">
                                     <div class="navigation-bar-content">
                                         <ul class="element-menu">

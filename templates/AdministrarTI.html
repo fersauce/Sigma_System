@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_menu.html' %}
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
@@ -21,8 +21,8 @@
 {% endblock %}
 {% block titulo %}Administrar Tipos de &Iacute;tem{% endblock %}
 {% block contenido %}
-    <div class="container">
-        <h1><a href="#"></a>Administrador<small class="on-right">de Tipos de &Iacute;tem de la Fase {{ fase.nombre }}</small></h1>
+    <div class="span10">
+        <h2><a href="#"></a>Administrador<small class="on-right">de Tipos de &Iacute;tem de la Fase {{ fase.nombre }}</small></h2>
         <div class="example">
             <a href="{%  url 'sigma:adm_ti_alta' fase.proyecto.pk fase.pk %}">
                 <button class="command-button primary">
@@ -50,7 +50,7 @@
                             <td class="right">{{ ti.descripcion }}</td>
                             <td class="right">{% if ti.importar %}S&iacute;{% else %}No{% endif %}</td>
                             <td align="center">
-                                <div class="span1">
+                                <div class="span6">
                                     <nav class="navigation-bar">
                                         <div class="navigation-bar-content">
                                             <ul class="element-menu">

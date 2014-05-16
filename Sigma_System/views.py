@@ -253,7 +253,6 @@ def cambiar(request, us):
 def adm_roles(request):
     roles_list = Rol.objects.order_by('id')
     paginator = Paginator(roles_list, 2)
-
     page = request.GET.get('page')
     try:
         roles = paginator.page(page)
