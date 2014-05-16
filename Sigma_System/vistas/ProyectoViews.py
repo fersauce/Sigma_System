@@ -3,7 +3,7 @@ from django.shortcuts import render, render_to_response
 from django.http import *
 from django.template import RequestContext
 from Sigma_System.forms import BusquedaProyectoForm, AltaProyectoForm
-from Sigma_System.models import Proyecto, Usuario, Fase
+from Sigma_System.models import Proyecto, Usuario, Fase, UsuariosXProyecto
 import datetime, time
 
 
@@ -11,8 +11,9 @@ def administrar_proyecto(request):
     """
     Vista para acceder a la administracion de proyectos.
     """
-
-    proyectos = Proyecto.objects.all().order_by('-nombre')
+    usuario = request.user.usuario
+    proyectos = usuario.proyectos.all()
+    #proyectos = Proyecto.objects.all().order_by('-nombre')
     permisos = request.session['permisos']
     return render(request, 'administrarproyectos.html',
                   {'proyectos': proyectos,

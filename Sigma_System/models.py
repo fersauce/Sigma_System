@@ -51,8 +51,8 @@ class Usuario(models.Model):
     direccion = models.CharField(max_length=100)
     tel = models.CharField(max_length=20)
     estado = models.BooleanField(default=True)
-    roles = models.ManyToManyField(Rol, through='UsuarioRol')
     proyectos = models.ManyToManyField(Proyecto, through='UsuariosXProyecto')
+    roles = models.ManyToManyField(Rol, through='UsuarioRol')
 
     def __str__(self):
         return self.user.username.__str__()
