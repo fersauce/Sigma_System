@@ -139,18 +139,7 @@ def modificar_usuario(request, us):
 @login_required(login_url='/login/')
 @permisos_requeridos(['ver_us'], 'sigma:inicio', 'administrar usuarios')
 def adm_usuario(request):
-    user_list = User.objects.filter(is_active=True)
-    """paginator = Paginator(user_list, 2)
-    page = request.GET.get('page')
-    request.session['pag_actual'] = page
-    try:
-        users = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        users = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        users = paginator.page(paginator.num_pages)"""
+    user_list = User.objects.exclude(is_active=True, id=request.user.id)
     return render(request, 'ListarUsr.html', {'user_list': user_list})
 
 
@@ -250,73 +239,10 @@ def cambiar(request, us):
 
 
 @login_required(login_url='/login/')
-def adm_roles(request):
-    roles_list = Rol.objects.order_by('id')
-    paginator = Paginator(roles_list, 2)
-    page = request.GET.get('page')
-    try:
-        roles = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        roles = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        roles = paginator.page(paginator.num_pages)
-
-    return render(request, 'AdministradorRoles.html', {'roles': roles})
-
-
-@login_required(login_url='/login/')
-def add_roles(request):
-    """
-    Vista que maneja la asignacion de roles.
-    """
-    if request.method == 'POST':
-        nombre = request.POST['nombre']
-        descripcion = request.POST['descripcion']
-        rol = Rol.objects.create(nombre=nombre, descripcion=descripcion)
-        permisos = request.POST.getlist('permisos')
-        for p in permisos:
-            rol.permisos.add(Permiso.objects.get(id=p))
-        messages.success(request, 'El rol: '+rol.nombre+', ha sido creado con exito')
-    else:
-        permisos = Permiso.objects.all()
-        return render(request, 'Agregar_Rol.html', {'permisos': permisos})
-    return HttpResponseRedirect('/ss/adm_r/')
-
-
-@login_required(login_url='/login/')
 def del_roles(request, id):
     nombre = Rol.objects.get(id=id).nombre
     Rol.objects.get(id=id).delete()
     messages.error(request, 'El rol: '+nombre+', ha sido eliminado')
-    return HttpResponseRedirect('/ss/adm_r/')
-
-
-@login_required(login_url='/login/')
-def mod_roles(request, id):
-    rol = Rol.objects.get(id=id)
-    todoLosPermisos = Permiso.objects.all()
-    permisosDelRol = rol.permisos.all()
-    permisosAux = []
-    for p in todoLosPermisos:
-        if p in permisosDelRol:
-            diccionario = {'nombre': p.nombre, 'id': p.id, 'ban': "checked"}
-            permisosAux.append(diccionario)
-        else:
-            diccionario = {'nombre': p.nombre, 'id': p.id, 'ban': ""}
-            permisosAux.append(diccionario)
-    rol.permisos.clear()
-    if request.method == 'POST':
-        rol.nombre = request.POST['nombre']
-        rol.descripcion = request.POST['descripcion']
-        rol.save()
-        permisos = request.POST.getlist('permisos')
-        for p in permisos:
-                rol.permisos.add(Permiso.objects.get(id=p))
-        messages.success(request, 'El rol: '+rol.nombre+' ha sido modificado con exito')
-    else:
-        return render(request, 'ModificarRol.html', {'rol': rol, 'permisos': permisosAux})
     return HttpResponseRedirect('/ss/adm_r/')
 
 
