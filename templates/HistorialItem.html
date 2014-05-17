@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block definicion_script %}
+
+{% endblock %}
+
+
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
+    <span class="element-divider"></span>
+    <a class="element" href={% url 'sigma:adm_i' fase %}> Administrar Item</a>
+    <a class="pull-menu" href="#"></a>
+    <a class="element place-right" href="#">   </a>
+    <span class="element-divider"></span>
+    <ul class="element-menu">
+        <li></li>
+        <div class="no-tablet-portrait">
+            <div class="element place-right">
+                <a class="dropdown-toggle" href="#">
+                    <span class="icon-cog"></span>
+                </a>
+                <ul class="dropdown-menu place-right" data-role="dropdown">
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </ul>
+{% endblock %}
+{% block titulo %}Historial Items{% endblock %}
+{% block contenido %}
+    <div class="container" align="center">
+        <h1><a href="#"></a>Historial<small class="on-right">Items </small></h1>
+        <div class="example">
+
+
+            <table class="table striped hovered dataTable" id="datatable2">
+                <thead>
+
+                    <th class="text-left">Id del historial</th>
+                    <th class="text-left">Id del Item</th>
+                    <th class="text-left">Nombre del Item</th>
+                    <th class="text-left">Version Actual </th>
+                    <th class="text-left">Version Anterior</th>
+
+                </thead>
+                <tbody>
+                    {% for h in hist %}
+                        <tr>
+
+                            <td class="right">{{ h.id }}</td>
+                            <td class="right">{{ i.id}}</td>
+                            <th class="text-left">{{ i.nombre }}</th>
+                            <td class="right">{{ h.nro_version_act  }}</td>
+                            <td class="right">{{ h.nro_version_ant }}</td>
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-left">Id del historial</th>
+                    <th class="text-left">Id del Item</th>
+                    <th class="text-left">Nombre del Item</th>
+                    <th class="text-left">Version Actual </th>
+                    <th class="text-left">Version Anterior</th>
+
+                    </tr>
+                </tfoot>
+            </table>
+            <script>
+                $(document).ready(function() {
+                    $('#datatable2').dataTable( {
+                        "oLanguage": {
+                            "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                        }
+                    } );
+                } );
+            </script>
+        </div>
+    </div>
+{% endblock %}
