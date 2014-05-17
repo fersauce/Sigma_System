@@ -18,14 +18,14 @@
         </div>
     </ul>
 {% endblock %}
-{% block titulo %}Administraci&oacute;n de Comit&eacute; de Cambios del Proyecto {{ proyecto.nombre }}{% endblock %}
+{% block titulo %}Administraci&oacute;n de Usuarios del Proyecto {{ proyecto.nombre }}{% endblock %}
 {% block contenido %}
     <div class="container">
-        <h1><a href="#"></a>Administrador<small class="on-right">de Comit&eacute; del Proyecto</small> {{ proyecto.nombre }}</h1>
+        <h1><a href="#"></a>Administrador<small class="on-right">de Usuarios del Proyecto</small> {{ proyecto.nombre }}</h1>
         <div class="example">
-            <form action="{% url 'sigma:adm_proy_comite_usuario' proyecto.pk %}" method="post">
+            <form action="{% url 'sigma:adm_proy_asig_usu' proyecto.pk %}" method="post" id="formUsu">
                 {% csrf_token %}
-                <table class="table striped hovered dataTable" id="tabla01">
+                <table class="table striped hovered dataTable" id="tabla02">
                     <thead>
                          <tr>
                              <th class="text-left">Es miembro?</th>
@@ -36,10 +36,11 @@
                         {% for user in usuariosProyecto %}
                             <tr>
                                 <td class="right">
-                                    <div class="input-control switch" data-role="input-control" id="div01">
+                                    <div class="input-control switch" data-role="input-control">
                                         <label class="inline-block">
-                                            <input type="checkbox" name="usuariosAsig" {% if user.usuario in a %} checked {% endif %} value="{{ user.usuario.pk }}" onclick="validacion()"/>
+                                            <input type="checkbox" name="usuariosAsig" {% if user.activo %} checked {% endif %} value="{{ user.usuario.pk }}"/>
                                             <span class="check"></span>
+
                                         </label>
                                     </div>
                                 </td>
@@ -47,26 +48,8 @@
                             </tr>
 
                         {% endfor %}
-                    <script>
-                        function validacion(){
-                            jQuery.fn.getCheckboxValues = function () {
-                                var values = [];
-                                var i = 0;
-                                this.each(function () {
-                                    values[i++] = $(this).val();
-                                });
-                                return i;
-                            };
-                            var arr = $("input:checked").getCheckboxValues();
-                            var boton = document.getElementById('aceptar')
-                            if(arr%2==0){
-                                document.getElementById('aceptar').setAttribute('style', "visibility: visible");
-                            }else{
-                                document.getElementById('aceptar').setAttribute('style', "visibility: hidden");
-                            }
-                        }
-                    </script>
                     </tbody>
+
                     <tfoot>
                         <tr>
                             <th class="text-left">Es miembro?</th>
@@ -76,14 +59,14 @@
                 </table>
                 <script>
                     $(document).ready(function() {
-                        $('#tabla01').dataTable( {
+                        $('#tabla02').dataTable( {
                             "oLanguage": {
                                 "sUrl": "/static/MetroBoostrap/data/spanish.txt"
                             }
                         } );
                     } );
                 </script>
-                <input  value="Agregar" id="aceptar" class="button success" type="submit">
+                <input value="Agregar" class="button success" type="submit" onmouseover="">
             </form>
         </div>
     </div>

@@ -226,6 +226,9 @@ def asignarUsuarioProyecto(request, idProyect):
     @return: AdministrarProyecto.html, pagina en la cual se trabaja con los
     proyectos.
     """
+    proyecto = Proyecto.objects.get(pk=idProyect)
+    usuarios = UsuariosXProyecto.objects.filter(proyecto=proyecto).exclude(
+        lider=True)
     if request.is_ajax():
         print 'LLamada de ajax'
         enviar = []
@@ -237,49 +240,52 @@ def asignarUsuarioProyecto(request, idProyect):
                  'apellido': u.usuario.user.last_name, 'activo': u.activo})
         return HttpResponse(simplejson.dumps(enviar),
                             mimetype='application/json')
-    usuariosProyect = request.GET.getlist('usuarioAsig')
-    proyecto = Proyecto.objects.get(pk=idProyect)
-    usuarios = UsuariosXProyecto.objects.filter(proyecto=proyecto).exclude(
-        lider=True)
-    bandera = False
-    for u in usuarios:
-        if str(u.usuario.pk) in usuariosProyect:
-            if not u.activo:
-                try:
-                    u.activo = True
-                    u.save()
-                    proyecto.nroMiembros += 1
-                    proyecto.save()
-                    messages.success(request,
-                                     'El usuario ' +
-                                     u.usuario.user.first_name
-                                     + ' ha sido asignado al proyecto ' +
-                                     proyecto.nombre)
-                    bandera = True
-                except Exception:
-                    messages.error(request, 'Ha ocurrido un erro interno, favor'
-                                            ' contacte al administrador')
-        else:
-            if u.activo:
-                try:
-                    u.activo = False
-                    u.save()
-                    proyecto.nroMiembros -= 1
-                    proyecto.save()
-                    messages.success(request,
-                                     'El usuario ' +
-                                     u.usuario.user.first_name
-                                     + ' ha sido desasignado del proyecto ' +
-                                     proyecto.nombre)
-                    bandera = True
-                except Exception:
-                    messages.error(request, 'Ha ocurrido un error interno,'
-                                            'favor contacte al administrador')
-    if not bandera:
-        messages.info(request, 'No se han realizados asignaciones/'
-                               'desasignaciones en el proyecto ' +
-                               proyecto.nombre)
-    return HttpResponseRedirect(reverse('sigma:adm_proy'))
+    if request.method == 'POST':
+        usuariosProyect = request.POST.getlist('usuariosAsig')
+        bandera = False
+        for u in usuarios:
+            if str(u.usuario.pk) in usuariosProyect:
+                if not u.activo:
+                    try:
+                        u.activo = True
+                        u.save()
+                        proyecto.nroMiembros += 1
+                        proyecto.save()
+                        messages.success(request,
+                                         'El usuario ' +
+                                         u.usuario.user.first_name
+                                         + ' ha sido asignado al proyecto ' +
+                                         proyecto.nombre)
+                        bandera = True
+                    except Exception:
+                        messages.error(request, 'Ha ocurrido un erro interno, favor'
+                                                ' contacte al administrador')
+            else:
+                if u.activo:
+                    try:
+                        u.activo = False
+                        u.save()
+                        proyecto.nroMiembros -= 1
+                        proyecto.save()
+                        messages.success(request,
+                                         'El usuario ' +
+                                         u.usuario.user.first_name
+                                         + ' ha sido desasignado del proyecto ' +
+                                         proyecto.nombre)
+                        bandera = True
+                    except Exception:
+                        messages.error(request, 'Ha ocurrido un error interno,'
+                                                'favor contacte al administrador')
+        if not bandera:
+            messages.info(request, 'No se han realizados asignaciones/'
+                                   'desasignaciones en el proyecto ' +
+                                   proyecto.nombre)
+        return HttpResponseRedirect(reverse('sigma:adm_proy'))
+    else:
+        pass
+
+    return render(request, 'AsignarUsuario.html', {'usuariosProyecto': usuarios,
+                                                   'proyecto': proyecto})
 
 
 def iniciarProyecto(request, idProyect):
