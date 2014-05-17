@@ -18,6 +18,82 @@
     </ul>
 {% endblock %}
 {% block titulo %}Administraci&oacute;n de Proyectos{% endblock %}
+{% block definicion_script %}
+    <script type="text/javascript">
+        function asignarUsuario(urlAsignar){
+            $.getJSON(urlAsignar, {xhr: "true"}, function(data){
+                $.Dialog({
+                    shadow: true,
+                    overlay: true,
+                    flat: true,
+                    draggable: true,
+                    icon: '<span class="icon-bus"></span>',
+                    title: 'Draggable window',
+                    width: 100,
+                    height: 350,
+                    padding: 10,
+                    scrollTop: 0,
+                    content: 'This Window is draggable by caption.',
+                    draggable: true,
+                    onShow: function(){
+                        var contenido = new String();
+                        $.each(data, function(i, dato){
+                            contenido= contenido +'<tr><td class="rigth">'+
+                                    '<div class="input-control switch" data-role="input-control" align="left" id="usuarios">'+
+                                    '<label class="inline-block" align="left">';
+                            if (dato.activo == true){
+                                contenido = contenido +'<input type="checkbox" name="usuarioAsig" value="' + dato.id + '" align="left" checked>';
+                            }else{
+                                contenido = contenido + '<input type="checkbox" name="usuarioAsig" value="' + dato.id + '" align="left">';
+                            }
+                            contenido = contenido + '<span class="check"></span>'+
+                            '   '+dato.nombre+''+
+                            '</label>'+
+                            '</div>'+
+                            '</td>'+
+                            '</tr>';
+                        });
+                        var content = '<div style=" overflow: scroll">'+
+                                '<form method="get" action="'+urlAsignar+'">' +
+                                '<input type="hidden" value="" name="csrfmiddlewaretoken"></input>'+
+                                '<table class="table striped hovered dataTable span12" id="tablaAsignar" scrolling="auto">'+
+                                '<thead>'+
+                                '<th class="text-left">Asociar?</th>'+
+
+                                '</thead>'+
+                                '<tbody>'+
+
+
+                                contenido+
+
+                                '<br>'+
+
+                                '</tbody>'+
+                                '<tfooter>'+
+                                '<th class="text-left">Asociar?</th>'+
+
+                                '</tfooter>'+
+                                '</table>'+
+                                //'<a class="button primary" href='+ urlAsignar +'> S&iacute; </a>' +
+                                '<input type="submit" value="Aceptar" onclick="">'+
+                                '<a href="{% url 'sigma:adm_proy' %}"><input type="button" value="No" ></a>'+
+                                '</form>'+
+                                '</div>';
+                        $.Dialog.title("Confirmar Eliminaci&oacute;n");
+                        $.Dialog.content(content);
+                        $(document).ready(function() {
+                            $('#tablaAsignar').dataTable( {
+                                "oLanguage": {
+                                    "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                                }
+                            });
+                        } );
+                    }
+                });
+            })
+        };
+    </script>
+{% endblock %}
 {% block contenido %}
     <div class="container">
         <h1><a href="#"></a>Administrador<small class="on-right">de Proyectos</small></h1>
@@ -32,6 +108,7 @@
                 <thead>
                     <th class="text-left">Nombre</th>
                     <th class="text-left">Descripci&oacute;n</th>
+                    <th class="text-left">L&iacute;der</th>
                     <th class="text-left">Fecha de Inicio</th>
                     <th class="text-left">Fecha Finalizaci&oacute;n</th>
                     <th class="text-left">Nº de Fases</th>
@@ -43,8 +120,17 @@
                         <tr>
                             <td>{{ proyecto.nombre }}</td>
                             <td class="right">{{ proyecto.descripcion }}</td>
-                            <td class="right">{{ proyecto.fechaInicio }}</td>
-                            <td class="right">{{ proyecto.fechaFinalizacion }}</td>
+                            <td class="right">{{ proyecto.lider }}</td>
+                            <td class="right">
+                                {% if proyecto.estado == 'Iniciado' %}
+                                    {{ proyecto.fechaInicio }}
+                                {% endif %}
+                            </td>
+                            <td class="right">
+                                {% if proyecto.estado == 'Finalizado' %}
+                                    {{ proyecto.fechaFinalizacion }}
+                                {% endif %}
+                            </td>
                             <td class="right">{{ proyecto.nroFases }}</td>
                             <td class="right">{{ proyecto.nroMiembros }}</td>
                             <td align="center">
@@ -59,12 +145,15 @@
                                                             <i class="icon-pencil on-left"></i>Modificar</a></li>
                                                         <li class="text-left"><a id="botBaja{{ proyecto.pk }}">
                                                             <i class="icon-remove on-left"></i>Eliminar</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_fase' proyecto.pk %}">
-                                                            <i class="icon-book on-left"></i>Fases</a></li>
-                                                        <li class="text-left"><a href="#">
+                                                        <li class="text-left">
+                                                            <a href="{% url 'sigma:adm_proy_asig_usu' proyecto.pk %}">
                                                             <i class="icon-user on-left"></i>Asignar Usuarios</a></li>
-                                                        <li class="text-left"><a href="#">
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_proy_comite' proyecto.pk %}">
                                                             <i class="icon-eye on-left"></i>Comit&eacute;</a></li>
+                                                        {% if proyecto.estado == 'Pendiente' %}
+                                                            <li class="text-left"><a href="{% url 'sigma:adm_proy_iniciar' proyecto.pk %}">
+                                                                <i class="icon-open on-left"></i>Iniciar</a></li>
+                                                        {% endif %}
                                                     </ul>
                                                 </li>
                                             </ul>
@@ -104,6 +193,7 @@
                     <tr>
                         <th class="text-left">Nombre</th>
                         <th class="text-left">Descripci&oacute;n</th>
+                        <th class="text-left">L&iacute;der</th>
                         <th class="text-left">Fecha de Inicio</th>
                         <th class="text-left">Fecha Finalizaci&oacute;n</th>
                         <th class="text-left">Nº de Fases</th>

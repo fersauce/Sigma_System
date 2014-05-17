@@ -6,34 +6,6 @@ import datetime
 # Create your models here.
 
 
-class Proyecto(models.Model):
-    nombre = models.CharField(max_length=30, unique=True)
-    descripcion = models.CharField(max_length=200)
-    fechaCreacion = models.DateField(default=datetime.datetime.now())
-    fechaInicio = models.DateField(default='')
-    fechaFinalizacion = models.DateField(default='')
-    duracion = models.IntegerField()
-    complejidad = models.IntegerField()
-    costo = models.IntegerField()
-    estado = models.CharField(max_length=15)
-    nroFases = models.IntegerField()
-    nroMiembros = models.IntegerField()
-
-    def __str__(self):
-        return str(self.nombre)
-
-
-class Fase(models.Model):
-    proyecto = models.ForeignKey(Proyecto)
-    nombre = models.CharField(max_length=30)
-    descripcion = models.CharField(max_length=200)
-    posicionFase = models.IntegerField()
-    estado = models.CharField(max_length=15)
-    fechaInicio = models.DateField(default=datetime.datetime.now())
-    fechaFin = models.DateField(
-        default=(datetime.datetime.now() + datetime.timedelta(days=1)))
-
-
 class Permiso(models.Model):
     nombre = models.CharField(max_length=30)
     codigo = models.CharField(max_length=30)
@@ -69,6 +41,38 @@ class UsuarioRol(models.Model):
     idProyecto = models.IntegerField(default=0)
     idFase = models.IntegerField(default=0)
     idItem = models.IntegerField(default=0)
+
+
+class Proyecto(models.Model):
+    nombre = models.CharField(max_length=30, unique=True)
+    descripcion = models.CharField(max_length=200)
+    fechaCreacion = models.DateField(default=datetime.datetime.now())
+    fechaInicio = models.DateField(default='')
+    fechaFinalizacion = models.DateField(default='')
+    duracion = models.IntegerField()
+    complejidad = models.IntegerField()
+    costo = models.IntegerField()
+    estado = models.CharField(max_length=15)
+    nroFases = models.IntegerField()
+    nroMiembros = models.IntegerField()
+    lider = models.ForeignKey(Usuario, default=1)
+
+    def __str__(self):
+        return str(self.nombre)
+
+
+class Fase(models.Model):
+    proyecto = models.ForeignKey(Proyecto)
+    nombre = models.CharField(max_length=30)
+    descripcion = models.CharField(max_length=200)
+    posicionFase = models.IntegerField()
+    estado = models.CharField(max_length=15)
+    fechaInicio = models.DateField(default=datetime.datetime.now())
+    fechaFin = models.DateField(
+        default=(datetime.datetime.now() + datetime.timedelta(days=1)))
+
+
+
 
 
 class Atributo(models.Model):
@@ -158,7 +162,10 @@ class Comite(models.Model):
     nro_integ = models.IntegerField()
     fecha_creacion = models.DateField()
     proy = models.ForeignKey(Proyecto)
-    usuarios = models.ManyToManyField(Usuario)
+
+class UsuarioPorComite(models.Model):
+    comite = models.ForeignKey(Comite)
+    usuario = models.ForeignKey(Usuario)
 
 
 class HistorialLineabase(models.Model):
@@ -174,3 +181,5 @@ class UsuariosXProyecto(models.Model):
     """
     proyecto = models.ForeignKey(Proyecto)
     usuario = models.ForeignKey(Usuario)
+    activo = models.BooleanField(default=False)
+    lider = models.BooleanField(default=False)

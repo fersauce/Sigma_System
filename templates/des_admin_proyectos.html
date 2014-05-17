@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}"> P&aacute;gina Principal</a>
+    <a class="pull-menu" href="#"></a>
+    <ul class="element-menu">
+        <li></li>
+        <div class="no-tablet-portrait">
+            <div class="element place-right">
+                <a class="dropdown-toggle" href="#">
+                    <span class="icon-cog"></span>
+                </a>
+                <ul class="dropdown-menu place-right" data-role="dropdown">
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesi&oacute;n</a></li>
+                </ul>
+            </div>
+        </div>
+    </ul>
+{% endblock %}
+{% block titulo %}Proyectos Activos{% endblock %}
+{% block definicion_script %}
+    <script>
+    function eliminar(urlEliminar){
+        $.Dialog({
+            shadow: true,
+            overlay: true,
+            flat: true,
+            draggable: true,
+            icon: '<span class="icon-bus"></span>',
+            title: 'Draggable window',
+            width: 500,
+            padding: 10,
+            content: 'This Window is draggable by caption.',
+            onShow: function(){
+                var content = '<form>' +
+                        '<p>¿Est&aacute; seguro de querer eliminar este proyecto?</p>' +
+                        '<a class="button primary" href='+ urlEliminar +'> S&iacute; </a>' +
+                        '<a href="{% url 'sigma:adm_proy' %}"><input type="button" value="No" ></a>'+
+                        '</form>';
+                $.Dialog.title("Confirmar Eliminaci&oacute;n");
+                $.Dialog.content(content);
+            }
+
+        });
+    };
+    </script>
+{% endblock %}
+{% block contenido %}
+    <div class="container">
+        <h1><a href="#"></a>Administrador<small class="on-right">de Proyectos</small></h1>
+        <div class="example">
+            <a href="{%  url 'sigma:adm_proy_alta' %}">
+                <button class="command-button primary">
+                    <i class="icon-new on-left"></i><b>Agregar</b>
+                    <small>Proyecto</small>
+                </button>
+            </a>
+            <table class="table striped hovered dataTable" id="tablaProyecto">
+                <thead>
+                    <th class="text-left">Nombre</th>
+                    <th class="text-left">Descripci&oacute;n</th>
+                    <th class="text-left">Fecha de Inicio</th>
+                    <th class="text-left">Fecha Finalizaci&oacute;n</th>
+                    <th class="text-left">Nº de Fases</th>
+                    <th class="text-left">Nº de Miembros</th>
+                    <th class="text-left">Editar</th>
+                </thead>
+                <tbody>
+                    {% for proyecto in proyectos %}
+                        <tr>
+                            <td>{{ proyecto.nombre }}</td>
+                            <td class="right">{{ proyecto.descripcion }}</td>
+                            <td class="right">{{ proyecto.fechaInicio }}</td>
+                            <td class="right">{{ proyecto.fechaFinalizacion }}</td>
+                            <td class="right">{{ proyecto.nroFases }}</td>
+                            <td class="right">{{ proyecto.nroMiembros }}</td>
+                            <td align="center">
+                                <div class="span1">
+                                    <nav class="navigation-bar">
+                                        <div class="navigation-bar-content">
+                                            <ul class="element-menu">
+                                                <li>
+                                                    <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
+                                                    <ul class="dropdown-menu" data-role="dropdown">
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_fase' proyecto.pk %}">
+                                                            <i class="icon-book on-left"></i>Fases</a></li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </nav>
+                                </div>
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-left">Nombre</th>
+                        <th class="text-left">Descripci&oacute;n</th>
+                        <th class="text-left">Fecha de Inicio</th>
+                        <th class="text-left">Fecha Finalizaci&oacute;n</th>
+                        <th class="text-left">Nº de Fases</th>
+                        <th class="text-left">Nº de Miembros</th>
+                        <th class="text-left">Editar</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <script>
+                $(document).ready(function() {
+                    $('#tablaProyecto').dataTable( {
+                        "oLanguage": {
+                            "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                        }
+                    } );
+                } );
+            </script>
+        </div>
+    </div>
+{% endblock %}
