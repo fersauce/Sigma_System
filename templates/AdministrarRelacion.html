@@ -25,13 +25,13 @@
     <div class="span10">
         <h2><a href="#"></a>Administrador<small class="on-right">de Relacion del Item </small> {{item.nombre }}</h2>
         <div class="example">
-            <a href="#">
+            <a href="{% url 'sigma:adm_rel_asig_padre' item.id %}">
                 <button class="command-button primary">
-                    <i class="icon-new on-left"></i><b>Agregar</b>
+                    <i class="icon-link on-left"></i><b>Asignar</b>
                     <small>Padre</small>
                 </button>
             </a>
-            <a href="#">
+            <a href="{% url 'sigma:adm_rel_hijos' item.id %}">
                 <button class="command-button primary">
                     <i class="icon-eye on-left"></i><b>Ver</b>
                     <small>Hijos</small>

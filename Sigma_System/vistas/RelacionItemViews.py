@@ -26,3 +26,47 @@ def adm_relacion(request, id_item):
                    'item_padres': item_padres,
                    'id_fase': id_fase,
                    'id_proy': id_proy})
+
+
+def asignar_padre(request, id_item):
+    item = Item.objects.get(id=id_item)
+    items = Item.objects.filter(fase=item.fase).exclude(id=item.id)
+    return render(request, 'AsignarPadre.html', {'items': items, 'item': item})
+
+
+def asignar_final(request, hijo, padre):
+    print verificar_ciclos(Item.objects.get(id=1), 9)
+    if not verificar_ciclos(Item.objects.get(id=int(hijo)), int(padre)):
+        item = Item.objects.get(id=hijo)
+        item.item_padre = padre
+        item.save()
+        messages.success(request, 'La asignacion ha sido creada con exito')
+        return HttpResponseRedirect(reverse('sigma:adm_relacion', args=[hijo]))
+    else:
+        messages.error(request, 'No se puede asociar debido al ciclo que se crearia')
+        return HttpResponseRedirect(reverse('sigma:adm_relacion', args=[hijo]))
+
+
+
+def ver_hijos(request, id_item):
+    item = Item.objects.get(id=id_item)
+    items = Item.objects.filter(item_padre=id_item)
+    return render(request, 'VerHijos.html', {'item': item, 'items': items})
+
+
+def verificar_ciclos(item, iditem):
+    hijos = Item.objects.filter(item_padre=item.id)
+    c = 0
+    if hijos.__len__() == 0:
+        return False
+    for h in hijos:
+        if iditem == h.id:
+            return True
+        else:
+            b = verificar_ciclos(h, iditem)
+            if not b:
+                c += 1
+    if c == hijos.__len__():
+        return False
+    else:
+        return True

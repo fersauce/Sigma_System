@@ -67,6 +67,13 @@ urlpatterns = patterns('',
 
     url(r'^item/relacion/(?P<id_item>\d+)/$', 'Sigma_System.vistas.RelacionItemViews.adm_relacion',
         name='adm_relacion'),
+    url(r'^item/relacion/asignar_padre/(?P<id_item>\d+)/$', 'Sigma_System.vistas.RelacionItemViews.asignar_padre',
+        name='adm_rel_asig_padre'),
+    url(r'^item/relacion/asignar/final/(?P<hijo>\d+)/(?P<padre>\d+)/$',
+        'Sigma_System.vistas.RelacionItemViews.asignar_final',
+        name='adm_rel_asig_final'),
+    url(r'^item/relacion/hijos/(?P<id_item>\d+)/$', 'Sigma_System.vistas.RelacionItemViews.ver_hijos',
+        name='adm_rel_hijos'),
 
     url(r'^proyecto/(?P<idProyect>\d+)/fase/intercambiar/$',
        'Sigma_System.vistas.FaseViews.intercambiarFase',

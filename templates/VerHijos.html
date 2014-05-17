@@ -1,0 +1,69 @@
+{% extends 'base_menu.html' %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
+    <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
+    <a class="element" href="{% url 'sigma:adm_fase' item.tipoItems.fase.proyecto.id %}">Fase</a>
+    <a class="element" href="{% url 'sigma:adm_i' item.tipoItems.fase.id %}">Item</a>
+    <a class="element" href="{% url 'sigma:adm_relacion' item.id %}">Relacion</a>
+    <a class="pull-menu" href="#"></a>
+    <ul class="element-menu">
+        <li></li>
+        <div class="no-tablet-portrait">
+            <div class="element place-right">
+                <a class="dropdown-toggle" href="#">
+                    <span class="icon-cog"></span>
+                </a>
+                <ul class="dropdown-menu place-right" data-role="dropdown">
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </ul>
+{% endblock %}
+{% block titulo %}Lista Hijos{% endblock %}
+{% block contenido %}
+    <div class="span10">
+        <h2><a href="#"></a>Lista<small class="on-right">de hijos del item {{ item.nombre }}</small></h2>
+        <div class="example">
+            <table class="table striped hovered dataTable" id="tablaI">
+                <thead>
+                    <th class="text-left">Id</th>
+                    <th class="text-left">Nombre del Item</th>
+                    <th class="text-left">Complejidad</th>
+                    <th class="text-left">Prioridad</th>
+                    <th class="text-left">Estado</th>
+                </thead>
+                <tbody>
+                    {% for i in items %}
+                        <tr>
+                            <td>{{ i.id }}</td>
+                            <td>{{ i.nombre }}</td>
+                            <td class="right">{{ i.complejidad }}</td>
+                            <td class="right">{{ i.prioridad }}</td>
+                            <td class="right">{{ i.estado }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-left">Id</th>
+                        <th class="text-left">Nombre del Item</th>
+                        <th class="text-left">Complejidad</th>
+                        <th class="text-left">Prioridad</th>
+                        <th class="text-left">Estado</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <script>
+                $(document).ready(function() {
+                    $('#tablaI').dataTable( {
+                        "oLanguage": {
+                            "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                        }
+                    } );
+                } );
+            </script>
+        </div>
+    </div>
+{% endblock %}
