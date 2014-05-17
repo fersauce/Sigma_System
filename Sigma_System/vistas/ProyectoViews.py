@@ -42,7 +42,7 @@ def alta_proyecto(request):
     @return: AdministrarProyecto.html, pagina en la cual se trabaja con los
     proyectos.
     """
-    rol = Rol.objects.get(pk=3)
+    rol = Rol.objects.get(pk=4)
     lideres = UsuarioRol.objects.filter(rol__pk=rol.pk)
     if request.method == 'POST':
         proyecto = Proyecto.objects.filter(
@@ -200,7 +200,7 @@ def buscar_proyecto(request):
 
 def administrarProyectosAsociados(request):
     usuario = Usuario.objects.all()
-    proyectos = Proyecto.objects.all()
+    proyectos = UsuariosXProyecto.objects.all()
     c = {}
     c.update(csrf(request))
     return render(request, 'des_admin_proyectos.html',
@@ -225,7 +225,7 @@ def asignarUsuarioProyecto(request, idProyect):
     """
     proyecto = Proyecto.objects.get(pk=idProyect)
     usuarios = UsuariosXProyecto.objects.filter(proyecto=proyecto).exclude(
-        lider=True)
+        lider=True).exclude(usuario__user__pk=1)
     if request.is_ajax():
         print 'LLamada de ajax'
         enviar = []
