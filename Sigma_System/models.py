@@ -111,6 +111,7 @@ class LBase(models.Model):
 
 class Item(models.Model):
     tipoItems = models.ForeignKey(TipoDeItem)
+    item_padre = models.IntegerField(default=0)
     nombre = models.CharField(max_length=30, default='')
     version = models.IntegerField(default=1)
     complejidad = models.IntegerField()
