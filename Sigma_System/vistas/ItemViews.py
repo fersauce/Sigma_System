@@ -78,6 +78,8 @@ def modificar_item(request, it):
     """
     vista utilizada para modificar un item
     donde el parametro it es el id del item
+
+
     """
 
     its = Item.objects.get(id=it)
@@ -121,7 +123,7 @@ def modificar_item(request, it):
                 cod_mod = "m",
                 valor_act = nNuevo,
                 valor_ant = nAct,
-                descripcion = "nombre modificado",
+                descripcion = "nombre",
                 fecha_mod = datetime.datetime.now()
             )
         print request.POST['complejidad']
@@ -137,7 +139,7 @@ def modificar_item(request, it):
                 cod_mod="m",
                 valor_act=comNuevo,
                 valor_ant = comAct,
-                descripcion = "complejidad modificada",
+                descripcion = "complejidad",
                 fecha_mod = datetime.datetime.now()
             )
         suma=int(priNuevo)+9
@@ -152,7 +154,7 @@ def modificar_item(request, it):
                 cod_mod = "m",
                 valor_act = priNuevo,
                 valor_ant = priAct,
-                descripcion = "prioridad modificada",
+                descripcion = "prioridad",
                 fecha_mod = datetime.datetime.now()
             )
         if estAct != estNuevo:
@@ -164,7 +166,7 @@ def modificar_item(request, it):
                 cod_mod = "m",
                 valor_act = estNuevo,
                 valor_ant = estAct,
-                descripcion = "estado modificado",
+                descripcion = "estado",
                 fecha_mod = datetime.datetime.now()
             )
 
@@ -247,9 +249,97 @@ def revivir(request, it):
         cod_mod = "rev",
         valor_act = "activo",
         valor_ant = "baja",
-        descripcion = "item revivido",
+        descripcion = "revivir",
         fecha_mod = datetime.datetime.now()
     )
 
 
+    return HttpResponseRedirect('/ss/adm_i_rev/'+str(its.tipoItems.fase.pk))
+
+
+
+@login_required(login_url='/login/')
+def revertir(request, idFase):
+    """
+    vista utilizada para mostrar las versiones del item a reversionar
+
+    """
+
+    itemAux=Item.objects.get(id=idFase)
+    tipo=itemAux.tipoItems
+    fase=tipo.fase
+    nameFa=fase.nombre
+    idf=Fase.objects.get(nombre=nameFa)
+    id2=idf.id
+    histor = Historial.objects.filter(item=idFase)
+
+    return render(request, 'RevertirItem.html',{'hist': histor, 'fase': id2, 'nomb':nameFa, 'items':itemAux})
+
+
+@login_required(login_url='/login/')
+def revertirItem(request, idItem, versionRev, idHis):
+    """
+    vista utilizada para realizar la reversion del item,
+    idItem es el id del item que se va a cambiar
+    verisonRev es la version a la que ira nuevamente
+    historial.item.all
+
+    """
+
+    its=Item.objects.get(id=idItem)
+    versionActual=its.version
+
+    his2=Historial.objects. get(id=idHis)
+
+
+    his1=Historial.objects.filter(item=its)
+    for h in his1:
+        if h.nro_version_act==versionActual:
+            idHisFinal=h.id
+
+    idHisRev=his2.id
+
+    ultimo=idHisFinal+1
+    indice=ultimo-1
+
+    for i in range(idHisRev,ultimo):
+        print('for')
+        indice=indice-1
+        historialAux=Historial.objects.get(id=indice)
+        itemAuxiliar=historialAux.item
+        idLeido=itemAuxiliar.id
+        print 'id leido', idLeido
+        print 'idParametro', idItem
+
+        if (int(idLeido) == int(idItem)):
+            print('id son iguales')
+            if int(historialAux.nro_version_act)<=int(versionActual):
+                if int(historialAux.nro_version_act)== int(versionRev):
+                    if historialAux.cod_mod =='m':
+                        if historialAux.descripcion== 'nombre':
+
+                            valorActualEnHistorial=historialAux.valor_act
+                            valorAnteriorEnHistorial=historialAux.valor_ant
+                            its.nombre=valorAnteriorEnHistorial
+                            its.version=versionRev
+                            its.save()
+                        if historialAux.descripcion =='complejidad':
+                            print('reversion a un cambio de complejidad')
+                            valorActualEnHistorial=historialAux.valor_act
+                            valorAnteriorEnHistorial=historialAux.valor_ant
+                            its.complejidad=valorAnteriorEnHistorial
+                            its.version=versionRev
+                            its.save()
+                        if historialAux.descripcion =='prioridad':
+                            valorActualEnHistorial=historialAux.valor_act
+                            valorAnteriorEnHistorial=historialAux.valor_ant
+                            its.prioridad=valorAnteriorEnHistorial
+                            its.version=versionRev
+                            its.save()
+                        if historialAux.descripcion =='estado':
+                            valorActualEnHistorial=historialAux.valor_act
+                            valorAnteriorEnHistorial=historialAux.valor_ant
+                            its.estado=valorAnteriorEnHistorial
+                            its.version=versionRev
+                            its.save()
     return HttpResponseRedirect('/ss/adm_i_rev/'+str(its.tipoItems.fase.pk))
