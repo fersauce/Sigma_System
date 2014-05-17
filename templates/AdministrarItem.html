@@ -58,7 +58,7 @@
 {% block titulo %}Administraci&oacute;n de Items{% endblock %}
 {% block contenido %}
     <div class="container" align="center">
-        <h1><a href="#"></a>Administrador<small class="on-right">de Items de la Fase </small>{{ nomb}}</h1>
+        <h1><a href="#"></a>Administrador<small class="on-right">de &Iacute;tems de la Fase </small>{{ nomb}}</h1>
         <div class="example">
             <a href="{%  url 'sigma:adm_i_alta' fase %}">
                 <button class="command-button primary">
@@ -104,9 +104,9 @@
                                                         <li class="text-left" onclick="confirmar('{% url 'sigma:adm_i_baja' i.id %}')">
                                                             <a href="#">
                                                             <i class="icon-remove on-left"></i>Eliminar</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_i_revertir' i.id %}">
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_i_revertir' i.pk %}">
                                                             <i class="icon-eye on-left"></i>Revertir</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_i_historialItem' i.id %}">
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_i_historialItem' i.pk %}">
                                                             <i class="icon-eye on-left"></i>Historial Item</a></li>
                                                     </ul>
                                                 </li>
@@ -120,7 +120,9 @@
                 </tbody>
                 <tfoot>
                     <tr>
+                        <th class="text-left">Nombre de la fase</th>
                         <th class="text-left">Nombre del Item</th>
+                        <th class="text-left">Tipo del Item</th>
                         <th class="text-left">Version</th>
                         <th class="text-left">Estado</th>
                         <th class="text-center">Editar</th>
