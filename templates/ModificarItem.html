@@ -3,7 +3,7 @@
     <span class="element-divider"></span>
     <a class="element" href={% url 'sigma:inicio' %}> Página Principal</a>
     <span class="element-divider"></span>
-    <a class="element" href={% url 'sigma:adm_u' %}> Administrar Usuario </a>
+    <a class="element" href={% url 'sigma:adm_i' item.tipoItems.fase.pk %}> Administrar Item </a>
     <a class="element place-right" href="#">   </a>
     <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
@@ -21,6 +21,7 @@
         </div>
     </ul>
 {% endblock %}
+{% block titulo %}Modificar Item{% endblock %}
 {% block contenido %}
     <div class="container" align = "center">
         <h1><a href="#"></a>Modificar<small class="on-right">Item</small></h1>
@@ -36,7 +37,7 @@
                                 </div>
                                 <div class="span6">
                                     <div class="input-control text"  data-role="input-control" >
-                                        <input type="text"  name="nombre" required value={{item.tipoItems.nombre }} >
+                                        <input type="text"  name="nombre" required value={{item.nombre }} >
                                     </div>
                                 </div>
                             </div>
@@ -49,7 +50,7 @@
                                 </div>
                                 <div class="span6">
                                     <div class="input-control text" data-role="input-control">
-                                        <input type="text" placeholder=" " name="complejidad" required value={{item.complejidad }} >
+                                        <input type="int" placeholder=" " name="complejidad" required value={{item.complejidad }} >
                                     </div>
                                 </div>
                             </div>

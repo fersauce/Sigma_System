@@ -21,6 +21,7 @@
         </div>
     </ul>
 {% endblock %}
+{% block titulo %}Alta Items{% endblock %}
 {% block contenido %}
     <div class="container" align = "center">
 
@@ -84,7 +85,7 @@
                                 </div>
                                 <div class="span6">
                                     <div class="input-control text" data-role="input-control">
-                                        <input type="text" name="vers" required>
+                                        <input type="text" placeholder="1" name="vers" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -98,7 +99,7 @@
                                 </div>
                                 <div class="span6">
                                     <div class="input-control text" data-role="input-control">
-                                        <input type="text" name="estado" required>
+                                        <input type="text" placeholder="activo" name="estado" disabled>
                                     </div>
                                 </div>
                             </div>
