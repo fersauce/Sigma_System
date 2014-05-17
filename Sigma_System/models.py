@@ -161,6 +161,11 @@ class Comite(models.Model):
     usuarios = models.ManyToManyField(Usuario)
 
 
+class UsuarioPorComite(models.Model):
+    comite = models.ForeignKey(Comite)
+    usuario = models.ForeignKey(Usuario)
+
+
 class HistorialLineabase(models.Model):
     fecha_cambio = models.DateField()
     id_usuario = models.IntegerField()
