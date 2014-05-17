@@ -30,7 +30,7 @@ def adm_relacion(request, id_item):
 
 def asignar_padre(request, id_item):
     item = Item.objects.get(id=id_item)
-    items = Item.objects.filter(tipoItems__fase=item.fase).exclude(id=item.id)
+    items = Item.objects.filter(tipoItems__fase=item.tipoItems.fase).exclude(id=item.id)
     return render(request, 'AsignarPadre.html', {'items': items, 'item': item})
 
 

@@ -64,6 +64,8 @@ class Testing(TestCase):
         response = adm_usuario(request)
         self.assertEqual(response.status_code, 200)
 
+
+
     def testUsuarioComparacion(self):
         """
         Testing de comparacion de usuario test
@@ -73,3 +75,4 @@ class Testing(TestCase):
 
     def tearDown(self):
         self.user.delete()
+
