@@ -28,10 +28,10 @@ def iniciarsesion(request):
                     login(request, user)
                     request.session['userpk'] = username
                     request.session['permisos'] = permisos_disponibles(user)
-                    if 'super_us' in request.session['permisos']:
-                        return HttpResponseRedirect(reverse('sigma:inicio'))
-                    else:
-                        return HttpResponseRedirect(reverse('sigma:adm_proy'))
+                    #if 'super_us' in request.session['permisos']:
+                    return HttpResponseRedirect(reverse('sigma:inicio'))
+                    #else:
+                    #    return HttpResponseRedirect(reverse('sigma:adm_proy'))
             else:
                 messages.error(request, 'Username o contrasenha incorrecta')
     else:
@@ -40,7 +40,6 @@ def iniciarsesion(request):
 
 
 @login_required(login_url='/login/')
-@permisos_requeridos(['super_us'], 'sigma:adm_proy', 'administrar el sistema')
 def inicio(request):
     return render(request, 'principal.html', {'user': request.user.username,
                                               'permisos': request.session['permisos']})
@@ -139,8 +138,9 @@ def modificar_usuario(request, us):
 @login_required(login_url='/login/')
 @permisos_requeridos(['ver_us'], 'sigma:inicio', 'administrar usuarios')
 def adm_usuario(request):
+    permisos = request.session['permisos']
     user_list = User.objects.exclude(is_active=True, id=request.user.id)
-    return render(request, 'ListarUsr.html', {'user_list': user_list})
+    return render(request, 'ListarUsr.html', {'user_list': user_list, 'permisos': permisos})
 
 
 def recuperarPass(request):

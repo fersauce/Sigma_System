@@ -22,10 +22,11 @@ def administrarAtributos(request, idTI):
 
     @author: Fernando Saucedo
     """
+    permisos = request.session['permisos']
     tipoItem = TipoDeItem.objects.get(pk=idTI)
     listaAtributos = AtribTipoDeItem.objects.filter(tipoDeItem=tipoItem)
     return render(request, 'AdministrarAtributos.html',
-                  {'atrib_list': listaAtributos, 'ti_asoc': tipoItem})
+                  {'atrib_list': listaAtributos, 'ti_asoc': tipoItem, 'permisos': permisos})
 
 
 def altaAtributo(request, idTI):

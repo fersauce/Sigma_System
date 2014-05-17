@@ -22,10 +22,11 @@ def administrarTI(request, idProyect, idFase):
 
     @author: Fernando Saucedo
     """
+    permisos = request.session['permisos']
     fase = Fase.objects.get(pk=idFase)
     tiposItem = TipoDeItem.objects.filter(fase=fase)
     return render(request, 'AdministrarTI.html',
-                  {'fase': fase, 'listaTI': tiposItem, 'pkProyecto': idProyect})
+                  {'fase': fase, 'listaTI': tiposItem, 'pkProyecto': idProyect, 'permisos': permisos})
 
 
 def altaTI(request, idProyect, idFase):

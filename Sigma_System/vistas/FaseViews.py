@@ -5,9 +5,13 @@ from django.http import *
 from django.template import RequestContext
 from Sigma_System.forms import BusquedaFasesForm
 from Sigma_System.models import Proyecto, Usuario, Fase, TipoDeItem
+from Sigma_System.decoradores import permisos_requeridos
+from django.contrib.auth.decorators import login_required
 import datetime, time
 
+argumento_fase = 0
 
+@login_required(login_url='/login/')
 def administrar_fases(request, idProyect):
     """
     Vista para realizar la administracion de las fases de un proyecto
@@ -17,13 +21,17 @@ def administrar_fases(request, idProyect):
     request.session['idProyectoActual'] = idProyect
     proyecto = Proyecto.objects.get(pk=idProyect)
     fases = Fase.objects.filter(proyecto=proyecto).order_by('posicionFase')
+    permisos = request.session['permisos']
     return render(request, 'administrarfases.html',
                   {'proyecto': proyecto, 'fases': fases,
                    'form': BusquedaFasesForm(),
                    'vacio': 'No se encontraron fases asociadas a este '
-                            'proyecto'})
+                            'proyecto',
+                   'permisos': permisos})
 
 
+@login_required(login_url='/login/')
+@permisos_requeridos(['crear_fa'], 'sigma:adm_fase', 'crear fases', 1)
 def alta_fase(request, idProyect):
     """
     Vista para realizar la alta de una fase
@@ -40,7 +48,6 @@ def alta_fase(request, idProyect):
                 messages.error(request, 'Nombre de fase ya utilizado')
                 return render(request, 'fasealta.html',
                               {'proyecto': idProyect})
-
         if request.POST['fechaInicio'] > request.POST['fechaFin']:
             messages.error(request, 'La fecha de Inicio no puede ser'
                                     'superior a la fecha de fin')
@@ -81,6 +88,8 @@ def alta_fase(request, idProyect):
                                              'proyecto': idProyect})
 
 
+@login_required(login_url='/login/')
+@permisos_requeridos(['modificar_fa'], 'sigma:adm_fase', 'modificar fases', 1)
 def modificar_fase(request, idProyect, idFase):
     """
     Vista para realizar la modificacion de datos de una fase
@@ -143,6 +152,8 @@ def modificar_fase(request, idProyect, idFase):
                                                   'fase': fase})
 
 
+@login_required(login_url='/login/')
+@permisos_requeridos(['eliminar_fa'], 'sigma:adm_fase', 'eliminar fases', 1)
 def baja_fase(request, idProyect, idFase):
     """
     Vista para realizar la baja de una fase

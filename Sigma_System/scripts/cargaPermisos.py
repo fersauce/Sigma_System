@@ -23,7 +23,6 @@ def loadPermisos():
     Permiso.objects.create(nombre="Eliminar Proyecto", codigo="eliminar_pr")
     Permiso.objects.create(nombre="Ver Proyecto", codigo="ver_pr")
 
-
     Permiso.objects.create(nombre="Crear Fase", codigo="crear_fa")
     Permiso.objects.create(nombre="Modificar Fase", codigo="modificar_fa")
     Permiso.objects.create(nombre="Eliminar Fase", codigo="eliminar_fa")

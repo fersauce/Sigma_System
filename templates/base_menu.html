@@ -95,19 +95,25 @@
                         <nav class="sidebar dark">
                             <ul>
                                 <li class="title">Modulos</li>
-                                <li>
+                                <li {% if 'super_us' not in permisos %} class="disabled" {% endif %}>
                                     <a class="dropdown-toggle" href="#">
                                         <i class="icon-globe"></i>
                                         Administracion
                                     </a>
                                     <ul class="dropdown-menu" data-role="dropdown" style="display: none;">
-                                        <li><a href="{% url 'sigma:adm_proy' %}">Proyectos</a></li>
-                                        <li><a href="{% url 'sigma:adm_u' %}">Usuarios</a></li>
-                                        <li><a href="{% url 'sigma:adm_r' %}">Roles y Permisos</a></li>
+                                        {% if 'super_us' in permisos %}
+                                            <li><a href="{% url 'sigma:adm_proy' %}">Proyectos</a></li>
+                                            <li><a href="{% url 'sigma:adm_u' %}">Usuarios</a></li>
+                                            <li><a href="{% url 'sigma:adm_r' %}">Roles y Permisos</a></li>
+                                        {% else %}
+                                            <li><a href="#">Proyectos</a></li>
+                                            <li><a href="#">Usuarios</a></li>
+                                            <li><a href="#">Roles y Permisos</a></li>
+                                        {% endif %}
                                     </ul>
                                 </li>
                                 <li class="stick">
-                                    <a href="#">
+                                    <a href="{% url 'sigma:adm_proy' %}">
                                         <i class="icon-tools"></i>
                                         Desarrollo
                                     </a>

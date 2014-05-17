@@ -22,12 +22,14 @@
     <div class="span10">
         <h2><a href="#"></a>Administrador<small class="on-right">de Proyectos</small></h2>
         <div class="example">
-            <a href="{%  url 'sigma:adm_proy_alta' %}">
-                <button class="command-button primary">
-                    <i class="icon-new on-left"></i><b>Agregar</b>
-                    <small>Proyecto</small>
-                </button>
-            </a>
+            {% if 'super_us' in permisos %}
+                <a href="{%  url 'sigma:adm_proy_alta' %}">
+                    <button class="command-button primary">
+                        <i class="icon-new on-left"></i><b>Agregar</b>
+                        <small>Proyecto</small>
+                    </button>
+                </a>
+            {% endif %}
             <table class="table striped hovered dataTable" id="tablaProyecto">
                 <thead>
                     <th class="text-left">Nombre</th>

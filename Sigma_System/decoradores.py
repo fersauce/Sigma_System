@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 
 
-def permisos_requeridos(permisos_var, redirec, mensaje):
+def permisos_requeridos(permisos_var, redirec, mensaje, *argumento):
     def decorador(vista):
         def _wraped_view(request, *args, **kwargs):
             c = 0
@@ -13,7 +13,14 @@ def permisos_requeridos(permisos_var, redirec, mensaje):
             if c == permisos_var.__len__():
                 return vista(request, *args, **kwargs)
             else:
-                messages.error(request, "No posee los permisos para "+mensaje)
-                return HttpResponseRedirect(reverse(redirec))
+                if argumento.__len__() != 0:
+                    ar = []
+                    for i in range(argumento[0]):
+                        ar.append(kwargs.values()[i-1])
+                    messages.error(request, "No posee los permisos para " + mensaje)
+                    return HttpResponseRedirect(reverse(redirec, args=ar))
+                else:
+                    messages.error(request, "No posee los permisos para " + mensaje)
+                    return HttpResponseRedirect(reverse(redirec))
         return _wraped_view
     return decorador
