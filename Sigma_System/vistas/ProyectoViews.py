@@ -10,8 +10,11 @@ from Sigma_System.forms import BusquedaProyectoForm, AltaProyectoForm
 from Sigma_System.models import Proyecto, Usuario, Fase, UsuariosXProyecto, \
     UsuarioRol, Rol, Comite, UsuarioPorComite
 import datetime, time
+from Sigma_System.decoradores import permisos_requeridos
+from django.contrib.auth.decorators import login_required
 
 
+@login_required(login_url='/login/')
 def administrar_proyecto(request):
     """
     Vista para acceder a la administracion de proyectos.
@@ -23,14 +26,21 @@ def administrar_proyecto(request):
     @return: AdministrarProyecto.html, pagina en la cual se trabaja con los
     proyectos.
     """
-    proyectos = Proyecto.objects.all().order_by('-nombre')
-    usuario = Usuario.objects.all()
+    permisos = request.session['permisos']
+    usuario = request.user.usuario
+    proyectos = usuario.proyectos.all()
+
+    if 'super_us' in permisos:
+        proyectos = Proyecto.objects.all().order_by('-nombre')
     return render(request, 'administrarproyectos.html',
                   {'proyectos': proyectos,
-                   'usuarios': usuario,
-                   'form': BusquedaProyectoForm()})
+                   'vacio': 'No se encuentran proyectos registrados',
+                   'form': BusquedaProyectoForm(),
+                   'permisos': permisos})
 
 
+@login_required(login_url='/login/')
+@permisos_requeridos(['crear_pr'], 'sigma: adm_proy', 'crear proyectos')
 def alta_proyecto(request):
     """
     Vista que realiza la creacion de un nuevo proyecto
@@ -109,6 +119,8 @@ def alta_proyecto(request):
                               context_instance=RequestContext(request))
 
 
+@login_required(login_url='/login/')
+@permisos_requeridos(['modificar_pr'], 'sigma:adm_proy', 'modificar proyectos')
 def modificar_proyecto(request, idProyecto):
     """
     Vista para realizar la modificacion de datos del proyecto
@@ -139,6 +151,8 @@ def modificar_proyecto(request, idProyecto):
     return render(request, 'proyectomodificar.html', {'proyecto': proyecto})
 
 
+@login_required(login_url='/login/')
+@permisos_requeridos(['elimminar_pr'], 'sigma:adm_proy', 'eliminar proyectos')
 def baja_proyecto(request, idProyecto):
     """
     Vista para realizar la baja de un proyecto.
