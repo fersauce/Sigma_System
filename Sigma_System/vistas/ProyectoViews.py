@@ -18,6 +18,13 @@ import datetime, time
 def administrar_proyecto(request):
     """
     Vista para acceder a la administracion de proyectos.
+    @type request: django.http.HttpRequest.
+    @param request: Contiene la informacion sobre la solicitud de la pagina
+    que lo llamo
+
+    @rtype django.shortcuts.render
+    @return: AdministrarProyecto.html, pagina en la cual se trabaja con los
+    proyectos.
     """
     proyectos = Proyecto.objects.all().order_by('-nombre')
     usuario = Usuario.objects.all()
@@ -81,7 +88,7 @@ def alta_proyecto(request):
                         nuevoProyecto.nombre + '',
                     nro_integ=1,
                     fecha_creacion=datetime.datetime.now(),
-                    proy=Proyecto
+                    proy=nuevoProyecto
                 )
                 usuariosComite = UsuarioPorComite.objects.create(
                     comite=comite,
@@ -93,7 +100,8 @@ def alta_proyecto(request):
                 messages.error(request, 'Ocurrio un error al crear el '
                                         'proyecto')
                 print error.args
-            return HttpResponseRedirect('/ss/proyecto/')
+                print sys.exc_info()
+            return HttpResponseRedirect(reverse('sigma:adm_proy'))
         else:
             messages.error(request,
                            'No se pudo crear el proyecto: El nombre ya '
@@ -247,7 +255,7 @@ def asignarUsuarioProyecto(request, idProyect):
                                      u.usuario.user.first_name
                                      + ' ha sido asignado al proyecto ' +
                                      proyecto.nombre)
-                    bandera = False
+                    bandera = True
                 except Exception:
                     messages.error(request, 'Ha ocurrido un erro interno, favor'
                                             ' contacte al administrador')
@@ -263,11 +271,11 @@ def asignarUsuarioProyecto(request, idProyect):
                                      u.usuario.user.first_name
                                      + ' ha sido desasignado del proyecto ' +
                                      proyecto.nombre)
-                    bandera = False
+                    bandera = True
                 except Exception:
-                    messages.error(request, 'Ha ocurrido un erro interno, favor'
-                                            ' contacte al administrador')
-    if bandera:
+                    messages.error(request, 'Ha ocurrido un error interno,'
+                                            'favor contacte al administrador')
+    if not bandera:
         messages.info(request, 'No se han realizados asignaciones/'
                                'desasignaciones en el proyecto ' +
                                proyecto.nombre)
@@ -293,11 +301,14 @@ def iniciarProyecto(request, idProyect):
     fases = Fase.objects.filter(proyecto=proyecto)
     if fases.__len__() != proyecto.nroFases:
         messages.error(request, 'No puede iniciar el proyecto, aun no se han'
-                                'definido todas las fases')
-        return HttpResponse(reverse('sigma:adm_proy'))
+                                ' definido todas las fases')
+        return HttpResponseRedirect(reverse('sigma:adm_proy'))
     try:
         proyecto.estado = 'Iniciado'
         proyecto.fechaInicio = datetime.datetime.now()
+        fase = fases.get(posicionFase=1)
+        fase.estado = 'Iniciado'
+        fase.save()
         proyecto.save()
         messages.success(request,
                          'El proyecto ' + proyecto.nombre + ' ha sido iniciado, '

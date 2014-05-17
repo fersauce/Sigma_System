@@ -2,7 +2,7 @@
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
-    <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
+    <a class="element" href="{% url 'sigma:des_proyec' %}">Proyectos</a>
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
         <li></li>
@@ -18,10 +18,54 @@
         </div>
     </ul>
 {% endblock %}
-{% block titulo %}Administraci&oacute;n de Fases del proyecto {{ proyecto.nombre }}{% endblock %}
+{% block titulo %}Fases del proyecto {{ proyecto.nombre }}{% endblock %}
+{% block definicion_script %}
+    <script>
+        function cambiarPosicion(urlAsignar){
+            $.getJSON(urlAsignar, {xhr: "true"}, function(data){
+                $.Dialog({
+                    shadow: true,
+                    overlay: true,
+                    flat: true,
+                    draggable: true,
+                    icon: '<span class="icon-bus"></span>',
+                    title: 'Draggable window',
+                    width: 250,
+                    height: 100,
+                    padding: 10,
+                    scrollTop: 0,
+                    content: 'This Window is draggable by caption.',
+                    draggable: true,
+                    onShow: function(){
+                        var contenido = new String();
+                        contenido= contenido +'<div class="input-control switch" data-role="input-control" align="left" id="usuarios">'+
+                                    '<label class="inline-block" align="left">'+
+                                    '<select name="posicion">';
+                        $.each(data, function(i, dato){
+                            contenido = contenido + '<option value="'+ dato.pkFase +'">'+dato.posicion+' - '+ dato.nombre +'</option>';
+                        });
+                        contenido = contenido + '</select></label></div>';
+                        var content = '<div style=" overflow: auto">'+
+                                '<form method="get" action="'+urlAsignar+'">' +
+                                '<input type="hidden" value="" name="csrfmiddlewaretoken"></input>'+
+                                contenido+
+                                '<br>'+
+                                //'<a class="button primary" href='+ urlAsignar +'> S&iacute; </a>' +
+                                '<input type="submit" value="Aceptar" class="button success">'+
+                                '<a href="#" onclick="$.Dialog.close();"><input class="button inverse" type="button" value="No" ></a>'+
+                                '</form>'+
+                                '</div>';
+                        $.Dialog.title("Realizar Intercambio de Fases");
+                        $.Dialog.content(content);
+                    }
+                });
+            })
+        };
+    </script>
+{% endblock %}
 {% block contenido %}
     <div class="container">
-        <h1><a href="#"></a>Administrador<small class="on-right">de Fases del Proyecto </small> {{ proyecto.nombre }}</h1>
+        <center><h1>Fases<small class="on-right">del Proyecto </small> {{ proyecto.nombre }}</h1></center>
         <div class="example">
             <a href="{%  url 'sigma:adm_fase_alta' proyecto.id %}">
                 <button class="command-button primary">
@@ -46,8 +90,16 @@
                             <td>{{ fase.nombre }}</td>
                             <td class="right" width>{{ fase.posicionFase }}</td>
                             <td class="right" width>{{ fase.estado }}</td>
-                            <td class="right" width>{{ fase.fechaInicio}}</td>
-                            <td class="right" width>{{ fase.fechaFin }}</td>
+                            <td class="right" width>
+                                {% if fase.estado == 'Iniciado' %}
+                                    {{ fase.fechaInicio}}
+                                {% endif %}
+                            </td>
+                            <td class="right" width>
+                                {% if fase.estado == 'Finalizado' %}
+                                    {{ fase.fechaFin }}
+                                {% endif %}
+                            </td>
                             <td align="center">
                                 <div class="span1">
                                     <nav class="navigation-bar">
@@ -64,6 +116,11 @@
                                                             <i class="icon-accessibility"></i>Tipos de &Iacute;tem</a></li>
                                                         <li class="text-left"><a href="{% url 'sigma:adm_i' fase.pk %}">
                                                             <i class="icon-accessibility"></i>&Iacute;tems</a></li>
+                                                        {% if fase.estado == 'Pendiente' %}
+                                                        <li class="text-left" onclick="cambiarPosicion('{% url 'sigma:des_fase_intercambio' fase.pk %}')">
+                                                            <a href="#">
+                                                            <i class="icon-undo"></i>Intercambiar</a></li>
+                                                        {% endif %}
                                                     </ul>
                                                 </li>
                                             </ul>
@@ -93,7 +150,6 @@
                                     $.Dialog.title("Confirmar Eliminaci&oacute;n");
                                     $.Dialog.content(content);
                                 }
-
                             });
                         });
                         </script>
@@ -121,42 +177,4 @@
             </script>
         </div>
     </div>
-
-    <!--form action = "{% url 'sigma:adm_fase_busq' proyecto.pk %}" method="post">{% csrf_token %}
-        <div class="" id="formBusqueda" >
-            <div class="input-control select" id="columna">
-                {{ form.columna }}
-            </div>
-            <div class="input-control text" data-role="input-control" id="busqueda">
-                {{ form.busqueda }}
-                <button class="btn-search"> </button>
-            </div><br><br>
-            <div id="">
-                <a class="button info" href="{% url 'sigma:adm_fase' proyecto.pk %}" id="botLimpiar">Limpiar</a>
-            </div>
-            <style type="text/css">
-                #formBusqueda{
-                    width: 600px;
-                }
-                #columna{
-                    float: left;
-                    margin-left: 10px;
-                    margin-right: 10px;
-                    width: 200px;
-                }
-                #busqueda{
-                    float: left;
-                    margin-left: 10px;
-                    height: 35px;
-                    width: 200px;
-                }
-                #limp{
-                    float: left;
-                    margin-left: 10px;
-                    width: 15px;
-                    height: 35px;
-                }
-            </style>
-        </div>
-    </form-->
 {% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
+    <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
+    <a class="pull-menu" href="#"></a>
+    <ul class="element-menu">
+        <li></li>
+        <div class="no-tablet-portrait">
+            <div class="element place-right">
+                <a class="dropdown-toggle" href="#">
+                    <span class="icon-cog"></span>
+                </a>
+                <ul class="dropdown-menu place-right" data-role="dropdown">
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesi&oacute;n</a></li>
+                </ul>
+            </div>
+        </div>
+    </ul>
+{% endblock %}
+{% block titulo %}Administraci&oacute;n de Comit&eacute; de Cambios del Proyecto {{ proyecto.nombre }}{% endblock %}
+{% block contenido %}
+    <div class="container">
+        <h1><a href="#"></a>Administrador<small class="on-right">de Comit&eacute; del Proyecto</small> {{ proyecto.nombre }}</h1>
+        <div class="example">
+            <form action="{% url 'sigma:adm_proy_comite_usuario' proyecto.pk %}" method="post">
+                {% csrf_token %}
+                <table class="table striped hovered dataTable" id="tabla01">
+                    <thead>
+                         <tr>
+                             <th class="text-left">Es miembro?</th>
+                             <th class="text-left">Nombre</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in usuariosProyecto %}
+                            <tr>
+
+                                <td class="right">
+                                    <div class="input-control radio default-style inline-block" data-role="input-control">
+                                        <label class="inline-block">
+                                            <input type="radio" name="importar" checked value="True"/>
+                                            <span class="check"></span>
+                                            S&iacute;
+                                        </label>
+                                        <label class="inline-block">
+                                            <input type="radio" name="importar" value="False"/>
+                                            <span class="check"></span>
+                                            No
+                                        </label>
+                                    </div>
+                                </td>
+                                <td class="right" width>{{ user.usuario.user.first_name }}</td>
+                            </tr>
+                            <script>
+                            function hola(){
+                                alert("hola");
+                            }
+                            </script>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th class="text-left">Es miembro?</th>
+                            <th class="text-left">Nombre</th>
+                        </tr>
+                    </tfoot>
+                </table>
+                <script>
+                    $(document).ready(function() {
+                        $('#tabla01').dataTable( {
+                            "oLanguage": {
+                                "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                            }
+                        } );
+                    } );
+                </script>
+                <input value="Agregar" class="button success" onmouseover="hola()">
+            </form>
+        </div>
+    </div>
+{% endblock %}

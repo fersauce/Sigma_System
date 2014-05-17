@@ -3,6 +3,7 @@
     <words>
       <w>administracion</w>
       <w>administrar</w>
+      <w>asignar</w>
       <w>atributo</w>
       <w>atributos</w>
       <w>baja</w>
@@ -14,6 +15,7 @@
       <w>debe</w>
       <w>descripcion</w>
       <w>eliminar</w>
+      <w>enviar</w>
       <w>estado</w>
       <w>fase</w>
       <w>fases</w>
@@ -23,10 +25,13 @@
       <w>iniciado</w>
       <w>inicio</w>
       <w>instanciados</w>
+      <w>intercambiada</w>
       <w>intercambiar</w>
+      <w>intercambio</w>
       <w>lideres</w>
       <w>modificacion</w>
       <w>modificar</w>
+      <w>opcion</w>
       <w>produccion</w>
       <w>proyect</w>
       <w>proyecto</w>

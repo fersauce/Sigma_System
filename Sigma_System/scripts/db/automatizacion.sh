@@ -16,25 +16,25 @@ do
             gksu service apache2 restart
             #zenity --text="Espere mientras se reinicia el servidor" --progress --auto-close --auto-kill --percentage=0
             if [ "$(echo $?)" -ne 0 ];then
-                zenity --width 390 --height 100 --error --text="Ha ocurrido un error al reiniciar el servidor";
+                zenity --width 300 --height 100 --error --text="Ha ocurrido un error al reiniciar el servidor";
             else
-                zenity --width 390 --height 100 --info --text="Servidor apache reiniciado con éxito"
+                zenity --width 300 --height 100 --info --text="Servidor apache reiniciado con éxito"
             fi
         ;;
         "Realizar Backup de Base de Datos de Producción.")
             ./generar_backup_produccion.sh
             if [ "$(echo $?)" -ne 0 ];then
-                zenity --width 390 --height 100 --error --text="Ha ocurrido un error";
+                zenity --width 300 --height 100 --error --text="Ha ocurrido un error";
             else
-                zenity --width 390 --height 100 --info --text="Backup realizado a la BD de Producción"
+                zenity --width 300 --height 100 --info --text="Backup realizado a la BD de Producción"
             fi
         ;;
         "Realizar Backup de Base de Datos de Desarrollo.")
             ./generar_backup_desarrollo.sh
             if [ "$(echo $?)" -ne 0 ];then
-                zenity --width 390 --height 100 --error --text="Ha ocurrido un error";
+                zenity --width 300 --height 100 --error --text="Ha ocurrido un error";
             else
-                zenity --width 390 --height 100 --info --text="Backup realizado a la BD de Desarrollo"
+                zenity --width 300 --height 100 --info --text="Backup realizado a la BD de Desarrollo"
             fi
         ;;
         "Restaurar copia de Base de Datos de Producción.")
@@ -42,9 +42,9 @@ do
             echo "BD de producción borrada."
             ./poblado_produccion.sh
             if [ "$(echo $?)" -ne 0 ];then
-                zenity --width 390 --height 100 --error --text="Ha ocurrido un error";
+                zenity --width 300 --height 100 --error --text="Ha ocurrido un error";
             else
-                zenity --width 390 --height 100 --info --text="Backup realizada a la BD de Producción"
+                zenity --width 300 --height 100 --info --text="Backup realizada a la BD de Producción"
             fi
         ;;
         "Restaurar copia de Base de Datos de Desarrollo.")
@@ -52,9 +52,9 @@ do
             echo "BD de desarrollo borrada."
             ./poblado_desarrollo.sh
             if [ "$(echo $?)" -ne 0 ];then
-                zenity --width 390 --height 100 --error --text="Ha ocurrido un error";
+                zenity --width 300 --height 100 --error --text="Ha ocurrido un error";
             else
-                zenity --width 390 --height 100 --info --text="Restauración realizada a la BD de Desarrollo"
+                zenity --width 300 --height 100 --info --text="Restauración realizada a la BD de Desarrollo"
             fi
         ;;
         "Salir")

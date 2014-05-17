@@ -62,15 +62,6 @@
                             <label class="label">Descripci&oacute;n</label>
                             <textarea cols="60" id="id_descripcion" name="descripcion" required="true" rows="3">{{ fase.descripcion }}</textarea>
                         </div><br><br><br>
-                        <div class="input-control text" data-role="datepicker" data-format="yyyy-mm-dd hh:mm:ss">
-                            <label class="label">Fecha de Inicio</label>
-                            <input type="text" name="fechaInicio" required="true" value="{{ fase.fechaInicio }}">
-                            <button class="btn-clear" tabindex="-1" type="button"> </button>
-                        </div><br><br><br>
-                        <div class="input-control number" data-role="datepicker" data-format="yyyy-mm-dd">
-                            <label class="label">Fecha de Fin</label>
-                            <input type="text" name="fechaFin" required="true" value="{{ fase.fechaFin }}">
-                        </div><br><br>
                         <input type="submit" value="Aceptar" onclick="">
                         <a href="{% url 'sigma:adm_fase' proyecto %}"><input type="button" value="Cancelar" ></a>
                     </div>
