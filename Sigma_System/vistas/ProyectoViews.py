@@ -25,10 +25,12 @@ def administrar_proyecto(request):
     """
     proyectos = Proyecto.objects.all().order_by('-nombre')
     usuario = Usuario.objects.all()
+    permisos = request.session['permisos']
     return render(request, 'administrarproyectos.html',
                   {'proyectos': proyectos,
                    'usuarios': usuario,
-                   'form': BusquedaProyectoForm()})
+                   'form': BusquedaProyectoForm(),
+                   'permisos': permisos})
 
 
 def alta_proyecto(request):
@@ -200,7 +202,7 @@ def buscar_proyecto(request):
 
 def administrarProyectosAsociados(request):
     usuario = Usuario.objects.all()
-    proyectos = UsuariosXProyecto.objects.all()
+    proyectos = Proyecto.objects.all()
     c = {}
     c.update(csrf(request))
     return render(request, 'des_admin_proyectos.html',

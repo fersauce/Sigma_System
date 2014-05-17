@@ -68,7 +68,7 @@ def loadPermisos():
     Rol.objects.get(id=rol_adm_fase.id).delete()
 
     user = User.objects.all().order_by('id')[0]
-    #Usuario.objects.create(user=user, ci="__12345__", direccion="", tel="", estado=True)
+    Usuario.objects.create(user=user, ci="__12345__", direccion="", tel="", estado=True)
 
     UsuarioRol.objects.create(usuario=user.usuario, rol=rol_adm_sistema, idProyecto=0, idFase=0, idItem=0)
 
