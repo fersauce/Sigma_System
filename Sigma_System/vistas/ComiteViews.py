@@ -28,6 +28,53 @@ def ComiteDeCambio(request, idProyect):
     usuarios = UsuarioPorComite.objects.filter(comite=comite)
     usuProyec = UsuariosXProyecto.objects.filter(proyecto=proyecto).exclude(
         lider=True)
+    usuariosPorComite = UsuarioPorComite.objects.filter(comite=comite).exclude()
+    if request.method == 'POST':
+        usuariosComitePOST = request.POST.getlist('usuariosAsig')
+        bandera = False
+        for u in usuarios:
+            if proyecto.lider == u.usuario:
+                pass
+            elif str(u.usuario.pk) in usuariosComitePOST:
+                if not usuariosPorComite.get(usuario=u.usuario):
+                    try:
+                        UsuarioPorComite.objects.create(
+                            comite=comite,
+                            usuario=u.usuario
+                        )
+                        messages.success(request,
+                                         'El usuario ' +
+                                         u.usuario.user.first_name
+                                         + ' ha sido asignado al comite del '
+                                           'proyecto ' +
+                                         proyecto.nombre)
+                        bandera = True
+                    except Exception:
+                        messages.error(request,
+                                       'Ha ocurrido un erro interno, favor'
+                                       ' contacte al administrador')
+            else:
+                miembro = usuariosPorComite.get(usuario=u.usuario)
+                if miembro:
+                    try:
+                        miembro.delete()
+                        messages.success(request,
+                                         'El usuario ' +
+                                         u.usuario.user.first_name
+                                         + ' ha sido desasignado del comite del'
+                                           ' proyecto ' +
+                                         proyecto.nombre)
+                        bandera = True
+                    except Exception:
+                        messages.error(request, 'Ha ocurrido un error interno,'
+                                                'favor contacte al administrador')
+        if not bandera:
+            messages.info(request, 'No se han realizados asignaciones/'
+                                   'desasignaciones en el proyecto ' +
+                                   proyecto.nombre)
+        return HttpResponseRedirect(reverse('sigma:adm_proy'))
+    else:
+        pass
 
     return render(request, 'administrarcomite.html',
                   {'proyecto': proyecto, 'comite': comite,

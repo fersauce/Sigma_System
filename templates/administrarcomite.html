@@ -23,7 +23,7 @@
     <div class="container">
         <h1><a href="#"></a>Administrador<small class="on-right">de Comit&eacute; del Proyecto</small> {{ proyecto.nombre }}</h1>
         <div class="example">
-            <form action="{% url 'sigma:adm_proy_comite_usuario' proyecto.pk %}" method="post">
+            <form action="{% url 'sigma:adm_proy_comite' proyecto.pk %}" method="post">
                 {% csrf_token %}
                 <table class="table striped hovered dataTable" id="tabla01">
                     <thead>
