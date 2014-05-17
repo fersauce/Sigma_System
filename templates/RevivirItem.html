@@ -18,7 +18,7 @@
                 var content =
                     '<div class="example">'+
                         '<form>' +
-                            '<h2>Est&aacute; a punto de eliminar este item...</h2>' +
+                            '<h2>Est&aacute; a punto de revivir este item...</h2>' +
                             '<div class="form-actions" align="center">'+
                                 '<a class="button" href="' + url_aux + '"> Aceptar </a>' + ' ' +
                                 '<button class="button" onclick=$.Dialog.close()>' +
@@ -26,7 +26,7 @@
                             '</div>'+
                         '</form>'+
                     '</div>';
-                $.Dialog.title("Confirmar Eliminaci&oacute;n");
+                $.Dialog.title("Confirmar Revivir");
                 $.Dialog.content(content);
             }
         });
@@ -38,6 +38,8 @@
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
+    <span class="element-divider"></span>
+    <a class="element" href={% url 'sigma:adm_i' fase %}> Administrar Item</a>
     <a class="pull-menu" href="#"></a>
     <a class="element place-right" href="#">   </a>
     <span class="element-divider"></span>
@@ -55,24 +57,12 @@
         </div>
     </ul>
 {% endblock %}
-{% block titulo %}Administraci&oacute;n de Items{% endblock %}
+{% block titulo %}Revivir Items{% endblock %}
 {% block contenido %}
     <div class="container" align="center">
-        <h1><a href="#"></a>Administrador<small class="on-right">de &Iacute;tems de la Fase </small>{{ nomb}}</h1>
+        <h1><a href="#"></a>Revivir<small class="on-right">Items de la Fase </small>{{ nomb}}</h1>
         <div class="example">
-            <a href="{%  url 'sigma:adm_i_alta' fase %}">
-                <button class="command-button primary">
-                    <i class="icon-new on-left"></i><b>Agregar</b>
-                    <small>Item</small>
-                </button>
-            </a>
 
-            <a href="{%  url 'sigma:adm_i_rev' fase %}">
-                <button class="command-button primary">
-                    <i class="icon-new on-left"></i><b>Revivir</b>
-                    <small>Item</small>
-                </button>
-            </a>
 
             <table class="table striped hovered dataTable" id="datatable2">
                 <thead>
@@ -92,39 +82,16 @@
                             <td class="right">{{ i.version }}</td>
                             <td class="right">{{ i.estado }}</td>
                             <td align="center">
-                                <div class="span1">
-                                    <nav class="navigation-bar">
-                                        <div class="navigation-bar-content">
-                                            <ul class="element-menu">
-                                                <li>
-                                                    <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
-                                                    <ul class="dropdown-menu" data-role="dropdown">
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_i_mod' i.id %}">
-                                                            <i class="icon-pencil on-left"></i>Modificar</a></li>
-                                                        <li class="text-left" onclick="confirmar('{% url 'sigma:adm_i_baja' i.id %}')">
-                                                            <a href="#">
-                                                            <i class="icon-remove on-left"></i>Eliminar</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_i_revertir' i.pk %}">
-                                                            <i class="icon-eye on-left"></i>Revertir</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_i_historialItem' i.pk %}">
-                                                            <i class="icon-eye on-left"></i>Historial Item</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_relacion' i.id %}">
-                                                            <i class="icon-link on-left"></i>Relacionar Item</a></li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </nav>
-                                </div>
+                                <i class="text-left" onclick="confirmar('{% url 'sigma:adm_i_revivir' i.id %}')">
+                                    <a href="#">Revivir</a>
+                                </i>
                             </td>
                         </tr>
                     {% endfor %}
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th class="text-left">Nombre de la fase</th>
                         <th class="text-left">Nombre del Item</th>
-                        <th class="text-left">Tipo del Item</th>
                         <th class="text-left">Version</th>
                         <th class="text-left">Estado</th>
                         <th class="text-center">Editar</th>

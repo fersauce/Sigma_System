@@ -2,8 +2,11 @@ from django.contrib import messages
 from django.shortcuts import render, render_to_response
 from django.http import *
 from django.template import RequestContext
+import simplejson
+import sys
 from Sigma_System.forms import BusquedaProyectoForm, AltaProyectoForm
-from Sigma_System.models import Proyecto, Usuario, Fase, UsuariosXProyecto
+from Sigma_System.models import Proyecto, Usuario, Fase, UsuariosXProyecto, \
+    UsuarioRol, Rol, Comite, UsuarioPorComite
 import datetime, time
 from Sigma_System.decoradores import permisos_requeridos
 from django.contrib.auth.decorators import login_required
@@ -13,18 +16,20 @@ from django.contrib.auth.decorators import login_required
 def administrar_proyecto(request):
     """
     Vista para acceder a la administracion de proyectos.
-    """
-    permisos = request.session['permisos']
-    usuario = request.user.usuario
-    proyectos = usuario.proyectos.all()
+    @type request: django.http.HttpRequest.
+    @param request: Contiene la informacion sobre la solicitud de la pagina
+    que lo llamo
 
-    if 'super_us' in permisos:
-        proyectos = Proyecto.objects.all().order_by('-nombre')
+    @rtype django.shortcuts.render
+    @return: AdministrarProyecto.html, pagina en la cual se trabaja con los
+    proyectos.
+    """
+    proyectos = Proyecto.objects.all().order_by('-nombre')
+    usuario = Usuario.objects.all()
     return render(request, 'administrarproyectos.html',
                   {'proyectos': proyectos,
-                   'vacio': 'No se encuentran proyectos registrados',
-                   'form': BusquedaProyectoForm(),
-                   'permisos': permisos})
+                   'usuarios': usuario,
+                   'form': BusquedaProyectoForm()})
 
 
 @login_required(login_url='/login/')
@@ -40,12 +45,15 @@ def alta_proyecto(request):
     @return: AdministrarProyecto.html, pagina en la cual se trabaja con los
     proyectos.
     """
+    rol = Rol.objects.get(pk=5)
+    lideres = UsuarioRol.objects.filter(rol__pk=rol.pk)
     if request.method == 'POST':
         proyecto = Proyecto.objects.filter(
             nombre=request.POST['nombreProyecto'])
         if proyecto.__len__() == 0:
             fecha = datetime.datetime.now()
             try:
+                tl = Usuario.objects.get(pk=request.POST['lider'])
                 nuevoProyecto = Proyecto(
                     nombre=request.POST['nombreProyecto'],
                     fechaCreacion=fecha,
@@ -53,28 +61,54 @@ def alta_proyecto(request):
                     complejidad=0,
                     costo=0,
                     estado='Pendiente',
-                    nroFases=0,
+                    nroFases=request.POST['nroFases'],
                     nroMiembros=1,
                     duracion=0,
                     fechaInicio=datetime.datetime.now(),
                     fechaFinalizacion=datetime.datetime.now() + datetime.timedelta(
-                        days=10)
+                        days=10),
+                    lider=tl
                 )
                 nuevoProyecto.save()
+                lider = UsuariosXProyecto(
+                    proyecto=nuevoProyecto,
+                    usuario=tl,
+                    activo=True,
+                    lider=True
+                )
+                lider.save()
+                usuarios = Usuario.objects.all().exclude(pk=tl.pk)
+                for usuario in usuarios:
+                    UsuariosXProyecto.objects.create(
+                        proyecto=nuevoProyecto,
+                        usuario=usuario
+                    )
+                comite = Comite.objects.create(
+                    obs='Comite de cambios del proyecto ' +
+                        nuevoProyecto.nombre + '',
+                    nro_integ=1,
+                    fecha_creacion=datetime.datetime.now(),
+                    proy=nuevoProyecto
+                )
+                usuariosComite = UsuarioPorComite.objects.create(
+                    comite=comite,
+                    usuario=tl
+                )
                 messages.success(request, 'Proyecto ' + str(
                     nuevoProyecto.nombre) + ' creado con exito')
             except Exception as error:
                 messages.error(request, 'Ocurrio un error al crear el '
                                         'proyecto')
                 print error.args
-            return HttpResponseRedirect('/ss/proyecto/')
+                print sys.exc_info()
+            return HttpResponseRedirect(reverse('sigma:adm_proy'))
         else:
             messages.error(request,
                            'No se pudo crear el proyecto: El nombre ya '
                            'existe en el sistema.')
-            return render(request, 'proyectoalta.html')
+            return render(request, 'proyectoalta.html', {'lideres': lideres})
 
-    return render_to_response('proyectoalta.html',
+    return render_to_response('proyectoalta.html', {'lideres': lideres},
                               context_instance=RequestContext(request))
 
 

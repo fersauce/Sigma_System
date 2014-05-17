@@ -11,13 +11,40 @@
                     <span class="icon-cog"></span>
                 </a>
                 <ul class="dropdown-menu place-right" data-role="dropdown">
-                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesi&oacute;n</a></li>
                 </ul>
             </div>
         </div>
     </ul>
 {% endblock %}
-{% block titulo %}Administraci&oacute;n de Proyectos{% endblock %}
+{% block titulo %}Proyectos Activos{% endblock %}
+{% block definicion_script %}
+    <script>
+    function eliminar(urlEliminar){
+        $.Dialog({
+            shadow: true,
+            overlay: true,
+            flat: true,
+            draggable: true,
+            icon: '<span class="icon-bus"></span>',
+            title: 'Draggable window',
+            width: 500,
+            padding: 10,
+            content: 'This Window is draggable by caption.',
+            onShow: function(){
+                var content = '<form>' +
+                        '<p>¿Est&aacute; seguro de querer eliminar este proyecto?</p>' +
+                        '<a class="button primary" href='+ urlEliminar +'> S&iacute; </a>' +
+                        '<a href="{% url 'sigma:adm_proy' %}"><input type="button" value="No" ></a>'+
+                        '</form>';
+                $.Dialog.title("Confirmar Eliminaci&oacute;n");
+                $.Dialog.content(content);
+            }
+
+        });
+    };
+    </script>
+{% endblock %}
 {% block contenido %}
     <div class="container">
         <h1><a href="#"></a>Administrador<small class="on-right">de Proyectos</small></h1>
@@ -43,17 +70,8 @@
                         <tr>
                             <td>{{ proyecto.nombre }}</td>
                             <td class="right">{{ proyecto.descripcion }}</td>
-                            <td class="right">{{ proyecto.lider }}</td>
-                            <td class="right">
-                                {% if proyecto.estado == 'Iniciado' %}
-                                    {{ proyecto.fechaInicio }}
-                                {% endif %}
-                            </td>
-                            <td class="right">
-                                {% if proyecto.estado == 'Finalizado' %}
-                                    {{ proyecto.fechaFinalizacion }}
-                                {% endif %}
-                            </td>
+                            <td class="right">{{ proyecto.fechaInicio }}</td>
+                            <td class="right">{{ proyecto.fechaFinalizacion }}</td>
                             <td class="right">{{ proyecto.nroFases }}</td>
                             <td class="right">{{ proyecto.nroMiembros }}</td>
                             <td align="center">
@@ -64,15 +82,8 @@
                                                 <li>
                                                     <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
                                                     <ul class="dropdown-menu" data-role="dropdown">
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_proy_mod' proyecto.pk %}">
-                                                            <i class="icon-pencil on-left"></i>Modificar</a></li>
-                                                        <li class="text-left"><a id="botBaja{{ proyecto.pk }}">
-                                                            <i class="icon-remove on-left"></i>Eliminar</a></li>
-                                                        <li class="text-left">
-                                                            <a href="{% url 'sigma:adm_proy_asig_usu' proyecto.pk %}">
-                                                            <i class="icon-user on-left"></i>Asignar Usuarios</a></li>
-                                                        <li class="text-left"><a href="#">
-                                                            <i class="icon-eye on-left"></i>Comit&eacute;</a></li>
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_fase' proyecto.pk %}">
+                                                            <i class="icon-book on-left"></i>Fases</a></li>
                                                     </ul>
                                                 </li>
                                             </ul>
@@ -81,31 +92,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <script>
-                            $("#botBaja{{ proyecto.pk }}").on('click', function(){
-                                $.Dialog({
-                                    shadow: true,
-                                    overlay: true,
-                                    flat: true,
-                                    draggable: true,
-                                    icon: '<span class="icon-bus"></span>',
-                                    title: 'Draggable window',
-                                    width: 500,
-                                    padding: 10,
-                                    content: 'This Window is draggable by caption.',
-                                    onShow: function(){
-                                        var content = '<form>' +
-                                                '<p>¿Est&aacute; seguro de querer eliminar este proyecto?</p>' +
-                                                '<a class="button primary" href="{% url 'sigma:adm_proy_baja' proyecto.pk %}"> S&iacute; </a>' +
-                                                '<a href="{% url 'sigma:adm_proy' %}"><input type="button" value="No" ></a>'+
-                                                '</form>';
-                                        $.Dialog.title("Confirmar Eliminaci&oacute;n");
-                                        $.Dialog.content(content);
-                                    }
 
-                                });
-                            });
-                        </script>
                     {% endfor %}
                 </tbody>
                 <tfoot>
@@ -131,5 +118,4 @@
             </script>
         </div>
     </div>
-
 {% endblock %}

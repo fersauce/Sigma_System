@@ -26,17 +26,31 @@
                 <fieldset>
                     <div class="span3">
                         <div class="input-control text" data-role="input-control">
-                            <label class="label">Nombre del Proyecto</label>
+                            <label class="inline-block">Nombre del Proyecto</label>
                             <input type="text" required="true" name="nombreProyecto">
                             <button class="btn-clear" tabindex="-1" type="button"> </button>
                         </div><br><br>
                         <div class="input-control textarea" data-role="input-control">
-                            <label class="label">Descripci&oacute;n</label>
+                            <label class="inline-block">Descripci&oacute;n</label>
                             <textarea cols="60" id="id_descripcion" name="descripcion" required="true" rows="3"></textarea>
-                            <button class="btn-clear" tabindex="-1" type="button"> </button>
                         </div><br><br><br>
-                        <input type="submit" value="Aceptar" onclick="">
-                        <a href="{% url 'sigma:adm_proy' %}"><input type="button" value="Cancelar" ></a>
+                        <div class="input-control" data-role="input-control">
+                            <label class="inline-block">N&uacute;mero de Fases</label>
+                            <input id="noFas" class="number" name="nroFases" required="true" value="1">
+                            <script type="text/javascript">
+
+                            </script>
+                        </div><br><br><br>
+                        <div class="input-control selected" data-role="input-control">
+                            <label class="inline-block">L&iacute;der:</label>
+                            <select name="lider">
+                                {% for tip in lideres %}
+                                    <option value="{{ tip.usuario.pk }}">{{ tip.usuario.user.first_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div><br><br>
+                        <input type="submit" value="Aceptar" class="button success">
+                        <a href="{% url 'sigma:adm_proy' %}"><input type="button" value="Cancelar" class="button inverse"></a>
                     </div>
                 </fieldset>
             </form>

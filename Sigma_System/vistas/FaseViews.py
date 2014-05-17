@@ -1,8 +1,8 @@
 from django.contrib import messages
-from django.contrib.auth.models import User
-from django.shortcuts import render, render_to_response
+from django.core.urlresolvers import reverse
+from django.shortcuts import render
 from django.http import *
-from django.template import RequestContext
+import simplejson
 from Sigma_System.forms import BusquedaFasesForm
 from Sigma_System.models import Proyecto, Usuario, Fase, TipoDeItem
 from Sigma_System.decoradores import permisos_requeridos
@@ -13,9 +13,12 @@ import datetime, time
 @login_required(login_url='/login/')
 def administrar_fases(request, idProyect):
     """
-    Vista para realizar la administracion de las fases de un proyecto
-    @param idProyect: codigo del proyecto del cual se van a administrar sus
-    fases.
+    Vista para acceder a la administracion de fases de un proyecto.
+    @type request: django.http.HttpRequest
+    @param request: contiene los datos de la pagina que lo llamo.
+
+    @type idProyect: Unicode
+    @param idProyect: codigo del proyecto del cual se van a trabajar.
     """
     request.session['idProyectoActual'] = idProyect
     proyecto = Proyecto.objects.get(pk=idProyect)
@@ -34,8 +37,11 @@ def administrar_fases(request, idProyect):
 def alta_fase(request, idProyect):
     """
     Vista para realizar la alta de una fase
-    @param idProyect: codigo del proyecto del cual se van a administrar sus
-    fases.
+    @type request: django.http.HttpRequest
+    @param request: contiene los datos de la pagina que lo llamo.
+
+    @type idProyect: Unicode
+    @param idProyect: codigo del proyecto del cual se van a trabajar.
     """
     usuarios = Usuario.objects.all()
     if request.method == 'POST':
@@ -47,24 +53,6 @@ def alta_fase(request, idProyect):
                 messages.error(request, 'Nombre de fase ya utilizado')
                 return render(request, 'fasealta.html',
                               {'proyecto': idProyect})
-        if request.POST['fechaInicio'] > request.POST['fechaFin']:
-            messages.error(request, 'La fecha de Inicio no puede ser'
-                                    'superior a la fecha de fin')
-            return render(request, 'fasealta.html',
-                          {'proyecto': idProyect, 'fase': fase})
-        print 3
-        if fase.__len__() > 0:
-            ultfase = fase.last()
-            if ultfase is not None:
-                print str(ultfase.__getattribute__('fechaFin'))
-                if str(ultfase.__getattribute__('fechaFin')) > \
-                        request.POST['fechaInicio']:
-                    messages.error(request,
-                                   'La fecha de Inicio de esta '
-                                   'fase debe ser mayor a la fecha de  '
-                                   'fin de la fase anterior')
-                    return render(request, 'fasealta.html',
-                                  {'fase': fase, 'proyecto': idProyect})
         faseNueva = Fase.objects.create(
             proyecto=proyecto,
             nombre=request.POST['nombre'],
@@ -72,16 +60,21 @@ def alta_fase(request, idProyect):
             posicionFase=Fase.objects.filter(
                 proyecto=proyecto).__len__() + 1,
             estado='Pendiente',
-            fechaInicio=request.POST['fechaInicio'],
-            fechaFin=request.POST['fechaFin']
+            fechaInicio=datetime.datetime.now(),
+            fechaFin=datetime.datetime.now() + datetime.timedelta(days=1)
         )
-        print faseNueva.fechaInicio.__class__
-
-        proyecto.nroFases = Fase.objects.filter(proyecto=proyecto).__len__()
-        proyecto.save()
         messages.success(request, 'Fase creada con exito')
         return HttpResponseRedirect(
             '/ss/proyecto/' + str(idProyect) + '/fase/')
+    else:
+        proyecto = Proyecto.objects.get(pk=idProyect)
+        fases = Fase.objects.filter(proyecto=proyecto)
+        if fases.__len__() == proyecto.nroFases:
+            messages.error(request,
+                           'Ya no puede agregar mas fases, ya se encuentran '
+                           'todas las fases creadas.')
+            return HttpResponseRedirect(
+                reverse('sigma:adm_fase', args=[idProyect]))
 
     return render(request, 'fasealta.html', {'usuarios': usuarios,
                                              'proyecto': idProyect})
@@ -91,51 +84,28 @@ def alta_fase(request, idProyect):
 @permisos_requeridos(['modificar_fa'], 'sigma:adm_fase', 'modificar fases', 1)
 def modificar_fase(request, idProyect, idFase):
     """
-    Vista para realizar la modificacion de datos de una fase
-    :param idProyect: pk del proyecto sobre el cual se esta trabajando
-    :param idFase: pk de la fase que se quiere modificar
+    Vista para realizar la modificacion de una fase
+    @type request: django.http.HttpRequest
+    @param request: contiene los datos de la pagina que lo llamo.
+
+    @type idProyect: Unicode
+    @param idProyect: pk del proyecto sobre el cual se esta trabajando.
+
+    @type idFase: Unicode
+    @param idFase: pk de la fase que se quiere modificar.
+
+    @rtype django.shortcuts.render
+    @return: Administrarfase.html
     """
     fase = Fase.objects.get(pk=idFase)
-    fase.fechaInicio = str(fase.fechaInicio)
-    fase.fechaFin = str(fase.fechaFin)
     proyecto = Proyecto.objects.get(pk=idProyect)
     if request.method == 'POST':
         if fase.nombre == request.POST['nombre'] or Fase.objects.get(
                 nombre=request.POST['nombre']):
-            if fase.posicionFase > 1:
-                faseAnt = Fase.objects.get(posicionFase=fase.posicionFase - 1)
-                if str(faseAnt.fechaFin) > request.POST['fechaInicio']:
-                    return render(request, 'fasemodificar.html',
-                                  {'proyecto': idProyect, 'fase': fase,
-                                   'alerta': 'La fecha de Inicio de esta fase '
-                                             'es inferior a la fecha de '
-                                             'fin de la fase anterior'})
             print proyecto.nroFases
-            if fase.posicionFase < proyecto.nroFases:
-                faseSig = Fase.objects.get(posicionFase=fase.posicionFase + 1)
-                if str(faseSig.fechaInicio) < request.POST['fechaFin']:
-                    messages.error(request, 'La fecha de fin de esta fase '
-                                            'es superior a la fecha de '
-                                            'inicio de la fase siguiente')
-                    return render(request, 'fasemodificar.html',
-                                  {'proyecto': idProyect, 'fase': fase})
-            if request.POST['fechaInicio'] > request.POST['fechaFin']:
-                messages.error(request, 'La fecha de Inicio se encuentra '
-                                        'mas adelantada que la fecha de fin')
-                return render(request, 'fasemodificar.html',
-                              {'proyecto': idProyect, 'fase': fase})
-
             fases = Fase.objects.filter(proyecto=proyecto).exclude(pk=idFase)
-            for fas in fases:
-                if fas.nombre == request.POST['nombre']:
-                    messages.error(request, 'Nombre ya existe en el sistema')
-                    return render(request, 'fasemodificar.html',
-                                  {'proyecto': idProyect, 'fase': fase})
-
             fase.nombre = request.POST['nombre']
             fase.descripcion = request.POST['descripcion']
-            fase.fechaInicio = request.POST['fechaInicio']
-            fase.fechaFin = request.POST['fechaFin']
             fase.save()
             proyecto.fechaInicio = Fase.objects.get(
                 proyecto=proyecto,
@@ -146,7 +116,7 @@ def modificar_fase(request, idProyect, idFase):
             proyecto.save()
             messages.success(request, 'Fase modificada con exito')
             return HttpResponseRedirect(
-                '/ss/proyecto/' + str(idProyect) + '/fase/')
+                reverse('sigma:adm_fase', args=[idProyect]))
     return render(request, 'fasemodificar.html', {'proyecto': idProyect,
                                                   'fase': fase})
 
@@ -156,37 +126,44 @@ def modificar_fase(request, idProyect, idFase):
 def baja_fase(request, idProyect, idFase):
     """
     Vista para realizar la baja de una fase
+    @type request: django.http.HttpRequest
     @param request: contiene los datos de la pagina que lo llamo.
+
+    @type idProyect: Unicode
     @param idProyect: pk del proyecto sobre el cual se esta trabajando.
+
+    @type idFase: Unicode
     @param idFase: pk de la fase que se quiere dar de baja.
 
+    @rtype django.shortcuts.render
     @return: Administrarfase.html
     """
     if request.method == 'GET':
         proyecto = Proyecto.objects.get(pk=idProyect)
         fase = Fase.objects.get(pk=idFase)
         if fase.estado != 'Pendiente':
+            messages.error(request,
+                           'No se puede suprimir la fase: se encuentra activa')
             return render(request, 'fasebaja.html',
-                          {'alerta': 'No se puede suprimir la fase: '
-                                     'se encuentra activa',
-                           'proyecto': idProyect})
+                          {'proyecto': idProyect})
         elif TipoDeItem.objects.filter(fase=fase).__len__() > 0:
+            messages.error(request,
+                           'No se puede suprimir la fase: contiene Tipos de '
+                           'Items Asociados.')
             return render(request, 'fasebaja.html',
-                          {'alerta': 'No se puede suprimir la fase: '
-                                     'contiene Tipos de Items Asociados.',
-                           'proyecto': idProyect})
+                          {'proyecto': idProyect})
         else:
-            fase.delete()
-            fases = Fase.objects.filter(proyecto=proyecto).order_by(
-                'posicionFase')
-            posicion = 1
-            for fas in fases:
-                fas.posicionFase == posicion
-                fas.save()
-                posicion += 1
-            proyecto.nroFases = posicion - 1
-            proyecto.save()
-        print 'Hola'
+            try:
+                fase.delete()
+                fases = Fase.objects.filter(proyecto=proyecto).order_by(
+                    'posicionFase')
+                posicion = 1
+                for fas in fases:
+                    fas.posicionFase == posicion
+                    fas.save()
+                    posicion += 1
+            except Exception:
+                messages.error(request, 'Ha ocurrido un error interno')
     return HttpResponseRedirect('/ss/proyecto/' + str(idProyect) + '/fase/')
 
 
@@ -219,18 +196,55 @@ def buscar_fase(request, idProyect):
                 fases = Fase.objects.filter(
                     fechaInicio=form.cleaned_data['busqueda'])
             if form.cleaned_data['columna'] == '3':
-                """
-                Si el patron a utilizar es la fecha de fin de la fase
-                """
+                #Si el patron a utilizar es la fecha de fin de la fase
                 fases = Fase.objects.filter(
                     fechaFin=form.cleaned_data['busqueda'])
     return render(request, 'administrarfases.html',
                   {'proyecto': Proyecto.objects.get(pk=idProyect),
                    'fases': fases,
-                   'form': BusquedaFasesForm(),
-                   'vacio': 'No se encontraron fases que coincidan '
-                            'con el patron de busqueda'})
+                   'form': BusquedaFasesForm()})
 
 
-def intercambiarFase(request, idProyect):
-    pass
+def intercambiarFase(request, idFase):
+    """
+    Vista que realiza el intercambio de fases (Esto lo puede realizar solo en
+    tiempo de creacion, una vez iniciado el proyecto, esto ya no puede variar)
+
+    @type request: django.http.HttpRequest
+    @param request: contiene los datos de la pagina que lo llamo.
+
+    @type idFase: Unicode
+    @param idFase: pk de la fase que se quiere cambiar.
+
+    @rtype django.shortcuts.render
+    @return: Administrarfase.html
+    """
+    fase = Fase.objects.get(pk=idFase)
+    if request.is_ajax():
+        print "Llamada Ajax de intercambiarFase"
+        try:
+            enviar = []
+            for u in Fase.objects.filter(proyecto=fase.proyecto,
+                                         estado='Pendiente').exclude(
+                    pk=idFase).order_by('posicionFase'):
+                enviar.append({'pkFase': u.pk, 'posicion': u.posicionFase,
+                               'nombre': u.nombre})
+            return HttpResponse(simplejson.dumps(enviar),
+                                mimetype='application/json')
+        except DeprecationWarning:
+            print "Solo es warning"
+    opcion = request.GET['posicion']
+    faseIntercambiada = Fase.objects.get(pk=opcion)
+    try:
+        pasador = fase.posicionFase
+        fase.posicionFase = faseIntercambiada.posicionFase
+        faseIntercambiada.posicionFase = pasador
+        fase.save()
+        faseIntercambiada.save()
+        messages.success(request,
+                         'se han intercambiado satisfactoriamente la fase ' +
+                         fase.nombre + ' con la fase ' + faseIntercambiada.nombre)
+    except Exception:
+        messages.error(request, 'Solo es precaucion')
+    return HttpResponseRedirect(
+        reverse('sigma:adm_fase', args=[fase.proyecto.pk]))

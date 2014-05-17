@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
+    <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
+    <a class="pull-menu" href="#"></a>
+    <ul class="element-menu">
+        <li></li>
+        <div class="no-tablet-portrait">
+            <div class="element place-right">
+                <a class="dropdown-toggle" href="#">
+                    <span class="icon-cog"></span>
+                </a>
+                <ul class="dropdown-menu place-right" data-role="dropdown">
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesi&oacute;n</a></li>
+                </ul>
+            </div>
+        </div>
+    </ul>
+{% endblock %}
+{% block titulo %}Administraci&oacute;n de Usuarios del Proyecto {{ proyecto.nombre }}{% endblock %}
+{% block contenido %}
+    <div class="container">
+        <h1><a href="#"></a>Administrador<small class="on-right">de Usuarios del Proyecto</small> {{ proyecto.nombre }}</h1>
+        <div class="example">
+            <form action="{% url 'sigma:adm_proy_asig_usu' proyecto.pk %}" method="post" id="formUsu">
+                {% csrf_token %}
+                <table class="table striped hovered dataTable" id="tabla02">
+                    <thead>
+                         <tr>
+                             <th class="text-left">Es miembro?</th>
+                             <th class="text-left">Nombre</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in usuariosProyecto %}
+                            <tr>
+                                <td class="right">
+                                    <div class="input-control switch" data-role="input-control">
+                                        <label class="inline-block">
+                                            <input type="checkbox" name="usuariosAsig" {% if user.activo %} checked {% endif %} value="{{ user.usuario.pk }}"/>
+                                            <span class="check"></span>
+
+                                        </label>
+                                    </div>
+                                </td>
+                                <td class="right">{{ user.usuario.user.first_name }}</td>
+                            </tr>
+
+                        {% endfor %}
+                    </tbody>
+
+                    <tfoot>
+                        <tr>
+                            <th class="text-left">Es miembro?</th>
+                            <th class="text-left">Nombre</th>
+                        </tr>
+                    </tfoot>
+                </table>
+                <script>
+                    $(document).ready(function() {
+                        $('#tabla02').dataTable( {
+                            "oLanguage": {
+                                "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                            }
+                        } );
+                    } );
+                </script>
+                <input value="Agregar" class="button success" type="submit" onmouseover="">
+            </form>
+        </div>
+    </div>
+{% endblock %}

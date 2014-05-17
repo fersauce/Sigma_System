@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block definicion_script %}
+<script>
+    function confirmar(url_aux)
+    {
+        $.Dialog({
+            shadow: true,
+            overlay: true,
+            flat: true,
+            draggable: true,
+            icon: '<i class="icon-warning"></span>',
+            title: 'Draggable window',
+            width: 500,
+            padding: 10,
+            content: 'This Window is draggable by caption.',
+            onShow: function(){
+                var content =
+                    '<div class="example">'+
+                        '<form>' +
+                            '<h2>Est&aacute; a punto de revivir este item...</h2>' +
+                            '<div class="form-actions" align="center">'+
+                                '<a class="button" href="' + url_aux + '"> Aceptar </a>' + ' ' +
+                                '<button class="button" onclick=$.Dialog.close()>' +
+                                    'Cancelar</button>'+
+                            '</div>'+
+                        '</form>'+
+                    '</div>';
+                $.Dialog.title("Confirmar Revivir");
+                $.Dialog.content(content);
+            }
+        });
+    }
+</script>
+{% endblock %}
+
+
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
+    <span class="element-divider"></span>
+    <a class="element" href={% url 'sigma:adm_i' fase %}> Administrar Item</a>
+    <a class="pull-menu" href="#"></a>
+    <a class="element place-right" href="#">   </a>
+    <span class="element-divider"></span>
+    <ul class="element-menu">
+        <li></li>
+        <div class="no-tablet-portrait">
+            <div class="element place-right">
+                <a class="dropdown-toggle" href="#">
+                    <span class="icon-cog"></span>
+                </a>
+                <ul class="dropdown-menu place-right" data-role="dropdown">
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </ul>
+{% endblock %}
+{% block titulo %}Revertir Items{% endblock %}
+{% block contenido %}
+    <div class="container" align="center">
+        <h1><a href="#"></a>Revertir<small class="on-right">Items de la Fase </small>{{ nomb}}</h1>
+        <div class="example">
+            Nombre del item <small class="on-right">{{ items.nombre }}</small>
+            <br>
+            Version actual del item {{ h.nro_version_act}}
+            <table class="table striped hovered dataTable" id="datatable2">
+                <thead>
+                    <!--th class="text-left">Nombre de la fase</th-->
+                    <th class="text-left">Nombre del Item</th>
+                    <!--th class="text-left">Tipo del Item</th-->
+                    <th class="text-left">Version</th>
+                    <!--th class="text-left">Estado</th-->
+                    <th class="text-center">Editar</th>
+                </thead>
+                <tbody>
+                    {% for h in hist %}
+                        <tr>
+                            <!--td class="right">{ { nomb }}</td-->
+                            <td class="right">{{ items.nombre }}</td>
+                            <!--td class="right">{ { i.tipoItems.nombre }}</td-->
+                            <td class="right">{{ h.nro_version_act}}</td>
+                            <!--td class="right">{ { i.estado }}</td-->
+                            <td align="center">
+                                <i class="text-left">
+                                    <a href="{% url 'sigma:adm_i_revertirItem' items.id h.nro_version_act h.id %}">Revertir</a>
+                                </i>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-left">Nombre del Item</th>
+                        <th class="text-left">Version</th>
+
+                        <th class="text-center">Editar</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <script>
+                $(document).ready(function() {
+                    $('#datatable2').dataTable( {
+                        "oLanguage": {
+                            "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                        }
+                    } );
+                } );
+            </script>
+        </div>
+    </div>
+{% endblock %}

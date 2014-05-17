@@ -57,7 +57,7 @@ class Testing(TestCase):
         """
         Test de la url de usuario.
         """
-        request = self.factory.get("/ss/adm_u/")
+        request = self.factory.get(reverse('sigma:adm_u'))
         request.user = self.user
         request.session = self.engine.SessionStore()
         request.session['permisos'] = self.permisos_disponibles

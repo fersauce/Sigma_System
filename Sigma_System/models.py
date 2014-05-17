@@ -51,7 +51,6 @@ class Usuario(models.Model):
     direccion = models.CharField(max_length=100)
     tel = models.CharField(max_length=20)
     estado = models.BooleanField(default=True)
-    proyectos = models.ManyToManyField(Proyecto, through='UsuariosXProyecto')
     roles = models.ManyToManyField(Rol, through='UsuarioRol')
 
     def __str__(self):
@@ -112,8 +111,6 @@ class LBase(models.Model):
 
 class Item(models.Model):
     tipoItems = models.ForeignKey(TipoDeItem)
-    fase = models.IntegerField(default=0)
-    item_padre = models.IntegerField(default=0)
     nombre = models.CharField(max_length=30, default='')
     version = models.IntegerField(default=1)
     complejidad = models.IntegerField()
@@ -177,4 +174,5 @@ class UsuariosXProyecto(models.Model):
     """
     proyecto = models.ForeignKey(Proyecto)
     usuario = models.ForeignKey(Usuario)
+    activo = models.BooleanField(default=False)
     lider = models.BooleanField(default=False)
