@@ -1,0 +1,70 @@
+{% extends 'base_menu.html' %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
+    <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
+    <a class="element" href="{% url 'sigma:adm_fase' id_proy %}">Fase</a>
+    <a class="element" href="{% url 'sigma:adm_i' id_fase %}">Item</a>
+    <a class="pull-menu" href="#"></a>
+    <ul class="element-menu">
+        <li></li>
+        <div class="no-tablet-portrait">
+            <div class="element place-right">
+                <a class="dropdown-toggle" href="#">
+                    <span class="icon-cog"></span>
+                </a>
+                <ul class="dropdown-menu place-right" data-role="dropdown">
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </ul>
+{% endblock %}
+{% block titulo %}Administraci&oacute;n de la Relacion del item {{ item.nombre }}{% endblock %}
+{% block contenido %}
+    <div class="span10">
+        <h2><a href="#"></a>Administrador<small class="on-right">de Relacion del Item </small> {{item.nombre }}</h2>
+        <div class="example">
+            <a href="#">
+                <button class="command-button primary">
+                    <i class="icon-new on-left"></i><b>Agregar</b>
+                    <small>Padre</small>
+                </button>
+            </a>
+            <a href="#">
+                <button class="command-button primary">
+                    <i class="icon-eye on-left"></i><b>Ver</b>
+                    <small>Hijos</small>
+                </button>
+            </a>
+            <table class="table striped hovered dataTable" id="tablaFase">
+                <thead>
+                     <tr>
+                         <th class="text-left">Nombre</th>
+                         <th class="text-left">Complejidad</th>
+                         <th class="text-left">Prioridad</th>
+                         <th class="text-left">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in item_padres %}
+                        <tr>
+                            <td>{{ i.nombre }}</td>
+                            <td class="right" width>{{ i.complejidad }}</td>
+                            <td class="right" width>{{ i.prioridad }}</td>
+                            <td class="right" width>{{ i.estado }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-left">Nombre</th>
+                        <th class="text-left">Complejidad</th>
+                        <th class="text-left">Prioridad</th>
+                        <th class="text-left">Estado</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+{% endblock %}

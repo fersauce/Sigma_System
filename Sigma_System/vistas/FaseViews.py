@@ -9,7 +9,6 @@ from Sigma_System.decoradores import permisos_requeridos
 from django.contrib.auth.decorators import login_required
 import datetime, time
 
-argumento_fase = 0
 
 @login_required(login_url='/login/')
 def administrar_fases(request, idProyect):
