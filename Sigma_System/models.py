@@ -45,6 +45,10 @@ class Rol(models.Model):
     permisos = models.ManyToManyField(Permiso)
 
 
+    def __str__(self):
+        return str(self.nombre)
+
+
 class Usuario(models.Model):
     user = models.OneToOneField(User)
     proyectos = models.ManyToManyField(Proyecto, through='UsuariosXProyecto')
