@@ -5,7 +5,9 @@ register = template.Library()
 
 @register.filter
 def lider(value):
-    usuarioXproyecto = UsuariosXProyecto.Objects.get(proyecto=value, lider=True)
-    usuario = usuarioXproyecto.usuario
-    nombre = usuario.user.username
+    usuarioXproyecto = UsuariosXProyecto.objects.filter(proyecto=value, lider=True)
+    if usuarioXproyecto:
+        nombre = usuarioXproyecto[0].usuario.user.username
+    else:
+        nombre = ""
     return nombre
