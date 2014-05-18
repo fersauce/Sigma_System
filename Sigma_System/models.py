@@ -47,6 +47,7 @@ class Rol(models.Model):
 
 class Usuario(models.Model):
     user = models.OneToOneField(User)
+    proyectos = models.ManyToManyField(Proyecto, through='UsuariosXProyecto')
     ci = models.CharField(max_length=15, unique=True)
     direccion = models.CharField(max_length=100)
     tel = models.CharField(max_length=20)

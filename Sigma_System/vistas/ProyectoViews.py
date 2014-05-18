@@ -29,7 +29,6 @@ def administrar_proyecto(request):
     permisos = request.session['permisos']
     usuario = request.user.usuario
     proyectos = usuario.proyectos.all()
-
     if 'super_us' in permisos:
         proyectos = Proyecto.objects.all().order_by('-nombre')
     return render(request, 'administrarproyectos.html',
@@ -215,10 +214,13 @@ def buscar_proyecto(request):
 def administrarProyectosAsociados(request):
     usuario = Usuario.objects.all()
     proyectos = Proyecto.objects.all()
+    permisos = request.session['permisos']
     c = {}
     c.update(csrf(request))
     return render(request, 'des_admin_proyectos.html',
-                  {'proyectos': proyectos, 'usuarios': usuario})
+                  {'proyectos': proyectos,
+                   'usuarios': usuario,
+                   'permisos': permisos})
 
 
 def asignarUsuarioProyecto(request, idProyect):
