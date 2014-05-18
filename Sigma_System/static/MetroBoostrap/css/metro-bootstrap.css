@@ -4233,7 +4233,7 @@ a {
   display: block;
   float: left;
   width: 100%;
-  padding: 15px;
+  padding: 3px;
   line-height: 15px;
   color: inherit;
   font-family: 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
@@ -4247,10 +4247,10 @@ a {
 .metro .navigation-bar .element-menu > li > a.dropdown-toggle:after,
 .metro .navbar .element-menu > li > a.dropdown-toggle:after {
   position: absolute;
-  left: 95%;
-  top: 50%;
-  margin-left: -7px;
-  margin-top: -5px;
+  left: 60%;
+  top: -30%;
+  margin-left: 10px;
+  margin-top: 10px;
 }
 .metro .navigation-bar .element-menu > li > .dropdown-menu,
 .metro .navbar .element-menu > li > .dropdown-menu {
@@ -4337,6 +4337,17 @@ a {
 }
 .metro .navigation-bar.dark .element:hover,
 .metro .navigation-bar.dark .element-menu > li:hover {
+  background-color: #201a1a;
+}
+
+.metro .navigation-bar.transparente {
+  background-color: transparent;
+}
+.metro .navigation-bar.transparente .element-menu > li > a {
+  color: #000000;
+}
+.metro .navigation-bar.transparente .element:hover,
+.metro .navigation-bar.transparent .element-menu > li:hover {
   background-color: #201a1a;
 }
 .metro .navigation-bar.light {
