@@ -53,7 +53,7 @@ def alta_fase(request, idProyect):
                 messages.error(request, 'Nombre de fase ya utilizado')
                 return render(request, 'fasealta.html',
                               {'proyecto': idProyect})
-        faseNueva = Fase.objects.create(
+        Fase.objects.create(
             proyecto=proyecto,
             nombre=request.POST['nombre'],
             descripcion=request.POST['descripcion'],
@@ -63,6 +63,10 @@ def alta_fase(request, idProyect):
             fechaInicio=datetime.datetime.now(),
             fechaFin=datetime.datetime.now() + datetime.timedelta(days=1)
         )
+        fases = Fase.objects.filter(proyecto=proyecto)
+        if fases.__len__() == 1:
+            proyecto.estado = "Iniciado"
+        proyecto.save()
         messages.success(request, 'Fase creada con exito')
         return HttpResponseRedirect(
             '/ss/proyecto/' + str(idProyect) + '/fase/')

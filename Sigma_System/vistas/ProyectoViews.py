@@ -56,10 +56,11 @@ def alta_proyecto(request):
     if request.method == 'POST':
         proyecto = Proyecto.objects.filter(
             nombre=request.POST['nombreProyecto'])
-        if proyecto.__len__() == 0:
+        if not proyecto:
             fecha = datetime.datetime.now()
             try:
                 tl = Usuario.objects.get(pk=request.POST['lider'])
+                print tl.user.username
                 nuevoProyecto = Proyecto(
                     nombre=request.POST['nombreProyecto'],
                     fechaCreacion=fecha,
@@ -72,8 +73,7 @@ def alta_proyecto(request):
                     duracion=0,
                     fechaInicio=datetime.datetime.now(),
                     fechaFinalizacion=datetime.datetime.now() + datetime.timedelta(
-                        days=10),
-                    lider=tl
+                        days=10)
                 )
                 nuevoProyecto.save()
                 lider = UsuariosXProyecto(
@@ -83,12 +83,12 @@ def alta_proyecto(request):
                     lider=True
                 )
                 lider.save()
-                usuarios = Usuario.objects.all().exclude(pk=tl.pk)
+                '''usuarios = Usuario.objects.all().exclude(pk=tl.pk)
                 for usuario in usuarios:
                     UsuariosXProyecto.objects.create(
                         proyecto=nuevoProyecto,
                         usuario=usuario
-                    )
+                    )'''
                 comite = Comite.objects.create(
                     obs='Comite de cambios del proyecto ' +
                         nuevoProyecto.nombre + '',
@@ -96,7 +96,7 @@ def alta_proyecto(request):
                     fecha_creacion=datetime.datetime.now(),
                     proy=nuevoProyecto
                 )
-                usuariosComite = UsuarioPorComite.objects.create(
+                UsuarioPorComite.objects.create(
                     comite=comite,
                     usuario=tl
                 )
@@ -174,7 +174,7 @@ def baja_proyecto(request, idProyecto):
             except Exception as error:
                 messages.error(request, 'Ocurrio un error al intentar suprimir'
                                         'el proyecto.')
-    return HttpResponseRedirect('/ss/proyecto/')
+    return HttpResponseRedirect(reverse('sigma: adm_proy'))
 
 
 def buscar_proyecto(request):

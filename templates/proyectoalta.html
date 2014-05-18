@@ -25,8 +25,8 @@
                 {% csrf_token %}
                 <fieldset>
                     <div class="span3">
+                        <label class="inline-block">Nombre del Proyecto</label>
                         <div class="input-control text" data-role="input-control">
-                            <label class="inline-block">Nombre del Proyecto</label>
                             <input type="text" required="true" name="nombreProyecto">
                             <button class="btn-clear" tabindex="-1" type="button"> </button>
                         </div><br><br>
@@ -37,13 +37,10 @@
                         <div class="input-control" data-role="input-control">
                             <label class="inline-block">N&uacute;mero de Fases</label>
                             <input id="noFas" class="number" name="nroFases" required="true" value="1">
-                            <script type="text/javascript">
-
-                            </script>
                         </div><br><br><br>
-                        <div class="input-control selected" data-role="input-control">
+                        <div class="input-control selected">
                             <label class="inline-block">L&iacute;der:</label>
-                            <select name="lider">
+                            <select class="select" name="lider">
                                 {% for tip in lideres %}
                                     <option value="{{ tip.usuario.pk }}">{{ tip.usuario.user.first_name }}</option>
                                 {% endfor %}
