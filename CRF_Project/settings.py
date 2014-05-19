@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django_evolution',
     'Sigma_System',
     'south',
+
 )
 
 MIDDLEWARE_CLASSES = (
