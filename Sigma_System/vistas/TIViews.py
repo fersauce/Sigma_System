@@ -65,9 +65,8 @@ def altaTI(request, idProyect, idFase):
             importar = True
         else:
             importar = False
-
-        username = str(request.META['USER'])
-        user = User.objects.get(username=username)
+        id_user = request.user.id
+        user = User.objects.get(id=id_user)
         usuario = user.usuario
         tipo = TipoDeItem.objects.create(
             fase=fase,
