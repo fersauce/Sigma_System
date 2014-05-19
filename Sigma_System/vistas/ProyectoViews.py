@@ -113,7 +113,6 @@ def alta_proyecto(request):
                            'No se pudo crear el proyecto: El nombre ya '
                            'existe en el sistema.')
             return render(request, 'proyectoalta.html', {'lideres': lideres})
-
     return render_to_response('proyectoalta.html', {'lideres': lideres},
                               context_instance=RequestContext(request))
 

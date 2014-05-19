@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from django.shortcuts import render
 from Sigma_System.models import TipoDeItem, Fase, Item, AtribTipoDeItem
 
@@ -53,7 +54,6 @@ def altaTI(request, idProyect, idFase):
     fase = Fase.objects.get(pk=idFase)
     if request.method == 'POST':
         nombre = request.POST['nombre']
-        request.session.flush()
         TI = TipoDeItem.objects.filter(fase=fase, nombre=nombre)
         TI = TI.first()
         if TI is not None:
@@ -79,10 +79,7 @@ def altaTI(request, idProyect, idFase):
         tipo.codigo = 'SS_'+str(idProyect) + '_' + str(idFase) + '_' + str(tipo.pk)
         tipo.save()
         messages.success(request, 'Tipo de item creado con exito')
-        return HttpResponseRedirect(
-            '/ss/proyecto/' + str(idProyect) + '/fase/' + str(
-                idFase) + '/tipoItem/')
-
+        return HttpResponseRedirect(reverse('sigma:adm_ti', args=(idProyect, idFase)))
     return render(request, 'tialta.html',
                   {'pkProyecto': idProyect, 'pkFase': idFase})
 

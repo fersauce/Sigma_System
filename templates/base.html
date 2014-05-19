@@ -46,9 +46,9 @@
         </script>
         {% if messages %}
             <script>
-                window.onload = function() {
+                $(document).ready(function(){
                     notificar();
-                };
+                });
             </script>
             <script type="text/javascript">
                 function notificar()

@@ -79,7 +79,6 @@ def alta_fase(request, idProyect):
                            'todas las fases creadas.')
             return HttpResponseRedirect(
                 reverse('sigma:adm_fase', args=[idProyect]))
-
     return render(request, 'fasealta.html', {'usuarios': usuarios,
                                              'proyecto': idProyect})
 
@@ -91,7 +90,6 @@ def modificar_fase(request, idProyect, idFase):
     Vista para realizar la modificacion de una fase
     @type request: django.http.HttpRequest
     @param request: contiene los datos de la pagina que lo llamo.
-
     @type idProyect: Unicode
     @param idProyect: pk del proyecto sobre el cual se esta trabajando.
 
