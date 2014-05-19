@@ -40,6 +40,7 @@ class Testing(TestCase):
 
     def test_Usuario_login(self):
         request = self.factory.post(reverse('sigma:login'), {'username': 'admin', 'password': 'admin'})
+        print request
         request.user = self.user
         request.session = self.engine.SessionStore()
         response = iniciarsesion(request)
