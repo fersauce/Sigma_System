@@ -2,13 +2,16 @@
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
+    <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
+    <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:adm_fase' item.tipoItems.fase.proyecto.id %}">Fase</a>
+    <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:adm_i' item.tipoItems.fase.id %}">Item</a>
+    <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:adm_relacion' item.id %}">Relacion</a>
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
-        <li></li>
         <div class="no-tablet-portrait">
             <div class="element place-right">
                 <a class="dropdown-toggle" href="#">
