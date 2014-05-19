@@ -23,7 +23,7 @@ def administrarItem(request, idFase):
     nameFa = fs.nombre
     its = Item.objects.exclude(estado='baja')
     return render(request, 'AdministrarItem.html',
-                  {'items': its, 'fase': idFase, 'nomb': nameFa})
+                  {'items': its, 'fase': idFase, 'nomb': nameFa, 'username': request.user.username})
 
 
 @login_required(login_url='/login/')
