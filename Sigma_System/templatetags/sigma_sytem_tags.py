@@ -9,5 +9,5 @@ def lider(value):
     if usuarioXproyecto:
         nombre = usuarioXproyecto[0].usuario.user.username
     else:
-        nombre = " "
+        nombre = ""
     return nombre
