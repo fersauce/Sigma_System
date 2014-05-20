@@ -21,9 +21,16 @@ def administrarItem(request, idFase):
 
     fs = Fase.objects.get(pk=idFase)
     nameFa = fs.nombre
-    its = Item.objects.exclude(estado='baja')
+
+    proy=fs.proyecto
+
+
+    permisos=request.session['permisos']
+    its = Item.objects.exclude(estado='baja', tipoItems__fase=fs)
     return render(request, 'AdministrarItem.html',
-                  {'items': its, 'fase': idFase, 'nomb': nameFa, 'username': request.user.username})
+                  {'items': its, 'fase': fs,
+                   'username': request.user.username,
+                   'proy':proy, 'permisos':permisos})
 
 
 @login_required(login_url='/login/')
@@ -71,10 +78,10 @@ def altaItem(request, idFase):
             messages.error(request, 'Ocurrio un error.')
     else:
         return render(request, 'AltaItems.html',
-                      {'tipos': tis, 'fase': idFase})
+                      {'tipos': tis, 'fase': idFase, 'username': request.user.username})
 
     return render(request, 'AdministrarItem.html',
-                  {'items': its, 'fase': idFase})
+                  {'items': its, 'fase': idFase, 'username': request.user.username})
 
 
 @login_required(login_url='/login/')
@@ -172,7 +179,7 @@ def modificar_item(request, it):
             )
 
     else:
-        return render(request, 'ModificarItem.html', {'item': its})
+        return render(request, 'ModificarItem.html', {'item': its, 'username': request.user.username})
     return HttpResponseRedirect('/ss/adm_i/' + str(its.tipoItems.fase.pk))
 
 
@@ -221,7 +228,7 @@ def revivir_item(request, idFase):
     its = Item.objects.filter(estado='baja')
 
     return render(request, 'RevivirItem.html',
-                  {'items': its, 'fase': idFase, 'nomb': nameFa})
+                  {'items': its, 'fase': idFase, 'nomb': nameFa, 'username': request.user.username})
 
 
 @login_required(login_url='/login/')
@@ -269,7 +276,7 @@ def revertir(request, idFase):
 
     return render(request, 'RevertirItem.html',
                   {'hist': histor, 'fase': idf, 'nomb': nameFa,
-                   'items': itemAux})
+                   'items': itemAux, 'username': request.user.username})
 
 
 @login_required(login_url='/login/')

@@ -36,7 +36,12 @@
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
-
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:des_proyec' %}">Desarrollo</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_fase' proy.id %}">Proyecto: {{ proy.nombre }}</a>
+    <span class="element-divider"></span>
+    <a class="element" > Fase: {{ fase.nombre }}</a>
     <a class="pull-menu" href="#"></a>
     <a class="element place-right" href="#">   </a>
     <span class="element-divider"></span>
@@ -56,23 +61,23 @@
                 </ul>
             </div>
              <span class="element-divider place-right"></span>
-              <button class="element place-right"> Usuario: {{ username }}</button>
+             <button class="element place-right"><strong>Usuario: {{ username }}</strong> </button>
         </div>
     </ul>
 {% endblock %}
 {% block titulo %}Administraci&oacute;n de Items{% endblock %}
 {% block contenido %}
     <div class="span10">
-        <h2><a href="#"></a>Administrador<small class="on-right">de &Iacute;tems de la Fase </small>{{ nomb}}</h2>
+        <h2><a href="#"></a>Administrador<small class="on-right">de &Iacute;tems de la Fase </small>{{ fase.nombre}}</h2>
         <div class="example">
-            <a href="{%  url 'sigma:adm_i_alta' fase %}">
+            <a href="{%  url 'sigma:adm_i_alta' fase.id %}">
                 <button class="command-button primary">
                     <i class="icon-new on-left"></i><b>Agregar</b>
                     <small>Item</small>
                 </button>
             </a>
 
-            <a href="{%  url 'sigma:adm_i_rev' fase %}">
+            <a href="{%  url 'sigma:adm_i_rev' fase.id %}">
                 <button class="command-button primary">
                     <i class="icon-new on-left"></i><b>Revivir</b>
                     <small>Item</small>
@@ -91,7 +96,7 @@
                 <tbody>
                     {% for i in items %}
                         <tr>
-                            <td class="right">{{ nomb }}</td>
+                            <td class="right">{{ fase.nombre }}</td>
                             <td class="right">{{ i.nombre }}</td>
                             <td class="right">{{ i.tipoItems.nombre }}</td>
                             <td class="right">{{ i.version }}</td>
@@ -104,8 +109,11 @@
                                                 <li>
                                                     <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
                                                     <ul class="dropdown-menu" data-role="dropdown">
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_i_mod' i.id %}">
-                                                            <i class="icon-pencil on-left"></i>Modificar</a></li>
+
+                                                        <li class="text-left " ><a href="{% url 'sigma:adm_i_mod' i.id %}" >
+                                                            <i class="icon-pencil on-left"> </i>Modificar</a>
+                                                        </li>
+
                                                         <li class="text-left" onclick="confirmar('{% url 'sigma:adm_i_baja' i.id %}')">
                                                             <a href="#">
                                                             <i class="icon-remove on-left"></i>Eliminar</a></li>
