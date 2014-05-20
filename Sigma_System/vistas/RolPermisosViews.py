@@ -9,7 +9,9 @@ from django.contrib import messages
 def adm_roles(request):
     permisos = request.session['permisos']
     roles_list = Rol.objects.order_by('id')
-    return render(request, 'AdministradorRoles.html', {'roles_list': roles_list, 'permisos': permisos})
+    return render(request, 'AdministradorRoles.html', {'roles_list': roles_list,
+                                                       'permisos': permisos,
+                                                       'username': request.user.username})
 
 
 @login_required(login_url='/login/')

@@ -140,7 +140,9 @@ def modificar_usuario(request, us):
 def adm_usuario(request):
     permisos = request.session['permisos']
     user_list = User.objects.exclude(is_active=True, id=request.user.id)
-    return render(request, 'ListarUsr.html', {'user_list': user_list, 'permisos': permisos})
+    return render(request, 'ListarUsr.html', {'user_list': user_list,
+                                              'permisos': permisos,
+                                              'username': request.user.username})
 
 
 def recuperarPass(request):
