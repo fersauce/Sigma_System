@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 {% block navegacion %}
     <span class="element-divider"></span>
@@ -24,7 +25,6 @@
 {% block titulo %}Alta Items{% endblock %}
 {% block contenido %}
     <div class="container" align = "center">
-
         <h1><a href="#"></a>Crear<small class="on-right">Item</small></h1>
         <div class="">
             <form action = "{% url 'sigma:adm_i_alta' fase %}" method="post">

@@ -102,8 +102,7 @@ def modificar_fase(request, idProyect, idFase):
     fase = Fase.objects.get(pk=idFase)
     proyecto = Proyecto.objects.get(pk=idProyect)
     if request.method == 'POST':
-        if fase.nombre == request.POST['nombre'] or Fase.objects.get(
-                nombre=request.POST['nombre']):
+        if fase.nombre == request.POST['nombre'] or Fase.objects.get(nombre=request.POST['nombre']):
             print proyecto.nroFases
             fases = Fase.objects.filter(proyecto=proyecto).exclude(pk=idFase)
             fase.nombre = request.POST['nombre']

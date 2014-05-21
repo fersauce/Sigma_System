@@ -18,7 +18,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 @login_required(login_url='/login/')
 def administrarItem(request, idFase):
     request.session['fase'] = idFase
-
     fs = Fase.objects.get(pk=idFase)
     nameFa = fs.nombre
     its = Item.objects.exclude(estado='baja')
@@ -32,25 +31,36 @@ def altaItemIntermedio(request, idFase):
     items = Item.objects.filter(tipoItems__fase=fase)
     if fase.posicionFase == 1:
         print "No hace falta asociar a ningun padre, ni antecesor por ser la primera fase"
+        print "en caso de que hubiera otros items en la fase 1"
+        print "el select deberia indicar un valor ninguno por defecto"
     else:
-        pass
+        if not items:
+            print "debe asociar necesariamente a un antecesor"
+            print "se accedera directamente a la vista alta item"
+            print "se listaran todos los antecesores de la fase anterior en la que se encuentra"
+        else:
+            print "se debe dar la opcion de elegir entre un antecesor o un padre"
     return altaItem(request, idFase)
 
 
 @login_required(login_url='/login/')
-def altaItem(request, idFase):
+def altaItem(request, idFase, opcion):
     """
     vista utilizada para crear un item
     """
+    print "el id fase es " + idFase
     its = Item.objects.exclude(estado='baja')
     tis = TipoDeItem.objects.filter(fase=Fase.objects.get(pk=idFase))
+    if tis:
+        print "no vacio"
+    else:
+        print "tipo de items vacio"
     fase = Fase.objects.get(pk=idFase)
     print(fase.nombre)
     print tis.first().__getattribute__('nombre')
     if request.method == 'POST':
         try:
             ti = TipoDeItem.objects.get(id=request.POST['tipo'])
-
             name = request.POST['nombre']
             versionA = 1
             compl = request.POST['complejidad']

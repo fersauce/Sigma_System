@@ -22,3 +22,6 @@ Iteracion 3
 Apache
 
 Botones subir y bajar.Longitud y precision numerico y longitud cadena.Importar que este la fase y proyecto al que pertenecen
+
+21/05/2014-12:14
+en modificar fase ocurre un error al variar el nombre de la fase

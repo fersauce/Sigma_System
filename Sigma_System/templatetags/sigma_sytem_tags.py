@@ -1,5 +1,6 @@
 from django import template
-from Sigma_System.models import UsuariosXProyecto
+from django.core.urlresolvers import reverse
+from Sigma_System.models import Fase, Item, UsuariosXProyecto
 register = template.Library()
 
 
@@ -11,3 +12,27 @@ def lider(value):
     else:
         nombre = ""
     return nombre
+
+
+@register.filter
+def habilitar_evento(value, arg):
+    fase = Fase.objects.get(id=value)
+    items = Item.objects.filter(tipoItems__fase=fase).exclude(estado='baja')
+    if fase.posicionFase == 1:
+        if arg == 0:
+            # 0: listar padre y default
+            return reverse('sigma:adm_i_alta', args=(value, 0))
+        else:
+            return ''
+    else:
+        if not items:
+            if arg == 0:
+                # 1: listar solo antecesores
+                return reverse('sigma:adm_i_alta', args=(value, 1))
+            else:
+                return ''
+        else:
+            if arg == 0:
+                return ''
+            else:
+                return 'elegir_relacion''adm_i_alta/' + value + '/'

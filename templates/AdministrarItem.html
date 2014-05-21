@@ -1,5 +1,4 @@
 {% extends 'base_menu.html' %}
-
 {% block definicion_script %}
 <script>
     function confirmar(url_aux)
@@ -31,6 +30,36 @@
             }
         });
     }
+    function elegir_relacion(url_aux2)
+    {
+        $.Dialog({
+            shadow: true,
+            overlay: true,
+            flat: true,
+            draggable: true,
+            icon: '<i class="icon-info"></span>',
+            title: 'Draggable window',
+            width: 500,
+            padding: 10,
+            content: 'This Window is draggable by caption.',
+            onShow: function(){
+                var content =
+                    '<div class="example">'+
+                        '<form>' +
+                            '<h2>Elija el tipo de relacion</h2>' +
+                            '<div class="form-actions" align="center">'+
+                                '<a class="button" href="' + url_aux2 + 1 + '"> Antecesor/Sucesor </a>' + ' ' +
+                                '<a class="button" href="' + url_aux2 + 0 + '"> Padre/hijo </a>' + ' ' +
+                                '<button class="button" onclick=$.Dialog.close()>' +
+                                    'Cancelar</button>'+
+                            '</div>'+
+                        '</form>'+
+                    '</div>';
+                $.Dialog.title("Seleccione el tipo de relaci&oacute;n");
+                $.Dialog.content(content);
+            }
+        });
+    }
 </script>
 {% endblock %}
 {% block navegacion %}
@@ -55,16 +84,16 @@
 {% endblock %}
 {% block titulo %}Administraci&oacute;n de Items{% endblock %}
 {% block contenido %}
+    {% load sigma_sytem_tags %}
     <div class="span10">
         <h2><a href="#"></a>Administrador<small class="on-right">de &Iacute;tems de la Fase </small>{{ nomb}}</h2>
         <div class="example">
-            <a href="{%  url 'sigma:adm_i_alta_inter' fase %}">
-                <button class="command-button primary">
+            <a href="{{ fase|habilitar_evento:0 }}">
+                <button class="command-button primary" onclick="elegir_relacion('{{ fase|habilitar_evento:1 }}')" >
                     <i class="icon-new on-left"></i><b>Agregar</b>
                     <small>Item</small>
                 </button>
             </a>
-
             <a href="{%  url 'sigma:adm_i_rev' fase %}">
                 <button class="command-button primary">
                     <i class="icon-new on-left"></i><b>Revivir</b>
