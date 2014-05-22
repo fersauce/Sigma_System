@@ -43,15 +43,45 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="input-control select" data-role="input-control">
-                            <label class="inline-block">Tipo de &iacute;tem:</label>
-                            <select name="tipo">
-                                {% for tip in tipos %}
-                                    <option value="{{ tip.pk }}">{{ tip.nombre }}</option>
-                                {% endfor %}
-                            </select>
-                            <button class="btn-clear" tabindex="-1" type="button"> </button>
-                        </div><br><br>
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Tipo de &iacute;tem:</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control select" data-role="input-control">
+                                        <select name="tipo">
+                                            {% for tip in tipos %}
+                                                <option value="{{ tip.pk }}">{{ tip.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    {% if opcion == 0 %}
+                                        <label class="text-right">Item padre:</label>
+                                    {% else %}
+                                        <label class="text-right">Item antecesor:</label>
+                                    {% endif %}
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control select" data-role="input-control">
+                                        <select name="tipo">
+                                            {% if ban_defecto %}
+                                                <option value="0">ninguno</option>
+                                            {% endif %}
+                                            {% for i in listaitems %}
+                                                <option value="{{ i.id }}">{{ i.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="grid fluid">
                             <div class="row">
                                 <div class="span3">
@@ -64,7 +94,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="grid fluid">
                             <div class="row">
                                 <div class="span3">
@@ -77,7 +106,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="grid fluid">
                             <div class="row">
                                 <div class="span3">
@@ -90,8 +118,6 @@
                                 </div>
                             </div>
                         </div>
-
-
                         <div class="grid fluid">
                             <div class="row">
                                 <div class="span3">
@@ -104,8 +130,6 @@
                                 </div>
                             </div>
                         </div>
-
-
                         <br>
                         <br>
                         <br>

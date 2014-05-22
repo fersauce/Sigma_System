@@ -53,13 +53,24 @@ def altaItem(request, idFase, opcion):
     print opcion
     print "------------------"
     print "el id fase es " + idFase
+    fase = Fase.objects.get(pk=idFase)
+    if fase.posicionFase == 1:
+        ban_defecto = True
+    else:
+        ban_defecto = False
+    if opcion == '0':
+        listaitems = Item.objects.filter(tipoItems__fase=fase)
+    else:
+        pos = fase.posicionFase-1
+        #definir una funcion para que listaitems reciba items finales en linea base de la fase anterior
+        #por ahora recibe todos los items
+        listaitems = Item.objects.filter(tipoItems__fase__proyecto=fase.proyecto, tipoItems__fase__posicionFase=pos)
     its = Item.objects.exclude(estado='baja')
     tis = TipoDeItem.objects.filter(fase=Fase.objects.get(pk=idFase))
     if tis:
         print "no vacio"
     else:
         print "tipo de items vacio"
-    fase = Fase.objects.get(pk=idFase)
     print(fase.nombre)
     print tis.first().__getattribute__('nombre')
     if request.method == 'POST':
@@ -97,7 +108,9 @@ def altaItem(request, idFase, opcion):
         return render(request, 'AltaItems.html',
                       {'tipos': tis,
                        'fase': idFase,
-                       'opcion': opcion})
+                       'opcion': opcion,
+                       'listaitems': listaitems,
+                       'ban_defecto': ban_defecto})
     return HttpResponseRedirect(reverse('sigma:adm_i', args=[idFase]))
 
 
