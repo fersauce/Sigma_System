@@ -87,7 +87,8 @@ def altaItem(request, idFase, opcion):
                 version=versionA,
                 complejidad=compl,
                 prioridad=pri,
-                estado=est
+                estado=est,
+                item_padre=request.POST['i_padre']
             )
             historial = Historial.objects.create(
                 item=itt,
