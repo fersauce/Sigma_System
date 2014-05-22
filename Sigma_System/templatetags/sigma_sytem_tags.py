@@ -1,4 +1,5 @@
 from django import template
+from django.utils.html import format_html
 from django.core.urlresolvers import reverse
 from Sigma_System.models import Fase, Item, UsuariosXProyecto
 register = template.Library()
@@ -21,18 +22,20 @@ def habilitar_evento(value, arg):
     if fase.posicionFase == 1:
         if arg == 0:
             # 0: listar padre y default
-            return reverse('sigma:adm_i_alta', args=(value, 0))
+            return ' href='+reverse('sigma:adm_i_alta', args=(value, 0))
         else:
             return ''
     else:
         if not items:
             if arg == 0:
                 # 1: listar solo antecesores
-                return reverse('sigma:adm_i_alta', args=(value, 1))
+                return ' href =' + reverse('sigma:adm_i_alta', args=(value, 1))
             else:
                 return ''
         else:
             if arg == 0:
                 return ''
             else:
-                return 'elegir_relacion''adm_i_alta/' + value + '/'
+                cadena = " onclick=\"elegir_relacion()\""
+                cadena = format_html(cadena)
+                return cadena

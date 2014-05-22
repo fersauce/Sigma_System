@@ -30,7 +30,7 @@
             }
         });
     }
-    function elegir_relacion(url_aux2)
+    function elegir_relacion()
     {
         $.Dialog({
             shadow: true,
@@ -46,10 +46,10 @@
                 var content =
                     '<div class="example">'+
                         '<form>' +
-                            '<h2>Elija el tipo de relacion</h2>' +
+                            '<h2>Elija el tipo de relacion:</h2>' +
                             '<div class="form-actions" align="center">'+
-                                '<a class="button" href="' + url_aux2 + 1 + '"> Antecesor/Sucesor </a>' + ' ' +
-                                '<a class="button" href="' + url_aux2 + 0 + '"> Padre/hijo </a>' + ' ' +
+                                '<a class="button" href="' + '/ss/adm_i_alta/{{fase}}/' + '1"> Antecesor/Sucesor </a>' + ' ' +
+                                '<a class="button" href="' + '/ss/adm_i_alta/{{fase}}/' + '0"> Padre/hijo </a>' + ' ' +
                                 '<button class="button" onclick=$.Dialog.close()>' +
                                     'Cancelar</button>'+
                             '</div>'+
@@ -88,8 +88,8 @@
     <div class="span10">
         <h2><a href="#"></a>Administrador<small class="on-right">de &Iacute;tems de la Fase </small>{{ nomb}}</h2>
         <div class="example">
-            <a href="{{ fase|habilitar_evento:0 }}">
-                <button class="command-button primary" onclick="elegir_relacion('{{ fase|habilitar_evento:1 }}')" >
+            <a{{ fase|habilitar_evento:0 }}>
+                <button class="command-button primary"{{ fase|habilitar_evento:1 }}>
                     <i class="icon-new on-left"></i><b>Agregar</b>
                     <small>Item</small>
                 </button>
@@ -100,7 +100,6 @@
                     <small>Item</small>
                 </button>
             </a>
-
             <table class="table striped hovered dataTable" id="datatable2">
                 <thead>
                     <th class="text-left">Nombre de la fase</th>

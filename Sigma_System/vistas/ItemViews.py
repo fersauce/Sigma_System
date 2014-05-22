@@ -12,6 +12,7 @@ from Sigma_System.forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
@@ -20,7 +21,7 @@ def administrarItem(request, idFase):
     request.session['fase'] = idFase
     fs = Fase.objects.get(pk=idFase)
     nameFa = fs.nombre
-    its = Item.objects.exclude(estado='baja')
+    its = Item.objects.filter(tipoItems__fase=fs).exclude(estado='baja')
     return render(request, 'AdministrarItem.html',
                   {'items': its, 'fase': idFase, 'nomb': nameFa})
 
@@ -48,6 +49,9 @@ def altaItem(request, idFase, opcion):
     """
     vista utilizada para crear un item
     """
+    print "entro en alta item"
+    print opcion
+    print "------------------"
     print "el id fase es " + idFase
     its = Item.objects.exclude(estado='baja')
     tis = TipoDeItem.objects.filter(fase=Fase.objects.get(pk=idFase))
@@ -91,9 +95,10 @@ def altaItem(request, idFase, opcion):
             messages.error(request, 'Ocurrio un error.')
     else:
         return render(request, 'AltaItems.html',
-                      {'tipos': tis, 'fase': idFase})
-    return render(request, 'AdministrarItem.html',
-                  {'items': its, 'fase': idFase})
+                      {'tipos': tis,
+                       'fase': idFase,
+                       'opcion': opcion})
+    return HttpResponseRedirect(reverse('sigma:adm_i', args=[idFase]))
 
 
 @login_required(login_url='/login/')
