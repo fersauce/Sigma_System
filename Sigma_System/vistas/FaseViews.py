@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.http import *
 import simplejson
 from Sigma_System.forms import BusquedaFasesForm
-from Sigma_System.models import Proyecto, Usuario, Fase, TipoDeItem
+from Sigma_System.models import Proyecto, Usuario, Fase, TipoDeItem, LBase, Items_x_LBase, Item
 from Sigma_System.decoradores import permisos_requeridos
 from django.contrib.auth.decorators import login_required
 import datetime, time
@@ -120,6 +120,20 @@ def modificar_fase(request, idProyect, idFase):
                 reverse('sigma:adm_fase', args=[idProyect]))
     return render(request, 'fasemodificar.html', {'proyecto': idProyect,
                                                   'fase': fase})
+
+
+def linea_base(request, idProyecto, idFase):
+    lb = LBase.objects.filter(fase=Fase.objects.get(id=idFase)).order_by('id')
+    return render(request, 'LineaBase.html', {'id_proy': idProyecto, 'id_fase': idFase, 'lineasbase': lb})
+
+
+def establecer_linea_base(request, idProyecto, idFase):
+    itemfinales = Item.objects.filter(tipoItems__fase=Fase.objects.get(id=idFase))
+    if request.method == 'POST':
+        messages.success(request, 'paso por establecer la linea base de la vista linea_base')
+        return HttpResponseRedirect(reverse('sigma:adm_fase_lb', args=(idProyecto, idFase)))
+    else:
+        return render(request, 'AsignarItemxLB.html', {'id_proy': idProyecto, 'id_fase': idFase, 'itemfinales':itemfinales})
 
 
 @login_required(login_url='/login/')

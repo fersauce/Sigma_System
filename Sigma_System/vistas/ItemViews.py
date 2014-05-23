@@ -134,8 +134,6 @@ def modificar_item(request, it):
     """
     vista utilizada para modificar un item
     donde el parametro it es el id del item
-
-
     """
 
     its = Item.objects.get(id=it)
