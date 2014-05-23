@@ -59,12 +59,14 @@ def altaItem(request, idFase, opcion):
     else:
         ban_defecto = False
     if opcion == '0':
-        listaitems = Item.objects.filter(tipoItems__fase=fase)
+        listaitems = Item.objects.filter(tipoItems__fase=fase, estado='aprobado')
     else:
         pos = fase.posicionFase-1
         #definir una funcion para que listaitems reciba items finales en linea base de la fase anterior
         #por ahora recibe todos los items
-        listaitems = Item.objects.filter(tipoItems__fase__proyecto=fase.proyecto, tipoItems__fase__posicionFase=pos)
+        listaitems = Item.objects.filter(tipoItems__fase__proyecto=fase.proyecto,
+                                         tipoItems__fase__posicionFase=pos,
+                                         estado='aprobado')
     its = Item.objects.exclude(estado='baja')
     tis = TipoDeItem.objects.filter(fase=Fase.objects.get(pk=idFase))
     if tis:
@@ -115,6 +117,18 @@ def altaItem(request, idFase, opcion):
     return HttpResponseRedirect(reverse('sigma:adm_i', args=[idFase]))
 
 
+def aprobar_desaprobar_item(request, idFase, idItem, opcion):
+    item = Item.objects.get(id=idItem)
+    if opcion == '0':
+        item.estado = 'aprobado'
+        messages.success(request, 'El item "' + item.nombre + '" ha sido aprobado')
+    else:
+        item.estado = 'activo'
+        messages.success(request, 'El item "' + item.nombre + '" ha sido desaprobado')
+    item.save()
+    return HttpResponseRedirect(reverse('sigma:adm_i', args=[idFase]))
+
+
 @login_required(login_url='/login/')
 def modificar_item(request, it):
     """
@@ -132,7 +146,6 @@ def modificar_item(request, it):
         priAct = its.prioridad
         vAct = its.version
         estAct = its.estado
-
         nNuevo = request.POST['nombre']
         comNuevo = request.POST['complejidad']
         priNuevo = request.POST['prior']

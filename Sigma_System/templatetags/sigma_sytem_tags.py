@@ -18,7 +18,7 @@ def lider(value):
 @register.filter
 def habilitar_evento(value, arg):
     fase = Fase.objects.get(id=value)
-    items = Item.objects.filter(tipoItems__fase=fase).exclude(estado='baja')
+    items = Item.objects.filter(tipoItems__fase=fase, estado='aprobado')
     if fase.posicionFase == 1:
         if arg == 0:
             # 0: listar padre y default
