@@ -39,9 +39,9 @@
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:des_proyec' %}">Desarrollo</a>
     <span class="element-divider"></span>
-    <a class="element" href="{% url 'sigma:adm_fase' proy.id %}">Proyecto: {{ proy.nombre }}</a>
+    <a class="element" href="{% url 'sigma:adm_fase' proy.id %}">Proyecto <sub>{{ proy.nombre }}</sub></a>
     <span class="element-divider"></span>
-    <a class="element" > Fase: {{ fase.nombre }}</a>
+    <a class="element" > Fase <sub>{{ fase.nombre }}</sub> </a>
     <a class="pull-menu" href="#"></a>
     <a class="element place-right" href="#">   </a>
     <span class="element-divider"></span>
@@ -95,42 +95,44 @@
                 </thead>
                 <tbody>
                     {% for i in items %}
-                        <tr>
-                            <td class="right">{{ fase.nombre }}</td>
-                            <td class="right">{{ i.nombre }}</td>
-                            <td class="right">{{ i.tipoItems.nombre }}</td>
-                            <td class="right">{{ i.version }}</td>
-                            <td class="right">{{ i.estado }}</td>
-                            <td align="center">
-                                <div class="span1">
-                                    <nav class="navigation-bar transparente">
-                                        <div class="navigation-bar-content">
-                                            <ul class="element-menu">
-                                                <li>
-                                                    <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
-                                                    <ul class="dropdown-menu" data-role="dropdown">
+                        {% if i.version > 0 %}
+                            <tr>
+                                <td class="right">{{ fase.nombre }}</td>
+                                <td class="right">{{ i.nombre }}</td>
+                                <td class="right">{{ i.tipoItems.nombre }}</td>
+                                <td class="right">{{ i.version }}</td>
+                                <td class="right">{{ i.estado }}</td>
+                                <td align="center">
+                                    <div class="span1">
+                                        <nav class="navigation-bar transparente">
+                                            <div class="navigation-bar-content">
+                                                <ul class="element-menu">
+                                                    <li>
+                                                        <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
+                                                        <ul class="dropdown-menu" data-role="dropdown">
 
-                                                        <li class="text-left " ><a href="{% url 'sigma:adm_i_mod' i.id %}" >
-                                                            <i class="icon-pencil on-left"> </i>Modificar</a>
-                                                        </li>
+                                                            <li class="text-left " ><a href="{% url 'sigma:adm_i_mod' i.id %}" >
+                                                                <i class="icon-pencil on-left"> </i>Modificar</a>
+                                                            </li>
 
-                                                        <li class="text-left" onclick="confirmar('{% url 'sigma:adm_i_baja' i.id %}')">
-                                                            <a href="#">
-                                                            <i class="icon-remove on-left"></i>Eliminar</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_i_revertir' i.pk %}">
-                                                            <i class="icon-eye on-left"></i>Revertir</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_i_historialItem' i.pk %}">
-                                                            <i class="icon-eye on-left"></i>Historial Item</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_relacion' i.id %}">
-                                                            <i class="icon-link on-left"></i>Relacionar Item</a></li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </nav>
-                                </div>
-                            </td>
-                        </tr>
+                                                            <li class="text-left" onclick="confirmar('{% url 'sigma:adm_i_baja' i.id %}')">
+                                                                <a href="#">
+                                                                <i class="icon-remove on-left"></i>Eliminar</a></li>
+                                                            <li class="text-left"><a href="{% url 'sigma:adm_i_revertir' i.pk %}">
+                                                                <i class="icon-eye on-left"></i>Revertir</a></li>
+                                                            <li class="text-left"><a href="{% url 'sigma:adm_i_historialItem' i.pk %}">
+                                                                <i class="icon-eye on-left"></i>Historial Item</a></li>
+                                                            <li class="text-left"><a href="{% url 'sigma:adm_relacion' i.id %}">
+                                                                <i class="icon-link on-left"></i>Relacionar Item</a></li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </nav>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
                     {% endfor %}
                 </tbody>
                 <tfoot>

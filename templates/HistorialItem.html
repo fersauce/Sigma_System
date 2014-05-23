@@ -9,7 +9,14 @@
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
     <span class="element-divider"></span>
-    <a class="element" href={% url 'sigma:adm_i' fase.pk %}> Administrar Item</a>
+    <a class="element" href="{% url 'sigma:des_proyec' %}">Desarrollo</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_fase' item.tipoItems.fase.proyecto.id %}">Proyecto <sub>{{ item.tipoItems.fase.proyecto.nombre }}</sub></a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_i' item.tipoItems.fase.pk %}" > Fase <sub>{{  item.tipoItems.fase.nombre }}</sub></a>
+    <span class="element-divider"></span>
+    <a class="element" >Historial dle Item:<sub>{{  item.nombre }}</sub></a>
+    <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
     <a class="element place-right" href="#">   </a>
     <span class="element-divider"></span>
@@ -46,15 +53,17 @@
                 </thead>
                 <tbody>
                     {% for h in his %}
-                        <tr>
+                        {% if h.nro_version_act > 0 %}
+                            <tr>
 
-                            <td class="right">{{ h.id }}</td>
-                            <td class="right">{{ item.id}}</td>
-                            <th class="right">{{ item.nombre }}</th>
-                            <td class="right">{{ h.nro_version_act  }}</td>
-                            <td class="right">{{ h.nro_version_ant }}</td>
+                                <td class="right">{{ h.id }}</td>
+                                <td class="right">{{ item.id}}</td>
+                                <th class="right">{{ item.nombre }}</th>
+                                <td class="right">{{ h.nro_version_act  }}</td>
+                                <td class="right">{{ h.nro_version_ant }}</td>
 
-                        </tr>
+                            </tr>
+                        {% endif %}
                     {% endfor %}
                 </tbody>
                 <tfoot>

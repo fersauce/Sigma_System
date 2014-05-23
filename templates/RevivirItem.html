@@ -36,7 +36,14 @@
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
     <span class="element-divider"></span>
-    <a class="element" href={% url 'sigma:adm_i' fase %}> Administrar Item</a>
+    <a class="element" href="{% url 'sigma:des_proyec' %}">Desarrollo</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_fase' idFase %}"> Proyecto <sub>{{ proyecto.nombre }}</sub></a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_i' idFase %}"> Fase <sub>{{ nomb }}</sub></a>
+    <span class="element-divider"></span>
+    <a class="element"> Item <sub>Revivir</sub></a>
+
     <a class="pull-menu" href="#"></a>
     <a class="element place-right" href="#">   </a>
     <span class="element-divider"></span>
@@ -72,18 +79,20 @@
                 </thead>
                 <tbody>
                     {% for i in items %}
-                        <tr>
-                            <td class="right">{{ nomb }}</td>
-                            <td class="right">{{ i.nombre }}</td>
-                            <td class="right">{{ i.tipoItems.nombre }}</td>
-                            <td class="right">{{ i.version }}</td>
-                            <td class="right">{{ i.estado }}</td>
-                            <td align="center">
-                                <i class="text-left" onclick="confirmar('{% url 'sigma:adm_i_revivir' i.id %}')">
-                                    <a href="#">Revivir</a>
-                                </i>
-                            </td>
-                        </tr>
+                        {% if i.version > 0 %}
+                            <tr>
+                                <td class="right">{{ nomb }}</td>
+                                <td class="right">{{ i.nombre }}</td>
+                                <td class="right">{{ i.tipoItems.nombre }}</td>
+                                <td class="right">{{ i.version }}</td>
+                                <td class="right">{{ i.estado }}</td>
+                                <td align="center">
+                                    <i class="text-left" onclick="confirmar('{% url 'sigma:adm_i_revivir' i.id %}')">
+                                        <a href="#">Revivir</a>
+                                    </i>
+                                </td>
+                            </tr>
+                        {% endif %}
                     {% endfor %}
                 </tbody>
                 <tfoot>

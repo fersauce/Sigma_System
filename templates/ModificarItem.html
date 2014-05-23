@@ -5,11 +5,11 @@
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:des_proyec' %}">Desarrollo</a>
     <span class="element-divider"></span>
-     <a class="element" href="{% url 'sigma:adm_fase' item.tipoItems.fase.proyecto.id %}">Proyecto <sub>{{ item.tipoItems.fase.proyecto.nombre }}</sub></a>
+    <a class="element" href="{% url 'sigma:adm_fase' item.tipoItems.fase.proyecto.id %}">Proyecto <sub>{{ item.tipoItems.fase.proyecto.nombre }}</sub></a>
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:adm_i' item.tipoItems.fase.pk %}" > Fase <sub>{{  item.tipoItems.fase.nombre }}</sub></a>
     <span class="element-divider"></span>
-    <a class="element" > Modificar <sub>{{  item.nombre }}</sub></a>
+    <a class="element" >Item: Modificar <sub>{{  item.nombre }}</sub></a>
     <a class="element place-right" href="#">   </a>
     <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
