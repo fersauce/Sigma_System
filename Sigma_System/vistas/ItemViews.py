@@ -25,25 +25,7 @@ def administrarItem(request, idFase):
     nameFa = fs.nombre
     its = Item.objects.filter(tipoItems__fase=fs).exclude(estado='baja')
     return render(request, 'AdministrarItem.html',
-                  {'items': its, 'fase': idFase, 'nomb': nameFa, 'item_baja':item_baja})
-
-
-@login_required(login_url='/login/')
-def altaItemIntermedio(request, idFase):
-    fase = Fase.objects.get(id=idFase)
-    items = Item.objects.filter(tipoItems__fase=fase)
-    if fase.posicionFase == 1:
-        print "No hace falta asociar a ningun padre, ni antecesor por ser la primera fase"
-        print "en caso de que hubiera otros items en la fase 1"
-        print "el select deberia indicar un valor ninguno por defecto"
-    else:
-        if not items:
-            print "debe asociar necesariamente a un antecesor"
-            print "se accedera directamente a la vista alta item"
-            print "se listaran todos los antecesores de la fase anterior en la que se encuentra"
-        else:
-            print "se debe dar la opcion de elegir entre un antecesor o un padre"
-    return altaItem(request, idFase)
+                  {'items': its, 'fase': idFase, 'nomb': nameFa, 'item_baja': item_baja})
 
 
 @login_required(login_url='/login/')
