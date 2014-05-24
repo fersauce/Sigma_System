@@ -127,8 +127,10 @@
                                                             {% if i.estado == 'aprobado' %}
                                                                 <li class="text-left"><a href="{% url 'sigma:ap_desap_i' fase.id i.id 1 %}">
                                                                 <i class="icon-thumbs-down on-left"></i>Desaprobar</a></li>
-                                                            {% endif %}
-                                                            {% if i.estado == 'bloqueado' %}
+                                                            {% elif i.estado != 'bloqueado' %}
+                                                                <li class="text-left"><a href="{% url 'sigma:ap_desap_i' fase.id i.id 0 %}">
+                                                                <i class="icon-thumbs-up on-left"></i>Aprobar</a></li>
+                                                            {% else %}
                                                                 <li class="text-left disabled"><a href="{% url 'sigma:ap_desap_i' fase.id i.id 0 %}">
                                                                     <i class="icon-thumbs-up on-left"></i>Aprobar</a></li>
                                                             {% endif %}

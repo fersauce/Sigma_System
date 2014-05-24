@@ -115,7 +115,7 @@
                                                         {% endif %}
                                                         <li class="text-left {{ fase.id|verificar_lb }}"><a href="{% url 'sigma:adm_fase_lb' fase.proyecto.id fase.id %}">
                                                             <i class="icon-locked"></i>Linea base</a></li>
-                                                        <li class="text-left {{ fase.id|verificar_fase }}"><a href="{% url 'sigma:adm_fase_fin' fase.proyecto.id fase.id %}">
+                                                        <li class="text-left "><a href="{% url 'sigma:adm_fase_fin' fase.proyecto.id fase.id %}">
                                                             <i class="icon-flag-2"></i>Finalizar Fase</a></li>
                                                     </ul>
                                                 </li>

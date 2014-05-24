@@ -332,7 +332,7 @@ def iniciarProyecto(request, idProyect):
         messages.error(request, 'No puede iniciar el proyecto, aun no se han'
                                 ' definido todas las fases')
         return HttpResponseRedirect(reverse('sigma:adm_proy'))
-    if usuComite.__len__() <= 3:
+    if usuComite.__len__() < 3:
         messages.error(request, 'No puede iniciar el proyecto, aun no se han'
                                 ' definido a todos los miembros del comite')
         return HttpResponseRedirect(reverse('sigma:adm_proy'))

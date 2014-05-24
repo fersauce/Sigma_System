@@ -58,6 +58,11 @@ def altaItem(request, idFase, opcion):
         #definir una funcion para que listaitems reciba items finales en linea base de la fase anterior
         #por ahora recibe todos los items
         fase = Fase.objects.get(proyecto=fase.proyecto, posicionFase=pos)
+        if fase.estado == 'Pendiente':
+            fase.estado = 'Iniciado'
+            fase.fechaInicio = datetime.datetime.now()
+            fase.save()
+            messages.success(request, 'Fase '+fase.nombre+' iniciada.')
         li = Items_x_LBase.objects.filter(lb__fase=fase, item_final=True)
         listaitems = []
         for l in li:

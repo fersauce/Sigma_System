@@ -143,6 +143,15 @@ def establecer_linea_base(request, idProyecto, idFase):
             i.estado = 'bloqueado'
             i.save()
             Items_x_LBase.objects.create(lb=lb, item=i)
+        fase = Fase.objects.get(pk=idFase)
+        proyecto = fase.proyecto
+        if not proyecto.nroFases == fase.posicionFase:
+            faseSig = Fase.objects.get(posicionFase=fase.posicionFase+1, proyecto=proyecto)
+            if faseSig.estado == 'Pendiente':
+                faseSig.estado = 'Iniciado'
+                fase.fechaInicio = datetime.datetime.now()
+                faseSig.save()
+                messages.success(request, 'Fase '+fase.nombre+' iniciada.')
         messages.success(request, 'Se agregaron correctamente los items a la linea base')
         return HttpResponseRedirect(reverse('sigma:adm_fase_lb', args=(idProyecto, idFase)))
     else:
