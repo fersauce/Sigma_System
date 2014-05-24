@@ -3,9 +3,11 @@
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
     <span class="element-divider"></span>
-    <a class="element" href="{% url 'sigma:adm_u' %}"> Administrar Usuario</a>
+    <a class="element" href="{% url 'sigma:adm_u' %}"> Administracion <sub>Usuario</sub></a>
     <span class="element-divider"></span>
-    <a class="element" href="#"> Usuario: {{ user.username }}</a>
+    <a class="element"> Asignar Rol a Usuario <sub>{{ user.username }}</sub></a>
+    <span class="element-divider"></span>
+
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
         <div class="no-tablet-portrait">
@@ -20,7 +22,7 @@
         </div>
     </ul>
 {% endblock %}
-
+{% block titulo %}Asignar Rol a Usuario{% endblock %}
 {% block contenido %}
     <div class="container" align="center">
         <h1>Asignar<small class="on-right">Roles</small></h1>

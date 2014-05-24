@@ -2,9 +2,16 @@
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
-    <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
-    <a class="element" href="{% url 'sigma:adm_fase' id_proy %}">Fase</a>
-    <a class="element" href="{% url 'sigma:adm_i' id_fase %}">Item</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_proy' %}">Desarrollo</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_fase' item.tipoItems.fase.proyecto.id %}">Proyecto <sub>{{ item.tipoItems.fase.proyecto.nombre }}</sub></a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_i' item.tipoItems.fase.pk %}" > Fase <sub>{{  item.tipoItems.fase.nombre }}</sub></a>
+    <span class="element-divider"></span>
+    <a class="element" >Item <sub>{{  item.nombre }}</sub></a>
+    <span class="element-divider"></span>
+    <a class="element" >Asignar Relacion<sub>{{  item.nombre }}</sub></a>
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
         <li></li>
