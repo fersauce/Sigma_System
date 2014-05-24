@@ -18,12 +18,14 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 @login_required(login_url='/login/')
 def administrarItem(request, idFase):
+    fase = Fase.objects.get(id=idFase)
+    item_baja = Item.objects.filter(tipoItems__fase=fase, estado='baja')
     request.session['fase'] = idFase
     fs = Fase.objects.get(pk=idFase)
     nameFa = fs.nombre
     its = Item.objects.filter(tipoItems__fase=fs).exclude(estado='baja')
     return render(request, 'AdministrarItem.html',
-                  {'items': its, 'fase': idFase, 'nomb': nameFa})
+                  {'items': its, 'fase': idFase, 'nomb': nameFa, 'item_baja':item_baja})
 
 
 @login_required(login_url='/login/')
@@ -59,14 +61,21 @@ def altaItem(request, idFase, opcion):
     else:
         ban_defecto = False
     if opcion == '0':
-        listaitems = Item.objects.filter(tipoItems__fase=fase, estado='aprobado')
+        listaitems1 = Item.objects.filter(tipoItems__fase=fase, estado='aprobado')
+        listaitems2 = Item.objects.filter(tipoItems__fase=fase, estado='bloqueado')
+        listaitems = listaitems1 | listaitems2
     else:
         pos = fase.posicionFase-1
         #definir una funcion para que listaitems reciba items finales en linea base de la fase anterior
         #por ahora recibe todos los items
-        listaitems = Item.objects.filter(tipoItems__fase__proyecto=fase.proyecto,
-                                         tipoItems__fase__posicionFase=pos,
-                                         estado='aprobado')
+        fase = Fase.objects.get(proyecto=fase.proyecto, posicionFase=pos)
+        li = Items_x_LBase.objects.filter(lb__fase=fase, item_final=True)
+        listaitems = []
+        for l in li:
+            listaitems.append(l.item)
+        #listaitems = Item.objects.filter(tipoItems__fase__proyecto=fase.proyecto,
+        #                                 tipoItems__fase__posicionFase=pos,
+        #                                 estado='aprobado')
     its = Item.objects.exclude(estado='baja')
     tis = TipoDeItem.objects.filter(fase=Fase.objects.get(pk=idFase))
     if tis:
@@ -111,7 +120,7 @@ def altaItem(request, idFase, opcion):
         return render(request, 'AltaItems.html',
                       {'tipos': tis,
                        'fase': idFase,
-                       'opcion': opcion,
+                       'opcion': int(opcion),
                        'listaitems': listaitems,
                        'ban_defecto': ban_defecto})
     return HttpResponseRedirect(reverse('sigma:adm_i', args=[idFase]))
@@ -253,7 +262,6 @@ def baja_item(request, it):
         descripcion="baja",
         fecha_mod=datetime.datetime.now()
     )
-
     return HttpResponseRedirect('/ss/adm_i/' + str(its.tipoItems.fase.pk))
 
 

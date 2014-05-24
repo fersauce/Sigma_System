@@ -133,9 +133,17 @@ def establecer_linea_base(request, idProyecto, idFase):
         obs = request.POST['obs']
         lb = LBase.objects.create(obs=obs, fase=Fase.objects.get(id=idFase))
         i_finales = request.POST.getlist('items_finales')
-
-
-        messages.success(request, 'paso por establecer la linea base de la vista linea_base' + obs)
+        for i in i_finales:
+            item_actual = Item.objects.get(id=i)
+            item_actual.estado = 'bloqueado'
+            item_actual.save()
+            Items_x_LBase.objects.create(lb=lb, item=item_actual, item_final=True)
+        i_padres = traer_items_padre(i_finales, idFase)
+        for i in i_padres:
+            i.estado = 'bloqueado'
+            i.save()
+            Items_x_LBase.objects.create(lb=lb, item=i)
+        messages.success(request, 'Se agregaron correctamente los items a la linea base')
         return HttpResponseRedirect(reverse('sigma:adm_fase_lb', args=(idProyecto, idFase)))
     else:
         return render(request, 'AsignarItemxLB.html', {'id_proy': idProyecto, 'id_fase': idFase, 'itemfinales':itemfinales})
@@ -153,10 +161,15 @@ def traer_itemfinales(idFase):
 
 
 def traer_items_padre(i_finales, idFase):
-    visitado = []
+    fase = Fase.objects.get(id=idFase)
     items_padre = []
-
-    pass
+    for i in i_finales:
+        i_actual = Item.objects.get(id=i)
+        while i_actual.item_padre != 0 and i_actual.tipoItems.fase == fase:
+            i_actual = Item.objects.get(id=i_actual.item_padre)
+            if i_actual not in items_padre:
+                items_padre.append(i_actual)
+    return items_padre
 
 
 @login_required(login_url='/login/')

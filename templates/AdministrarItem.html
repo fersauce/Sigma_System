@@ -94,12 +94,14 @@
                     <small>Item</small>
                 </button>
             </a>
-            <a href="{%  url 'sigma:adm_i_rev' fase %}">
-                <button class="command-button primary">
-                    <i class="icon-new on-left"></i><b>Revivir</b>
-                    <small>Item</small>
-                </button>
-            </a>
+            {% if item_baja %}
+                <a href="{%  url 'sigma:adm_i_rev' fase %}">
+                    <button class="command-button primary">
+                        <i class="icon-new on-left"></i><b>Revivir</b>
+                        <small>Item</small>
+                    </button>
+                </a>
+            {% endif %}
             <table class="table striped hovered dataTable" id="datatable2">
                 <thead>
                     <th class="text-left">Nombre de la fase</th>
@@ -112,7 +114,7 @@
                 <tbody>
                     {% for i in items %}
                         <tr>
-                            <td class="right">{{ nomb }}</td>
+                            <td class="right">{{ i.id }}</td>
                             <td class="right">{{ i.nombre }}</td>
                             <td class="right">{{ i.tipoItems.nombre }}</td>
                             <td class="right">{{ i.version }}</td>
