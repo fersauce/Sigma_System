@@ -50,3 +50,27 @@ def verificar_ti(value):
         return ' disabled'
     else:
         return ''
+
+
+@register.filter
+def verificar_fase(value):
+    fase = Fase.objects.get(id=value)
+    items1 = Item.objects.filter(tipoItems__fase=fase)
+    items2 = Item.objects.filter(tipoItems__fase=fase, estado='bloqueado')
+    if fase.estado == 'Cerrado':
+        return 'disabled'
+    if items1.__len__() == items2.__len__():
+        return ''
+    else:
+        return 'disabled'
+
+
+@register.filter
+def verificar_lb(value):
+    fase = Fase.objects.get(id=value)
+    items1 = Item.objects.filter(tipoItems__fase=fase)
+    items2 = Item.objects.filter(tipoItems__fase=fase, estado='bloqueado')
+    if items1.__len__() == items2.__len__():
+        return 'disabled'
+    else:
+        return ''

@@ -97,22 +97,26 @@
                                                     <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
                                                     <ul class="dropdown-menu" data-role="dropdown">
                                                         {% if fase.estado != 'Iniciado' %}
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_fase_mod' proyecto.pk fase.pk %}">
+                                                        <li class="text-left {{ fase.id|verificar_fase }}"><a href="{% url 'sigma:adm_fase_mod' proyecto.pk fase.pk %}">
                                                             <i class="icon-pencil on-left"></i>Modificar</a></li>
-                                                        <li class="text-left"><a id="botBaja{{ fase.pk }}" >
+                                                        <li class="text-left {{ fase.id|verificar_fase }}"><a id="botBaja{{ fase.pk }}" >
                                                             <i class="icon-remove on-left"></i>Eliminar</a></li>
                                                         {% endif %}
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_ti' fase.proyecto.pk fase.pk %}">
+                                                        <li class="text-left {{ fase.id|verificar_fase }}"><a href="{% url 'sigma:adm_ti' fase.proyecto.pk fase.pk %}">
                                                             <i class="icon-accessibility"></i>Tipos de &Iacute;tem</a></li>
-                                                        <li class="text-left{{ fase.pk|verificar_ti }}"><a href="{% url 'sigma:adm_i' fase.pk %}">
-                                                            <i class="icon-accessibility"></i>&Iacute;tems</a></li>
+                                                        {% if fase.estado != 'Cerrado' %}
+                                                            <li class="text-left{{ fase.pk|verificar_ti }}"><a href="{% url 'sigma:adm_i' fase.pk %}">
+                                                                <i class="icon-accessibility"></i>&Iacute;tems</a></li>
+                                                        {% endif %}
                                                         {% if fase.estado == 'Pendiente' %}
-                                                        <li class="text-left" onclick="cambiarPosicion('{% url 'sigma:des_fase_intercambio' fase.pk %}')">
+                                                        <li class="text-left {{ fase.id|verificar_fase }}" onclick="cambiarPosicion('{% url 'sigma:des_fase_intercambio' fase.pk %}')">
                                                             <a href="#">
                                                             <i class="icon-undo"></i>Intercambiar</a></li>
                                                         {% endif %}
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_fase_lb' fase.proyecto.id fase.id %}">
+                                                        <li class="text-left {{ fase.id|verificar_lb }}"><a href="{% url 'sigma:adm_fase_lb' fase.proyecto.id fase.id %}">
                                                             <i class="icon-locked"></i>Linea base</a></li>
+                                                        <li class="text-left {{ fase.id|verificar_fase }}"><a href="{% url 'sigma:adm_fase_fin' fase.proyecto.id fase.id %}">
+                                                            <i class="icon-flag-2"></i>Finalizar Fase</a></li>
                                                     </ul>
                                                 </li>
                                             </ul>

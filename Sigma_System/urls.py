@@ -91,6 +91,9 @@ urlpatterns = patterns('',
     url(r'^proyecto/(?P<idProyect>\d+)/fase/intercambiar/$',
        'Sigma_System.vistas.FaseViews.intercambiarFase',
        name='adm_fase_intercambiar'),
+    url(r'^proyecto/(?P<idp>\d+)/fase/(?P<idf>\d+)/finalizar/$',
+       'Sigma_System.vistas.FaseViews.finalizar_fase',
+       name='adm_fase_fin'),
     ### Urls de Tipos de Item de una fase
     url(r'^proyecto/(?P<idProyect>\d+)/fase/(?P<idFase>\d+)'
         r'/tipoItem/$',

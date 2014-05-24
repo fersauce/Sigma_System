@@ -172,6 +172,14 @@ def traer_items_padre(i_finales, idFase):
     return items_padre
 
 
+def finalizar_fase(request, idp, idf):
+        fase = Fase.objects.get(id=idf)
+        fase.estado = 'Cerrado'
+        fase.save()
+        messages.success(request, 'Se ha finalizado correctamente la fase "'+fase.nombre+'"')
+        return HttpResponseRedirect(reverse('sigma:adm_fase', args=[idp]))
+
+
 @login_required(login_url='/login/')
 @permisos_requeridos(['eliminar_fa'], 'sigma:adm_fase', 'eliminar fases', 1)
 def baja_fase(request, idProyect, idFase):
