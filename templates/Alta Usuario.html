@@ -1,9 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'base_menu.html' %}
 {% block navegacion %}
     <span class="element-divider"></span>
-    <a class="element" href={% url 'sigma:inicio' %}> Página Principal</a>
+    <a class="element" href={% url 'sigma:inicio' %}> P&aacute;gina Principal</a>
     <span class="element-divider"></span>
-    <a class="element" href={% url 'sigma:adm_u' %}> Administracion <sub>Usuario</sub></a>
+    <a class="element" href={% url 'sigma:adm_u' %}> Administraci&oacute;n <sub>Usuario</sub></a>
     <span class="element-divider"></span>
     <a class="element"> Crear <sub>Usuario</sub></a>
     <a class="element place-right" href={% url 'sigma:finalizar' %}>   </a>
@@ -12,10 +12,10 @@
 {% endblock %}
 {% block titulo %}Alta Usuario{% endblock %}
 {% block contenido %}
-    <div class="container" align = "center">
+    <div class="span10" align = "center">
 
-        <h1><a href="#"></a>Crear<small class="on-right">Usuario</small></h1>
-        <div class="">
+        <h1>Crear<small class="on-right">Usuario</small></h1>
+        <div class="example">
             <form action = "{% url 'sigma:adm_u_altas' %}" method="post">
                 {% csrf_token %}
                 <fieldset>
@@ -138,8 +138,8 @@
                         </div>
                         
                         <br>
-                        <input type="submit" value="Aceptar" onclick="mensaje()">
-                        <a href="{% url 'sigma:adm_u' %}"><input type="button" value="Cancelar" ></a>
+                        <input type="submit" value="Aceptar" onclick="mensaje()" class="button success">
+                        <a href="{% url 'sigma:adm_u' %}"><input type="button" value="Cancelar" class="button inverse"></a>
                     </div>
                 </fieldset>
             </form>

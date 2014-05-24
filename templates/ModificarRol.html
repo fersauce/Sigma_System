@@ -9,19 +9,20 @@
     <a class="pull-menu" href="#"></a>
 {% endblock %}
 {% block contenido %}
-    <div class="container" align="center">
+    <div class="span10" align="center">
+    <div class="example">
         <h1>Modificar<small class="on-right">Rol</small></h1>
         <form action="{%  url 'sigma:adm_r_mod' rol.id %}" method="post">
             {% csrf_token %}
             <fieldset>
-                <div class="span5">
+                <div class="">
                     <label>Nombre del rol</label>
                     <div class="input-control text" data-role="input-control">
                         <input type="text" name="nombre" value="{{ rol.nombre }}" required>
                         <button class="btn-clear" tabindex="-1" type="button"></button>
                     </div>
                 </div>
-                <div class="span12">
+                <div class="">
                     <label>Descripcion</label>
                     <div class="input-control text" data-role="input-control">
                         <input type="text" name="descripcion" value="{{ rol.descripcion }}">
@@ -45,11 +46,11 @@
                     <br>
                     {% endfor %}
                 </div>
-                <div class="span3">
-                    <input type="submit" value="Aceptar" onclick="">
-                    <a href="{% url 'sigma:adm_r' %}"><input type="button" value="Cancelar" ></a>
+                <div class="">
+                    <input type="submit" value="Aceptar" onclick="" class="button success">
+                    <a href="{% url 'sigma:adm_r' %}"><input type="button" value="Cancelar" class="button inverse"></a>
                 </div>
             </fieldset>
         </form>
-    </div>
+    </div></div>
 {% endblock %}

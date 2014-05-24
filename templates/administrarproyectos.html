@@ -111,7 +111,7 @@
                             <td class="right">{{ proyecto|lider }}</td>
                             <td class="right">{{ proyecto.estado }}</td>
                             <td class="right">
-                                {% if proyecto.estado == 'Iniciado' %}
+                                {% if proyecto.estado != 'Pendiente' %}
                                     {{ proyecto.fechaInicio }}
                                 {% else %}
                                     No definido

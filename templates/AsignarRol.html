@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_menu.html" %}
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
@@ -11,9 +11,9 @@
 {% endblock %}
 {% block titulo %}Asignar Rol a Usuario{% endblock %}
 {% block contenido %}
-    <div class="container" align="center">
+    <div class="span10" align="center">
         <h1>Asignar<small class="on-right">Roles</small></h1>
-        <div class="">
+        <div class="example">
             <form action="{%  url 'sigma:adm_u_asig_rol' user.id %}" method="post">
                 {% csrf_token %}
                 <fieldset>
@@ -33,9 +33,9 @@
                         <br>
                         {% endfor %}
                     </div>
-                    <div class="span3">
-                        <input type="submit" value="Aceptar" onclick="">
-                        <a href="{% url 'sigma:adm_u' %}"><input type="button" value="Cancelar" ></a>
+                    <div class="">
+                        <input type="submit" value="Aceptar" onclick="" class="button success">
+                        <a href="{% url 'sigma:adm_u' %}"><input type="button" value="Cancelar" class="button inverse"></a>
                     </div>
                 </fieldset>
             </form>

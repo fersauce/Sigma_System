@@ -24,7 +24,7 @@
 {% block contenido %}
     <div class="span10">
         <h1>Asignar<small class="on-right">Roles</small></h1>
-        <div class="">
+        <div class="example">
             <form action="{%  url 'sigma:adm_u_desasig_rol' user.id %}" method="post">
                 {% csrf_token %}
                 <fieldset>
@@ -44,9 +44,9 @@
                         <br>
                         {% endfor %}
                     </div>
-                    <div class="span3">
-                        <input type="submit" value="Aceptar" onclick="">
-                        <a href="{% url 'sigma:adm_u' %}"><input type="button" value="Cancelar" ></a>
+                    <div class="">
+                        <input type="submit" value="Aceptar" onclick="" class="button success">
+                        <a href="{% url 'sigma:adm_u' %}"><input type="button" value="Cancelar" class="button inverse"></a>
                     </div>
                 </fieldset>
             </form>

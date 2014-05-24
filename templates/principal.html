@@ -4,3 +4,22 @@
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
     <a class="pull-menu" href="#"></a>
 {% endblock %}
+{% block contenido %}
+    <div class="span10">
+        <div class="example">
+            <h3> Bienvenido {{ user.first_name }} al Gestor de Proyectos web  Sigma Sytem</h3>
+            <p>La idea de la creaci&oacute;n de este gestor es la posibilidad de gestionar sus
+            proyectos de manera m&aacute;s ordenada y simple. Esperamos que sea de su agrado.</p>
+            <div class="span6">
+                <p>
+                    <h4>Equipo Desarrollador de Sigma System:</h4>
+                    <ul>
+                        <li><h5>Ruth Carolina Centuri&oacute;n</h5></li>
+                        <li><h5>Cristian Miguel Candia</h5></li>
+                        <li><h5>Fernando Ram&oacute;n Saucedo Arg&uuml;ello</h5></li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

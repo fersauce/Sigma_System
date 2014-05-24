@@ -14,7 +14,7 @@
 {% block contenido %}
     <div class="span10">
         <h1><a href="#"></a>Modificar<small class="on-right">Usuario</small></h1>
-        <div class="">
+        <div class="example">
             <form action = "{% url 'sigma:adm_u_mod' user.id %}" method="post">
                 {% csrf_token %}
                 <fieldset>
@@ -130,8 +130,8 @@
                             </div>
                         </div>
 
-                        <input type="submit" value="Aceptar" onclick="mensaje()">
-                        <a href="{% url 'sigma:adm_u' %}"><input type="button" value="Cancelar" ></a>
+                        <input type="submit" value="Aceptar" onclick="mensaje()" class="button success">
+                        <a href="{% url 'sigma:adm_u' %}"><input type="button" value="Cancelar" class="button inverse"></a>
                     </div>
                 </fieldset>
             </form>

@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.core.context_processors import csrf
 from django.contrib import messages
 from django.core.urlresolvers import reverse
@@ -213,12 +214,16 @@ def buscar_proyecto(request):
 
 def administrarProyectosAsociados(request):
     usuario = Usuario.objects.all()
-    proyectos = Proyecto.objects.all()
+    id_user = request.user.id
+    userSesion = User.objects.get(id=id_user)
+    sesionado = userSesion.usuario
+    proyectos = UsuariosXProyecto.objects.filter(usuario=sesionado, activo=True)
     permisos = request.session['permisos']
-    c = {}
-    c.update(csrf(request))
+    c = []
+    for u in proyectos:
+        c.append(u.proyecto)
     return render(request, 'des_admin_proyectos.html',
-                  {'proyectos': proyectos,
+                  {'proyectos': c,
                    'usuarios': usuario,
                    'permisos': permisos})
 

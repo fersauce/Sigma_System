@@ -34,14 +34,8 @@
 {% endblock %}
 {% block contenido %}
     <div class="span10">
-        <h2><a href="#"></a>Administrador<small class="on-right">de Proyectos</small></h2>
+        <h2><a href="#"></a>Proyectos <small class="on-right">en Desarrollo</small></h2>
         <div class="example">
-            <a href="{%  url 'sigma:adm_proy_alta' %}">
-                <button class="command-button primary">
-                    <i class="icon-new on-left"></i><b>Agregar</b>
-                    <small>Proyecto</small>
-                </button>
-            </a>
             <table class="table striped hovered dataTable" id="tablaProyecto">
                 <thead>
                     <th class="text-left">Nombre</th>
@@ -57,8 +51,16 @@
                         <tr>
                             <td>{{ proyecto.nombre }}</td>
                             <td class="right">{{ proyecto.descripcion }}</td>
-                            <td class="right">{{ proyecto.fechaInicio }}</td>
-                            <td class="right">{{ proyecto.fechaFinalizacion }}</td>
+                            <td class="right">
+                                {% if proyecto.estado != 'Pendiente' %}
+                                    {{ proyecto.fechaInicio }}
+                                {% endif %}
+                            </td>
+                            <td class="right">
+                                 {% if proyecto.estado == 'Finalizado' %}
+                                    {{ proyecto.fechaFinalizacion }}
+                                 {% endif %}
+                            </td>
                             <td class="right">{{ proyecto.nroFases }}</td>
                             <td class="right">{{ proyecto.nroMiembros }}</td>
                             <td align="center">

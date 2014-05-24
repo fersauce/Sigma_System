@@ -9,7 +9,7 @@
 {% endblock %}
 {% block contenido %}
     <div class="span10">
-        <h1><a href="#"></a>Crear<small class="on-right">Fase</small></h1>
+        <h1>Crear<small class="on-right">Fase</small></h1>
         <div class="example">
             <form action = "{% url 'sigma:adm_fase_alta' proyecto %}" method="post">
                 {% csrf_token %}
@@ -25,8 +25,8 @@
                         <div class="input-control textarea" data-role="input-control">
                             <textarea cols="60" id="id_descripcion" name="descripcion" required="true" rows="3"></textarea>
                         </div><br><br><br>
-                        <input type="submit" value="Aceptar">
-                        <a href="{% url 'sigma:adm_fase' proyecto %}"><input type="button" value="Cancelar" ></a>
+                        <input type="submit" value="Aceptar" class="button success">
+                        <a href="{% url 'sigma:adm_fase' proyecto %}"><input type="button" value="Cancelar" class="button inverse"></a>
                     </div>
                 </fieldset>
             </form>
