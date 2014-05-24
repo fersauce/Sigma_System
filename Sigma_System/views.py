@@ -231,7 +231,7 @@ def cambiar(request, us):
             messages.info(request, 'Contrasenha cambiada con exito')
         else:
             messages.error(request, 'Las contrasenhas no coinciden')
-            return render(request, 'cambiarPass2.html', {'id':us})
+            return render(request, 'cambiarPass2.html', {'id':us,'user':usA})
     else:
         return render(request, 'cambiarPass2.html', {'id':us})
 

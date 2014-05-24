@@ -36,7 +36,15 @@
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
     <span class="element-divider"></span>
-    <a class="element" href={% url 'sigma:adm_i' fase %}> Administrar Item</a>
+    <a class="element" href={% url 'sigma:des_proyec' %}>Desarrollo</a>
+    <span class="element-divider"></span>
+    <a class="element" href={% url 'sigma:adm_fase' proyecto.id %}>Proyecto<sub> {{ proyecto.nombre }}</sub></a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_i' idfase %}" > Fase <sub>{{ nomb }}</sub></a>
+    <span class="element-divider"></span>
+    <a class="element" > Item: Revertir Item <sub>{{ items.nombre }}</sub></a>
+    <span class="element-divider"></span>
+
     <a class="pull-menu" href="#"></a>
     <a class="element place-right" href="#">   </a>
     <span class="element-divider"></span>

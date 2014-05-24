@@ -36,36 +36,48 @@
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:des_proyec' %}">Desarrollo</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_fase' proy.id %}">Proyecto <sub>{{ proy.nombre }}</sub></a>
+    <span class="element-divider"></span>
+    <a class="element" > Fase <sub>{{ fase.nombre }}</sub> </a>
     <a class="pull-menu" href="#"></a>
     <a class="element place-right" href="#">   </a>
     <span class="element-divider"></span>
     <ul class="element-menu">
-        <li></li>
+
         <div class="no-tablet-portrait">
+
             <div class="element place-right">
+
                 <a class="dropdown-toggle" href="#">
                     <span class="icon-cog"></span>
                 </a>
+
                 <ul class="dropdown-menu place-right" data-role="dropdown">
+
                     <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
                 </ul>
             </div>
+             <span class="element-divider place-right"></span>
+
         </div>
     </ul>
 {% endblock %}
 {% block titulo %}Administraci&oacute;n de Items{% endblock %}
 {% block contenido %}
     <div class="span10">
-        <h2><a href="#"></a>Administrador<small class="on-right">de &Iacute;tems de la Fase </small>{{ nomb}}</h2>
+        <h2><a href="#"></a>Administrador<small class="on-right">de &Iacute;tems de la Fase </small>{{ fase.nombre}}</h2>
         <div class="example">
-            <a href="{%  url 'sigma:adm_i_alta' fase %}">
+            <a href="{%  url 'sigma:adm_i_alta' fase.id %}">
                 <button class="command-button primary">
                     <i class="icon-new on-left"></i><b>Agregar</b>
                     <small>Item</small>
                 </button>
             </a>
 
-            <a href="{%  url 'sigma:adm_i_rev' fase %}">
+            <a href="{%  url 'sigma:adm_i_rev' fase.id %}">
                 <button class="command-button primary">
                     <i class="icon-new on-left"></i><b>Revivir</b>
                     <small>Item</small>
@@ -83,39 +95,44 @@
                 </thead>
                 <tbody>
                     {% for i in items %}
-                        <tr>
-                            <td class="right">{{ nomb }}</td>
-                            <td class="right">{{ i.nombre }}</td>
-                            <td class="right">{{ i.tipoItems.nombre }}</td>
-                            <td class="right">{{ i.version }}</td>
-                            <td class="right">{{ i.estado }}</td>
-                            <td align="center">
-                                <div class="span1">
-                                    <nav class="navigation-bar transparente">
-                                        <div class="navigation-bar-content">
-                                            <ul class="element-menu">
-                                                <li>
-                                                    <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
-                                                    <ul class="dropdown-menu" data-role="dropdown">
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_i_mod' i.id %}">
-                                                            <i class="icon-pencil on-left"></i>Modificar</a></li>
-                                                        <li class="text-left" onclick="confirmar('{% url 'sigma:adm_i_baja' i.id %}')">
-                                                            <a href="#">
-                                                            <i class="icon-remove on-left"></i>Eliminar</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_i_revertir' i.pk %}">
-                                                            <i class="icon-eye on-left"></i>Revertir</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_i_historialItem' i.pk %}">
-                                                            <i class="icon-eye on-left"></i>Historial Item</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_relacion' i.id %}">
-                                                            <i class="icon-link on-left"></i>Relacionar Item</a></li>
-                                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </nav>
-                                </div>
-                            </td>
-                        </tr>
+                        {% if i.version > 0 %}
+                            <tr>
+                                <td class="right">{{ fase.nombre }}</td>
+                                <td class="right">{{ i.nombre }}</td>
+                                <td class="right">{{ i.tipoItems.nombre }}</td>
+                                <td class="right">{{ i.version }}</td>
+                                <td class="right">{{ i.estado }}</td>
+                                <td align="center">
+                                    <div class="span1">
+                                        <nav class="navigation-bar transparente">
+                                            <div class="navigation-bar-content">
+                                                <ul class="element-menu">
+                                                    <li>
+                                                        <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
+                                                        <ul class="dropdown-menu" data-role="dropdown">
+
+                                                            <li class="text-left " ><a href="{% url 'sigma:adm_i_mod' i.id %}" >
+                                                                <i class="icon-pencil on-left"> </i>Modificar</a>
+                                                            </li>
+
+                                                            <li class="text-left" onclick="confirmar('{% url 'sigma:adm_i_baja' i.id %}')">
+                                                                <a href="#">
+                                                                <i class="icon-remove on-left"></i>Eliminar</a></li>
+                                                            <li class="text-left"><a href="{% url 'sigma:adm_i_revertir' i.pk %}">
+                                                                <i class="icon-eye on-left"></i>Revertir</a></li>
+                                                            <li class="text-left"><a href="{% url 'sigma:adm_i_historialItem' i.pk %}">
+                                                                <i class="icon-eye on-left"></i>Historial Item</a></li>
+                                                            <li class="text-left"><a href="{% url 'sigma:adm_relacion' i.id %}">
+                                                                <i class="icon-link on-left"></i>Relacionar Item</a></li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </nav>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
                     {% endfor %}
                 </tbody>
                 <tfoot>

@@ -36,6 +36,10 @@
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
+    <span class="element-divider"></span>
+    <a class="element" >Administracion <sub>Usuario</sub></a>
+
+    <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
         <li></li>
@@ -51,6 +55,7 @@
         </div>
     </ul>
 {% endblock %}
+{% block titulo %}Administracion: Usuario{% endblock %}
 {% block contenido %}
     <div class="span10">
         <h2><a href="#"></a>Administrador<small class="on-right">de Usuario</small></h2>

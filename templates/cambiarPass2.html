@@ -2,6 +2,11 @@
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
+    <span class="element-divider"></span>
+    <a class="element" href={% url 'sigma:adm_u' %}> Administracion <sub>Usuario</sub></a>
+    <span class="element-divider"></span>
+    <a class="element"> Cambiar Contraseña del usuario <sub>{{user.username  }}</sub></a>
+    <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
         <li></li>
@@ -17,6 +22,7 @@
         </div>
     </ul>
 {% endblock %}
+{% block titulo %}Cambiar Contraseña{% endblock %}
 {% block contenido %}
     <div class="container" align = "center">
         <h1><a href="#"></a>Modificar<small class="on-right">Pass</small></h1>
@@ -54,7 +60,7 @@
                      </div>
                     <input type="submit" value="Aceptar" onclick="">
 
-                     <a href="{% url 'sigma:inicio' %}"><input type="button" value="Cancelar" ></a>
+                     <a href={% url 'sigma:adm_u' %}><input type="button" value="Cancelar" ></a>
                 </fieldset>
             </form>
         </div><!--DIV DEL CLASS VACIO-->

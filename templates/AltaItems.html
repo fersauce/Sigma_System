@@ -3,7 +3,14 @@
     <span class="element-divider"></span>
     <a class="element" href={% url 'sigma:inicio' %}> Página Principal</a>
     <span class="element-divider"></span>
-    <a class="element" href={% url 'sigma:adm_i' fase %}> Administrar Item</a>
+    <a class="element" href={% url 'sigma:des_proyec' %}>Desarrollo</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_fase' proyectos.id %}">Proyecto <sub>{{ proyectos.nombre }}</sub></a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_i' idfase %}" > Fase <sub>{{ nombreFase }}</sub></a>
+    <span class="element-divider"></span>
+    <a class="element">Item <sub>Crear</sub></a>
+
     <a class="element place-right" href={% url 'sigma:finalizar' %}>   </a>
     <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
@@ -27,7 +34,7 @@
 
         <h1><a href="#"></a>Crear<small class="on-right">Item</small></h1>
         <div class="">
-            <form action = "{% url 'sigma:adm_i_alta' fase %}" method="post">
+            <form action = "{% url 'sigma:adm_i_alta' idfase %}" method="post">
                 {% csrf_token %}
                 <fieldset>
                     <div class="span9">
@@ -107,10 +114,8 @@
 
 
                         <br>
-                        <br>
-                        <br>
                         <input type="submit" value="Aceptar" onclick="mensaje()">
-                        <a href="{% url 'sigma:adm_i' fase %}"><input type="button" value="Cancelar" ></a>
+                        <a href="{% url 'sigma:adm_i' idfase %}"><input type="button" value="Cancelar" ></a>
                     </div>
                 </fieldset>
             </form>
