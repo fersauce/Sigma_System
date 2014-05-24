@@ -2,15 +2,16 @@
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
-    <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
+    <a class="element" href="{% url 'sigma:des_proyec' %}">Proyectos</a>
     <a class="element" href="{% url 'sigma:adm_fase' ti_asoc.fase.proyecto.pk %}">Fases</a>
     <a class="element" href="{% url 'sigma:adm_ti' ti_asoc.fase.proyecto.pk ti_asoc.fase.pk %}">Tipos de &Iacute;tems</a>
     <a class="pull-menu" href="#"></a>
 {% endblock %}
 {% block titulo %}Administrar Atributos{% endblock %}
 {% block contenido %}
+    {% load sigma_sytem_tags %}
     <div class="span10">
-        <h2><a href="#"></a>Administrador<small class="on-right">de Atributos del TI {{ ti_asoc.nombre }}</small></h2>
+        <h2>Administrador<small class="on-right">de Atributos del TI {{ ti_asoc.nombre }}</small></h2>
         <div class="example">
             <a href="{%  url 'sigma:adm_atrib_alta' ti_asoc.pk %}">
                 <button class="command-button primary">
@@ -37,9 +38,9 @@
                                                 <li>
                                                     <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
                                                     <ul class="dropdown-menu" data-role="dropdown">
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_atrib_mod' ti_asoc.pk atrib.pk %}">
+                                                        <li class="text-left {{ ti_asoc.pk|ti_instanciado }}"><a href="{% url 'sigma:adm_atrib_mod' ti_asoc.pk atrib.pk %}">
                                                             <i class="icon-pencil on-left"></i>Modificar</a></li>
-                                                        <li class="text-left"><a id="botBaja{{ atrib.pk }}">
+                                                        <li class="text-left {{ ti_asoc.pk|ti_instanciado }}"><a id="botBaja{{ atrib.pk }}">
                                                             <i class="icon-remove on-left"></i>Eliminar</a></li>
                                                     </ul>
                                                 </li>

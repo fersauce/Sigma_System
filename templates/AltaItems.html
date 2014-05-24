@@ -17,11 +17,12 @@
 {% block titulo %}Alta Items{% endblock %}
 {% block contenido %}
     <div class="span10">
-        <h1><a href="#"></a>Crear<small class="on-right">Item</small></h1>
-        <div class="">
+        <h1>Crear<small class="on-right">Item</small></h1>
+        <div class="example">
             <form action = "{% url 'sigma:adm_i_alta' idfase opcion %}" method="post">
                 {% csrf_token %}
                 <fieldset>
+                    <div class="span2"></div>
                     <div class="span9">
                         <div class="grid fluid">
                             <div class="row">
@@ -35,15 +36,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="input-control select" data-role="input-control">
-                            <label class="inline-block">Tipo de &iacute;tem:</label>
-                            <select name="tipo">
-                                {% for tip in tipos %}
-                                    <option value="{{ tip.pk }}">{{ tip.nombre }}</option>
-                                {% endfor %}
-                            </select>
 
-                        </div><br><br>
                         <div class="grid fluid">
                             <div class="row">
                                 <div class="span3">
@@ -89,8 +82,19 @@
                                     <label class="text-right">Complejidad</label>
                                 </div>
                                 <div class="span6">
-                                    <div class="input-control text" data-role="input-control">
-                                        <input type="text" name="complejidad"  required>
+                                    <div class="input-control select" data-role="input-control">
+                                        <select name="complejidad" required>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -101,8 +105,12 @@
                                     <label class="text-right">Prioridad</label>
                                 </div>
                                 <div class="span6">
-                                    <div class="input-control text" data-role="input-control">
-                                        <input type="text" name="prior" required>
+                                    <div class="input-control select" data-role="input-control">
+                                        <select name="prior" required>
+                                            <option value="1">Baja</option>
+                                            <option value="2">Media</option>
+                                            <option value="3">Alta</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -132,8 +140,8 @@
                             </div>
                         </div>
                         <br>
-                        <input type="submit" value="Aceptar" onclick="mensaje()">
-                        <a href="{% url 'sigma:adm_i' idfase %}"><input type="button" value="Cancelar" ></a>
+                        <input type="submit" value="Aceptar" onclick="mensaje()" class="button success">
+                        <a href="{% url 'sigma:adm_i' idfase %}"><input type="button" value="Cancelar" class="button inverse"></a>
                     </div>
                 </fieldset>
             </form>

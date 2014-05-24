@@ -50,3 +50,13 @@ def verificar_ti(value):
         return ' disabled'
     else:
         return ''
+
+
+@register.filter()
+def ti_instanciado(value):
+    ti = TipoDeItem.objects.get(pk=value)
+    item = Item.objects.filter(tipoItems=ti)
+    if item:
+        return 'disabled'
+    else:
+        return ''

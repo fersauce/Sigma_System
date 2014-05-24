@@ -9,11 +9,12 @@
 {% endblock %}
 {% block contenido %}
     <div class="span10">
-        <h1><a href="#"></a>Crear<small class="on-right">Fase</small></h1>
-        <div class="">
+        <h1>Crear<small class="on-right">Fase</small></h1>
+        <div class="example">
             <form action = "{% url 'sigma:adm_ti_alta' pkProyecto pkFase %}" method="post">
                 {% csrf_token %}
                 <fieldset>
+                    <div class="span4"></div>
                     <div class="span3">
                         <label class="label">Nombre del Tipo de Item</label>
                         <div class="input-control text" data-role="input-control">
@@ -39,8 +40,8 @@
                                 </label>
                             </div>
                         </div>
-                        <input type="submit" value="Aceptar">
-                        <a href="{% url 'sigma:adm_ti' pkProyecto pkFase %}"><input type="button" value="Cancelar" ></a>
+                        <input type="submit" value="Aceptar" class="button success">
+                        <a href="{% url 'sigma:adm_ti' pkProyecto pkFase %}"><input type="button" value="Cancelar" class="button inverse"></a>
                     </div>
                 </fieldset>
             </form>

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_menu.html' %}
 {% block titulo %}Agregar nuevo Atributo{% endblock %}
 {% block navegacion %}
     <span class="element-divider"></span>
@@ -10,12 +10,13 @@
     <a class="pull-menu" href="#"></a>
 {% endblock %}
 {% block contenido %}
-    <div class="container" align = "center">
-        <h1><a href="#"></a>Crear<small class="on-right">Atributo</small></h1>
-        <div class="">
+    <div class="span10" align = "center">
+        <h1>Crear<small class="on-right">Atributo</small></h1>
+        <div class="example">
             <form action = "{% url 'sigma:adm_atrib_alta' ti_asoc.pk %}" method="post">
                 {% csrf_token %}
                 <fieldset>
+                    <div class="span4"></div>
                     <div class="span3">
                         <div class="input-control text" data-role="input-control">
                             <label class="label">Nombre del Atributo</label>
@@ -30,8 +31,8 @@
                                 {% endfor %}
                             </select>
                         </div><br><br><br>
-                        <input type="submit" value="Aceptar">
-                        <a href="{% url 'sigma:adm_atrib' ti_asoc.pk %}"><input type="button" value="Cancelar" ></a>
+                        <input type="submit" value="Aceptar" class="button success">
+                        <a href="{% url 'sigma:adm_atrib' ti_asoc.pk %}"><input type="button" value="Cancelar" class="button inverse"></a>
                     </div>
                 </fieldset>
             </form>
