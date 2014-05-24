@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_menu.html' %}
 {% block titulo %}Agregar nuevo Tipo de &Iacute;tem{% endblock %}
 {% block navegacion %}
     <span class="element-divider"></span>
@@ -6,22 +6,9 @@
     <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
     <a class="element" href="{% url 'sigma:adm_fase' pkProyecto %}">Fases</a>
     <a class="pull-menu" href="#"></a>
-    <ul class="element-menu">
-        <li></li>
-        <div class="no-tablet-portrait">
-            <div class="element place-right">
-                <a class="dropdown-toggle" href="#">
-                    <span class="icon-cog"></span>
-                </a>
-                <ul class="dropdown-menu place-right" data-role="dropdown">
-                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
-                </ul>
-            </div>
-        </div>
-    </ul>
 {% endblock %}
 {% block contenido %}
-    <div class="container" align = "center">
+    <div class="span10">
         <h1><a href="#"></a>Crear<small class="on-right">Fase</small></h1>
         <div class="">
             <form action = "{% url 'sigma:adm_ti_alta' pkProyecto pkFase %}" method="post">

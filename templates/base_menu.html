@@ -83,7 +83,6 @@
             <nav class="navigation-bar dark">
                 <div class="navigation-bar-content">
                     <a class="element"> Sigma System </a>
-                    <a class="element"> <b>Usuario:</b> {{ user.username }}</a>
                     {% block navegacion %}{% endblock %}
                     <ul class="element-menu">
                         <li></li>
@@ -97,11 +96,9 @@
                                 </ul>
                             </div>
                             <span class="element-divider place-right"></span>
-                            {% if username %}
                                 <button class="element place-right">
                                     <strong>Usuario: {{ user.username }}</strong>
                                 </button>
-                            {% endif %}
                         </div>
                     </ul>
                 </div>

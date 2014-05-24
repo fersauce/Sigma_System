@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_menu.html" %}
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
@@ -22,7 +22,7 @@
 {% endblock %}
 {% block titulo %}Desasignar Rol a Usuario{% endblock %}
 {% block contenido %}
-    <div class="container" align="center">
+    <div class="span10">
         <h1>Asignar<small class="on-right">Roles</small></h1>
         <div class="">
             <form action="{%  url 'sigma:adm_u_desasig_rol' user.id %}" method="post">

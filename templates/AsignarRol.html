@@ -7,20 +7,7 @@
     <span class="element-divider"></span>
     <a class="element"> Asignar Rol a Usuario <sub>{{ user.username }}</sub></a>
     <span class="element-divider"></span>
-
     <a class="pull-menu" href="#"></a>
-    <ul class="element-menu">
-        <div class="no-tablet-portrait">
-            <div class="element place-right">
-                <a class="dropdown-toggle" href="#">
-                    <span class="icon-cog"></span>
-                </a>
-                <ul class="dropdown-menu place-right" data-role="dropdown">
-                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
-                </ul>
-            </div>
-        </div>
-    </ul>
 {% endblock %}
 {% block titulo %}Asignar Rol a Usuario{% endblock %}
 {% block contenido %}
