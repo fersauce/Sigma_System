@@ -299,3 +299,11 @@ def intercambiarFase(request, idFase):
         messages.error(request, 'Solo es precaucion')
     return HttpResponseRedirect(
         reverse('sigma:adm_fase', args=[fase.proyecto.pk]))
+
+
+def finalizar_fase(request, idp, idf):
+        fase = Fase.objects.get(id=idf)
+        fase.estado = 'Cerrado'
+        fase.save()
+        messages.success(request, 'Se ha finalizado correctamente la fase "'+fase.nombre+'"')
+        return HttpResponseRedirect(reverse('sigma:adm_fase', args=[idp]))
