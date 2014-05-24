@@ -121,11 +121,16 @@
                                                     <li>
                                                         <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
                                                         <ul class="dropdown-menu" data-role="dropdown">
-
                                                             <li class="text-left " ><a href="{% url 'sigma:adm_i_mod' i.id %}" >
                                                                 <i class="icon-pencil on-left"> </i>Modificar</a>
                                                             </li>
-
+                                                            {% if i.estado == 'aprobado' %}
+                                                                <li class="text-left"><a href="{% url 'sigma:ap_desap_i' fase.id i.id 1 %}">
+                                                                <i class="icon-thumbs-down on-left"></i>Desaprobar</a></li>
+                                                            {% else %}
+                                                                <li class="text-left"><a href="{% url 'sigma:ap_desap_i' fase.id i.id 0 %}">
+                                                                    <i class="icon-thumbs-up on-left"></i>Aprobar</a></li>
+                                                            {% endif %}
                                                             <li class="text-left" onclick="confirmar('{% url 'sigma:adm_i_baja' i.id %}')">
                                                                 <a href="#">
                                                                 <i class="icon-remove on-left"></i>Eliminar</a></li>
