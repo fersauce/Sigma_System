@@ -27,21 +27,19 @@
         <div class="example">
             <form action="{%  url 'sigma:adm_fase_lb_est' id_proy id_fase %}" method="post">
                 {% csrf_token %}
-                <fieldset>
                     <div class="grid fluid">
                         <div class="row">
                             <div class="span3">
-                                <label class="text-right">Nombre</label>
+                                <label class="text-right">Observaciones(opcional)</label>
                             </div>
                             <div class="span7">
                                 <div class="input-control text" data-role="input-control">
-                                    <input type="text" name="nombre">
+                                    <input type="text" name="obs">
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="input-control switch" data-role="input-control" align="left">
-                        <table class="table striped hovered dataTable" id="tablaFase">
+                        <table class="table striped hovered dataTable" id="tablaLbxItem">
                             <thead>
                                  <tr>
                                      <th class="text-left">Establecer?</th>
@@ -54,11 +52,18 @@
                             <tbody>
                                 {% for i in itemfinales %}
                                     <tr>
-                                        <td><div class="input-control switch" data-role="input-control" align="left"></td>
-                                        <td>{{ i.nombre }}</td>
-                                        <td class="right" width>{{ i.complejidad }}</td>
-                                        <td class="right" width>{{ i.prioridad }}</td>
-                                        <td class="right" width>{{ i.estado }}</td>
+                                        <td class="right">
+                                            <div class="input-control switch" data-role="input-control">
+                                                <label class="inline-block">
+                                                    <input type="checkbox" name="items_finales"  value="{{ i.id }}"/>
+                                                    <span class="check"></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="right">{{ i.nombre }}</td>
+                                        <td class="right">{{ i.complejidad }}</td>
+                                        <td class="right">{{ i.prioridad }}</td>
+                                        <td class="right">{{ i.estado }}</td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -72,10 +77,18 @@
                                 </tr>
                             </tfoot>
                         </table>
-                    </div>
-                        <input type="submit" value="Aceptar" onclick="">
+                        <script>
+                            $(document).ready(function() {
+                                $('#tablaLbxItem').dataTable( {
+                                    "oLanguage": {
+                                        "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                                    }
+                                } );
+                            } );
+                        </script>
+                        <br>
+                        <input type="submit" value="Establecer" onclick="">
                         <a href="{% url 'sigma:adm_fase_lb' id_proy id_fase %}"><input type="button" value="Cancelar" ></a>
-                </fieldset>
             </form>
         </div>
     </div>

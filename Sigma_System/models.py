@@ -110,7 +110,7 @@ class Archivo(models.Model):
 
 
 class LBase(models.Model):
-    estado = models.CharField(max_length=15)
+    estado = models.CharField(max_length=15, default='cerrado')
     obs = models.CharField(max_length=60, default='Sin obs.')
     fase = models.ForeignKey(Fase)
 

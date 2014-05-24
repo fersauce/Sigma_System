@@ -128,12 +128,35 @@ def linea_base(request, idProyecto, idFase):
 
 
 def establecer_linea_base(request, idProyecto, idFase):
-    itemfinales = Item.objects.filter(tipoItems__fase=Fase.objects.get(id=idFase))
+    itemfinales = traer_itemfinales(idFase)
     if request.method == 'POST':
-        messages.success(request, 'paso por establecer la linea base de la vista linea_base')
+        obs = request.POST['obs']
+        lb = LBase.objects.create(obs=obs, fase=Fase.objects.get(id=idFase))
+        i_finales = request.POST.getlist('items_finales')
+
+
+        messages.success(request, 'paso por establecer la linea base de la vista linea_base' + obs)
         return HttpResponseRedirect(reverse('sigma:adm_fase_lb', args=(idProyecto, idFase)))
     else:
         return render(request, 'AsignarItemxLB.html', {'id_proy': idProyecto, 'id_fase': idFase, 'itemfinales':itemfinales})
+
+
+def traer_itemfinales(idFase):
+    fase = Fase.objects.get(id=idFase)
+    items = Item.objects.filter(tipoItems__fase=fase, estado='aprobado')
+    items_finales = []
+    for i in items:
+        i_hijo = Item.objects.filter(item_padre=i.id, tipoItems__fase=fase)
+        if not i_hijo:
+            items_finales.append(i)
+    return items_finales
+
+
+def traer_items_padre(i_finales, idFase):
+    visitado = []
+    items_padre = []
+
+    pass
 
 
 @login_required(login_url='/login/')

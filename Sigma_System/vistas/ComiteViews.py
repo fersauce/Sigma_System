@@ -147,6 +147,6 @@ def agregarUsuarios(request, idProyect):
     else:
         pass
 
-    return render(request, 'administrarcomite.html.html',
+    return render(request, 'administrarcomite.html',
                   {'usuariosProyecto': usuarios, 'proyecto': proyecto,
                    'comite': comite, 'usuarioComite': usuariosPorComite})
