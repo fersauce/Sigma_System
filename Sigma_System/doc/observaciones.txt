@@ -22,3 +22,12 @@ Iteracion 3
 Apache
 
 Botones subir y bajar.Longitud y precision numerico y longitud cadena.Importar que este la fase y proyecto al que pertenecen
+
+21/05/2014-12:14
+en modificar fase ocurre un error al variar el nombre de la fase
+
+23/05/2014-08:15
+se debe verificar que haya un tipo de item cargado antes de que habilite la carga de items
+el formulario de nombre item no carga el nombre correcto del item
+16:54
+fecha inicio y fecha fin sin datos en administrar fase

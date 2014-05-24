@@ -110,7 +110,8 @@ class Archivo(models.Model):
 
 
 class LBase(models.Model):
-    estado = models.CharField(max_length=15)
+    estado = models.CharField(max_length=15, default='cerrado')
+    obs = models.CharField(max_length=60, default='Sin obs.')
     fase = models.ForeignKey(Fase)
 
 
@@ -125,6 +126,12 @@ class Item(models.Model):
     items_atrib = models.ManyToManyField(AtribTipoDeItem,
                                          through='ItemAtributosTipoI')
     arch_adjuntos = models.ManyToManyField(Archivo)
+
+
+class Items_x_LBase(models.Model):
+    lb = models.ForeignKey(LBase)
+    item = models.ForeignKey(Item)
+    item_final = models.BooleanField(default=False)
 
 
 class ItemAtributosTipoI(models.Model):

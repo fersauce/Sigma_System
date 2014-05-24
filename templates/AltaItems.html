@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 {% block navegacion %}
     <span class="element-divider"></span>
@@ -31,10 +32,9 @@
 {% block titulo %}Alta Items{% endblock %}
 {% block contenido %}
     <div class="container" align = "center">
-
         <h1><a href="#"></a>Crear<small class="on-right">Item</small></h1>
         <div class="">
-            <form action = "{% url 'sigma:adm_i_alta' idfase %}" method="post">
+            <form action = "{% url 'sigma:adm_i_alta' fase opcion %}" method="post">
                 {% csrf_token %}
                 <fieldset>
                     <div class="span9">
@@ -62,6 +62,45 @@
                         <div class="grid fluid">
                             <div class="row">
                                 <div class="span3">
+                                    <label class="text-right">Tipo de &iacute;tem:</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control select" data-role="input-control">
+                                        <select name="tipo">
+                                            {% for tip in tipos %}
+                                                <option value="{{ tip.pk }}">{{ tip.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    {% if opcion == 0 %}
+                                        <label class="text-right">Item padre:</label>
+                                    {% else %}
+                                        <label class="text-right">Item antecesor:</label>
+                                    {% endif %}
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control select" data-role="input-control">
+                                        <select name="i_padre">
+                                            {% if ban_defecto %}
+                                                <option value="0">ninguno</option>
+                                            {% endif %}
+                                            {% for i in listaitems %}
+                                                <option value="{{ i.id }}">{{ i.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
                                     <label class="text-right">Complejidad</label>
                                 </div>
                                 <div class="span6">
@@ -71,7 +110,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="grid fluid">
                             <div class="row">
                                 <div class="span3">
@@ -84,7 +122,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="grid fluid">
                             <div class="row">
                                 <div class="span3">
@@ -97,8 +134,6 @@
                                 </div>
                             </div>
                         </div>
-
-
                         <div class="grid fluid">
                             <div class="row">
                                 <div class="span3">
@@ -111,8 +146,6 @@
                                 </div>
                             </div>
                         </div>
-
-
                         <br>
                         <input type="submit" value="Aceptar" onclick="mensaje()">
                         <a href="{% url 'sigma:adm_i' idfase %}"><input type="button" value="Cancelar" ></a>

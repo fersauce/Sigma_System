@@ -64,6 +64,7 @@
     </script>
 {% endblock %}
 {% block contenido %}
+    {% load sigma_sytem_tags %}
     <div class="span10">
         <h2><a href="#"></a>Administrador<small class="on-right">de Fases del Proyecto </small> {{ proyecto.nombre }}</h2>
         <div class="example">
@@ -116,13 +117,15 @@
                                                         {% endif %}
                                                         <li class="text-left"><a href="{% url 'sigma:adm_ti' fase.proyecto.pk fase.pk %}">
                                                             <i class="icon-accessibility"></i>Tipos de &Iacute;tem</a></li>
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_i' fase.pk %}">
+                                                        <li class="text-left{{ fase.pk|verificar_ti }}"><a href="{% url 'sigma:adm_i' fase.pk %}">
                                                             <i class="icon-accessibility"></i>&Iacute;tems</a></li>
                                                         {% if fase.estado == 'Pendiente' %}
                                                         <li class="text-left" onclick="cambiarPosicion('{% url 'sigma:des_fase_intercambio' fase.pk %}')">
                                                             <a href="#">
                                                             <i class="icon-undo"></i>Intercambiar</a></li>
                                                         {% endif %}
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_fase_lb' fase.proyecto.id fase.id %}">
+                                                            <i class="icon-locked"></i>Linea base</a></li>
                                                     </ul>
                                                 </li>
                                             </ul>

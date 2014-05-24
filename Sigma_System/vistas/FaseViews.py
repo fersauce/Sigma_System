@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.http import *
 import simplejson
 from Sigma_System.forms import BusquedaFasesForm
-from Sigma_System.models import Proyecto, Usuario, Fase, TipoDeItem
+from Sigma_System.models import Proyecto, Usuario, Fase, TipoDeItem, LBase, Items_x_LBase, Item
 from Sigma_System.decoradores import permisos_requeridos
 from django.contrib.auth.decorators import login_required
 import datetime, time
@@ -64,7 +64,7 @@ def alta_fase(request, idProyect):
             fechaFin=datetime.datetime.now() + datetime.timedelta(days=1)
         )
         fases = Fase.objects.filter(proyecto=proyecto)
-        if fases.__len__() == 1:
+        if fases and proyecto.estado != "Iniciado":
             proyecto.estado = "Iniciado"
         proyecto.save()
         messages.success(request, 'Fase creada con exito')
@@ -102,8 +102,7 @@ def modificar_fase(request, idProyect, idFase):
     fase = Fase.objects.get(pk=idFase)
     proyecto = Proyecto.objects.get(pk=idProyect)
     if request.method == 'POST':
-        if fase.nombre == request.POST['nombre'] or Fase.objects.get(
-                nombre=request.POST['nombre']):
+        if fase.nombre == request.POST['nombre'] or Fase.objects.get(nombre=request.POST['nombre']):
             print proyecto.nroFases
             fases = Fase.objects.filter(proyecto=proyecto).exclude(pk=idFase)
             fase.nombre = request.POST['nombre']
@@ -121,6 +120,56 @@ def modificar_fase(request, idProyect, idFase):
                 reverse('sigma:adm_fase', args=[idProyect]))
     return render(request, 'fasemodificar.html', {'proyecto': idProyect,
                                                   'fase': fase})
+
+
+def linea_base(request, idProyecto, idFase):
+    lb = LBase.objects.filter(fase=Fase.objects.get(id=idFase)).order_by('id')
+    return render(request, 'LineaBase.html', {'id_proy': idProyecto, 'id_fase': idFase, 'lineasbase': lb})
+
+
+def establecer_linea_base(request, idProyecto, idFase):
+    itemfinales = traer_itemfinales(idFase)
+    if request.method == 'POST':
+        obs = request.POST['obs']
+        lb = LBase.objects.create(obs=obs, fase=Fase.objects.get(id=idFase))
+        i_finales = request.POST.getlist('items_finales')
+        for i in i_finales:
+            item_actual = Item.objects.get(id=i)
+            item_actual.estado = 'bloqueado'
+            item_actual.save()
+            Items_x_LBase.objects.create(lb=lb, item=item_actual, item_final=True)
+        i_padres = traer_items_padre(i_finales, idFase)
+        for i in i_padres:
+            i.estado = 'bloqueado'
+            i.save()
+            Items_x_LBase.objects.create(lb=lb, item=i)
+        messages.success(request, 'Se agregaron correctamente los items a la linea base')
+        return HttpResponseRedirect(reverse('sigma:adm_fase_lb', args=(idProyecto, idFase)))
+    else:
+        return render(request, 'AsignarItemxLB.html', {'id_proy': idProyecto, 'id_fase': idFase, 'itemfinales':itemfinales})
+
+
+def traer_itemfinales(idFase):
+    fase = Fase.objects.get(id=idFase)
+    items = Item.objects.filter(tipoItems__fase=fase, estado='aprobado')
+    items_finales = []
+    for i in items:
+        i_hijo = Item.objects.filter(item_padre=i.id, tipoItems__fase=fase)
+        if not i_hijo:
+            items_finales.append(i)
+    return items_finales
+
+
+def traer_items_padre(i_finales, idFase):
+    fase = Fase.objects.get(id=idFase)
+    items_padre = []
+    for i in i_finales:
+        i_actual = Item.objects.get(id=i)
+        while i_actual.item_padre != 0 and i_actual.tipoItems.fase == fase:
+            i_actual = Item.objects.get(id=i_actual.item_padre)
+            if i_actual not in items_padre:
+                items_padre.append(i_actual)
+    return items_padre
 
 
 @login_required(login_url='/login/')

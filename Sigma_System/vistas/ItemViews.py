@@ -14,13 +14,15 @@ from Sigma_System.forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 @login_required(login_url='/login/')
 def administrarItem(request, idFase):
+    fase = Fase.objects.get(id=idFase)
+    item_baja = Item.objects.filter(tipoItems__fase=fase, estado='baja')
     request.session['fase'] = idFase
-
     fs = Fase.objects.get(pk=idFase)
     nameFa = fs.nombre
 
@@ -32,27 +34,51 @@ def administrarItem(request, idFase):
     return render(request, 'AdministrarItem.html',
                   {'items': its, 'fase': fs,
                    'username': request.user.username,
-                   'proy':proy, 'permisos':permisos})
+                   'proy':proy, 'permisos':permisos,
+                   'nomb': nameFa, 'item_baja': item_baja})
 
 
 @login_required(login_url='/login/')
-def altaItem(request, idFase):
+def altaItem(request, idFase, opcion):
     """
     vista utilizada para crear un item
     """
-    its = Item.objects.exclude(estado='baja')
-
-    tis = TipoDeItem.objects.filter(fase=Fase.objects.get(pk=idFase))
+    print "entro en alta item"
+    print opcion
+    print "------------------"
+    print "el id fase es " + idFase
     fase = Fase.objects.get(pk=idFase)
-    proyectos=fase.proyecto
-    nombreFase=fase.nombre
-    print('hola')
+    if fase.posicionFase == 1:
+        ban_defecto = True
+    else:
+        ban_defecto = False
+    if opcion == '0':
+        listaitems1 = Item.objects.filter(tipoItems__fase=fase, estado='aprobado')
+        listaitems2 = Item.objects.filter(tipoItems__fase=fase, estado='bloqueado')
+        listaitems = listaitems1 | listaitems2
+    else:
+        pos = fase.posicionFase-1
+        #definir una funcion para que listaitems reciba items finales en linea base de la fase anterior
+        #por ahora recibe todos los items
+        fase = Fase.objects.get(proyecto=fase.proyecto, posicionFase=pos)
+        li = Items_x_LBase.objects.filter(lb__fase=fase, item_final=True)
+        listaitems = []
+        for l in li:
+            listaitems.append(l.item)
+        #listaitems = Item.objects.filter(tipoItems__fase__proyecto=fase.proyecto,
+        #                                 tipoItems__fase__posicionFase=pos,
+        #                                 estado='aprobado')
+    its = Item.objects.exclude(estado='baja')
+    tis = TipoDeItem.objects.filter(fase=Fase.objects.get(pk=idFase))
+    if tis:
+        print "no vacio"
+    else:
+        print "tipo de items vacio"
     print(fase.nombre)
     print tis.first().__getattribute__('nombre')
     if request.method == 'POST':
         try:
             ti = TipoDeItem.objects.get(id=request.POST['tipo'])
-
             name = request.POST['nombre']
             versionA = 1
             compl = request.POST['complejidad']
@@ -64,7 +90,8 @@ def altaItem(request, idFase):
                 version=versionA,
                 complejidad=compl,
                 prioridad=pri,
-                estado=est
+                estado=est,
+                item_padre=request.POST['i_padre']
             )
             historial = Historial.objects.create(
                 item=itt,
@@ -83,10 +110,24 @@ def altaItem(request, idFase):
             messages.error(request, 'Ocurrio un error.')
     else:
         return render(request, 'AltaItems.html',
-                      {'tipos': tis, 'idfase': idFase,'nombreFase':nombreFase, 'username': request.user.username,'proyectos':proyectos})
+                      {'tipos': tis,
+                       'fase': idFase,
+                       'opcion': int(opcion),
+                       'listaitems': listaitems,
+                       'ban_defecto': ban_defecto})
+    return HttpResponseRedirect(reverse('sigma:adm_i', args=[idFase]))
 
-    return HttpResponseRedirect(reverse('sigma:adm_i', args=[idFase]))#render(request, 'AdministrarItem.html',
-           #       {'items': its, 'fase': idFase, 'username': request.user.username})
+
+def aprobar_desaprobar_item(request, idFase, idItem, opcion):
+    item = Item.objects.get(id=idItem)
+    if opcion == '0':
+        item.estado = 'aprobado'
+        messages.success(request, 'El item "' + item.nombre + '" ha sido aprobado')
+    else:
+        item.estado = 'activo'
+        messages.success(request, 'El item "' + item.nombre + '" ha sido desaprobado')
+    item.save()
+    return HttpResponseRedirect(reverse('sigma:adm_i', args=[idFase]))
 
 
 @login_required(login_url='/login/')
@@ -94,8 +135,6 @@ def modificar_item(request, it):
     """
     vista utilizada para modificar un item
     donde el parametro it es el id del item
-
-
     """
 
     its = Item.objects.get(id=it)
@@ -106,7 +145,6 @@ def modificar_item(request, it):
         priAct = its.prioridad
         vAct = its.version
         estAct = its.estado
-
         nNuevo = request.POST['nombre']
         comNuevo = request.POST['complejidad']
         priNuevo = request.POST['prior']
@@ -225,7 +263,6 @@ def baja_item(request, it):
         descripcion="baja",
         fecha_mod=datetime.datetime.now()
     )
-
     return HttpResponseRedirect('/ss/adm_i/' + str(its.tipoItems.fase.pk))
 
 

@@ -1,0 +1,70 @@
+{% extends 'base_menu.html' %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
+    <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
+    <a class="element" href="{% url 'sigma:adm_fase' id_proy %}">Fase</a>
+    <a class="element" href="{% url 'sigma:adm_i' id_fase %}">Item</a>
+    <a class="pull-menu" href="#"></a>
+    <ul class="element-menu">
+        <li></li>
+        <div class="no-tablet-portrait">
+            <div class="element place-right">
+                <a class="dropdown-toggle" href="#">
+                    <span class="icon-cog"></span>
+                </a>
+                <ul class="dropdown-menu place-right" data-role="dropdown">
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </ul>
+{% endblock %}
+{% block titulo %}L&iacute;nas base{% endblock %}
+{% block contenido %}
+    <div class="span10">
+        <h2><a href="#"></a>L&iacute;neas base de la fase<small class="on-right"> {{ id_fase }}</small></h2>
+        <div class="example">
+            <a href="{% url 'sigma:adm_fase_lb_est' id_proy id_fase %}">
+                <button class="command-button primary">
+                    <i class="icon-new on-left"></i><b>Establecer</b>
+                    <small>linea base</small>
+                </button>
+            </a>
+            <table class="table striped hovered dataTable" id="tablalb">
+                <thead>
+                     <tr>
+                         <th class="text-left">Id</th>
+                         <th class="text-left">Observaciones</th>
+                         <th class="text-left">Nro de items que contiene</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lb in lineasbase %}
+                        <tr>
+                            <td>{{ lb.id }}</td>
+                            <td class="right" width>{{ lb.obs }}</td>
+                            <td class="right" width> -*- </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-left">Id</th>
+                        <th class="text-left">Observaciones</th>
+                        <th class="text-left">Nro de items que contiene</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <script>
+                $(document).ready(function() {
+                    $('#tablalb').dataTable( {
+                        "oLanguage": {
+                            "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                        }
+                    } );
+                } );
+            </script>
+        </div>
+    </div>
+{% endblock %}

@@ -217,8 +217,8 @@ def importarTI(request, idFase):
         print lista.nombre
     print idFase
     fase = Fase.objects.get(pk=idFase)
-    username = str(request.META['USER'])
-    user = User.objects.get(username=username)
+    id_user = request.user.id
+    user = User.objects.get(id=id_user)
     usuario = user.usuario
     if request.method == 'POST':
         tiAImportar = TipoDeItem.objects.get(pk=request.POST['ti'])
@@ -230,7 +230,6 @@ def importarTI(request, idFase):
                                         'por favor, cambielo.')
                 return render(request, 'faseintercambiar.html',
                               {'fase': fase, 'tipos': listaImportados})
-
         tiNuevo = TipoDeItem.objects.create(
             fase=fase,
             usuario=usuario,
