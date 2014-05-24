@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+{% extends 'base_menu.html' %}
 {% block navegacion %}
     <span class="element-divider"></span>
-    <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
+    <a class="element" href="{% url 'sigma:inicio' %}">P&aacute;gina Principal</a>
     <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
@@ -20,7 +20,7 @@
 {% endblock %}
 {% block titulo %}Administraci&oacute;n de Comit&eacute; de Cambios del Proyecto {{ proyecto.nombre }}{% endblock %}
 {% block contenido %}
-    <div class="container">
+    <div class="span10">
         <h1><a href="#"></a>Administrador<small class="on-right">de Comit&eacute; del Proyecto</small> {{ proyecto.nombre }}</h1>
         <div class="example">
             <form action="{% url 'sigma:adm_proy_comite' proyecto.pk %}" method="post">
@@ -38,7 +38,7 @@
                                 <td class="right">
                                     <div class="input-control switch" data-role="input-control" id="div01">
                                         <label class="inline-block">
-                                            <input type="checkbox" name="usuariosAsig" {% if user.usuario in a %} checked {% endif %} value="{{ user.usuario.pk }}" onclick="validacion()"/>
+                                            <input type="checkbox" name="usuariosAsig" {% if user.usuario in usuComite %} checked {% endif %} value="{{ user.usuario.pk }}" onclick="validacion()" {% if proyecto.estado != 'Pendiente' %} disabled {% endif %} />
                                             <span class="check"></span>
                                         </label>
                                     </div>
@@ -57,12 +57,27 @@
                                 });
                                 return i;
                             };
+                            jQuery.fn.inhabilitar = function () {
+                                this.each(function(){
+                                    $(this).setAttribute('disable', 'true');
+                                });
+                            };
+                            jQuery.fn.habilitar = function () {
+                                this.each(function(){
+                                    $(this).setAttribute('disable', 'true');
+                                });
+                            };
                             var arr = $("input:checked").getCheckboxValues();
-                            var boton = document.getElementById('aceptar')
-                            if(arr%2==0){
+                            var boton = document.getElementById('aceptar');
+                            if(arr%2!=0){
                                 document.getElementById('aceptar').setAttribute('style', "visibility: visible");
                             }else{
                                 document.getElementById('aceptar').setAttribute('style', "visibility: hidden");
+                            }
+                            if(arr==3){
+                                $("input:not(checked)").inhabilitar();
+                            } else {
+                                $("input:not(checked)").habilitar();
                             }
                         }
                     </script>

@@ -3,8 +3,9 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 import simplejson
+import sys
 from Sigma_System.models import Proyecto, Comite, UsuarioPorComite, \
-    UsuariosXProyecto
+    UsuariosXProyecto, Usuario
 
 
 def ComiteDeCambio(request, idProyect):
@@ -26,17 +27,27 @@ def ComiteDeCambio(request, idProyect):
     proyecto = Proyecto.objects.get(pk=idProyect)
     comite = Comite.objects.get(proy=proyecto)
     usuarios = UsuarioPorComite.objects.filter(comite=comite)
-    usuProyec = UsuariosXProyecto.objects.filter(proyecto=proyecto).exclude(
-        lider=True)
-    usuariosPorComite = UsuarioPorComite.objects.filter(comite=comite).exclude()
+    us = []
+    for i in usuarios:
+        us.append(i.usuario)
+    usuProyec = UsuariosXProyecto.objects.filter(proyecto=proyecto, activo=True)
+
     if request.method == 'POST':
         usuariosComitePOST = request.POST.getlist('usuariosAsig')
         bandera = False
-        for u in usuarios:
-            if proyecto.lider == u.usuario:
-                pass
-            elif str(u.usuario.pk) in usuariosComitePOST:
-                if not usuariosPorComite.get(usuario=u.usuario):
+        print usuariosComitePOST
+        if usuariosComitePOST.__len__() % 2 == 0:
+            messages.error(request, 'El comite no debe ser par')
+            return HttpResponseRedirect(reverse('sigma:adm_proy_comite'))
+        for u in usuProyec:
+            miembro = usuarios.filter(usuario=u.usuario)
+            if miembro:
+                print 'es'
+            else:
+                print 'no es'
+            print u.usuario.pk
+            if str(u.usuario.pk) in usuariosComitePOST:
+                if not miembro:
                     try:
                         UsuarioPorComite.objects.create(
                             comite=comite,
@@ -51,10 +62,10 @@ def ComiteDeCambio(request, idProyect):
                         bandera = True
                     except Exception:
                         messages.error(request,
-                                       'Ha ocurrido un erro interno, favor'
+                                       'Ha ocurrido un error interno, favor'
                                        ' contacte al administrador')
+                        sys.exc_info()
             else:
-                miembro = usuariosPorComite.get(usuario=u.usuario)
                 if miembro:
                     try:
                         miembro.delete()
@@ -78,7 +89,8 @@ def ComiteDeCambio(request, idProyect):
 
     return render(request, 'administrarcomite.html',
                   {'proyecto': proyecto, 'comite': comite,
-                   'usuComite': usuarios, 'usuariosProyecto': usuProyec})
+                   'usuComite': us, 'usuariosProyecto': usuProyec,
+                   'permisos': request.session['permisos']})
 
 
 def agregarUsuarios(request, idProyect):
@@ -98,12 +110,13 @@ def agregarUsuarios(request, idProyect):
     proyectos.
     """
     proyecto = Proyecto.objects.get(pk=idProyect)
-    usuarios = UsuariosXProyecto.objects.filter(proyecto=proyecto).exclude(
-        lider=True)
+    usuarios = UsuariosXProyecto.objects.filter(proyecto=proyecto)
     comite = Comite.objects.get(proy=proyecto)
     usuariosPorComite = UsuarioPorComite.objects.filter(comite=comite)
     if request.method == 'POST':
         usuariosComitePOST = request.POST.getlist('usuariosAsig')
+        print 'hola'
+        print usuariosComitePOST
         bandera = False
         for u in usuarios:
             if str(u.usuario.pk) in usuariosComitePOST:

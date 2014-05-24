@@ -41,7 +41,7 @@ def iniciarsesion(request):
 
 @login_required(login_url='/login/')
 def inicio(request):
-    return render(request, 'principal.html', {'user': request.user.username,
+    return render(request, 'principal.html', {'user1': request.user.username,
                                               'permisos': request.session['permisos']})
 
 
@@ -262,9 +262,9 @@ def buscar_roles(request):
 
 def redireccion(request):
     if request.user.is_authenticated():
-        return HttpResponseRedirect('/ss/inicio')
+        return HttpResponseRedirect(reverse('sigma:inicio'))
     else:
-        return HttpResponseRedirect('/ss/login/')
+        return HttpResponseRedirect(reverse('sigma:login'))
 
 
 def cambiarPass(request):
