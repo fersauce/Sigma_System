@@ -8,8 +8,9 @@
 {% endblock %}
 {% block titulo %}Administrar Tipos de &Iacute;tem{% endblock %}
 {% block contenido %}
+    {% load sigma_sytem_tags %}
     <div class="span10">
-        <h2><a href="#"></a>Administrador<small class="on-right">de Tipos de &Iacute;tem de la Fase {{ fase.nombre }}</small></h2>
+        <h2>Administrador<small class="on-right">de Tipos de &Iacute;tem de la Fase {{ fase.nombre }}</small></h2>
         <div class="example">
             <a href="{%  url 'sigma:adm_ti_alta' fase.proyecto.pk fase.pk %}">
                 <button class="command-button primary">
@@ -44,9 +45,9 @@
                                                 <li>
                                                     <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
                                                     <ul class="dropdown-menu" data-role="dropdown">
-                                                        <li class="text-left"><a href="{% url 'sigma:adm_ti_mod' pkProyecto fase.pk ti.pk %}">
+                                                        <li class="text-left" {{ ti.pk|ti_instanciado }}><a href="{% url 'sigma:adm_ti_mod' pkProyecto fase.pk ti.pk %}">
                                                             <i class="icon-pencil on-left"></i>Modificar</a></li>
-                                                        <li class="text-left"><a id="botBaja{{ ti.pk }}">
+                                                        <li class="text-left {{ ti.pk|ti_instanciado }}"><a id="botBaja{{ ti.pk }}">
                                                             <i class="icon-remove on-left"></i>Eliminar</a></li>
                                                         <li class="text-left"><a href="{% url 'sigma:adm_atrib' ti.pk %}">
                                                             <i class="icon-book on-left"></i>Atributos</a></li>
