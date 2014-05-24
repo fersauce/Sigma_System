@@ -25,12 +25,9 @@ def administrarItem(request, idFase):
     request.session['fase'] = idFase
     fs = Fase.objects.get(pk=idFase)
     nameFa = fs.nombre
-
-    proy=fs.proyecto
-
-
-    permisos=request.session['permisos']
-    its = Item.objects.exclude(estado='baja', tipoItems__fase=fs)
+    proy = fs.proyecto
+    permisos = request.session['permisos']
+    its = Item.objects.filter(tipoItems__fase=fs).exclude(estado='baja')
     return render(request, 'AdministrarItem.html',
                   {'items': its, 'fase': fs,
                    'username': request.user.username,

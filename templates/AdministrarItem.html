@@ -48,8 +48,8 @@
                         '<form>' +
                             '<h2>Elija el tipo de relacion:</h2>' +
                             '<div class="form-actions" align="center">'+
-                                '<a class="button" href="' + '/ss/adm_i_alta/{{fase}}/' + '1"> Antecesor/Sucesor </a>' + ' ' +
-                                '<a class="button" href="' + '/ss/adm_i_alta/{{fase}}/' + '0"> Padre/hijo </a>' + ' ' +
+                                '<a class="button" href="' + '/ss/adm_i_alta/{{fase.id}}/' + '1"> Antecesor/Sucesor </a>' + ' ' +
+                                '<a class="button" href="' + '/ss/adm_i_alta/{{fase.id}}/' + '0"> Padre/hijo </a>' + ' ' +
                                 '<button class="button" onclick=$.Dialog.close()>' +
                                     'Cancelar</button>'+
                             '</div>'+
@@ -99,14 +99,14 @@
     <div class="span10">
         <h2><a href="#"></a>Administrador<small class="on-right">de &Iacute;tems de la Fase </small>{{ fase.nombre}}</h2>
         <div class="example">
-            <a{{ fase|habilitar_evento:0 }}>
-                <button class="command-button primary"{{ fase|habilitar_evento:1 }}>
+            <a{{ fase.id|habilitar_evento:0 }}>
+                <button class="command-button primary"{{ fase.id|habilitar_evento:1 }}>
                     <i class="icon-new on-left"></i><b>Agregar</b>
                     <small>Item</small>
                 </button>
             </a>
             {% if item_baja %}
-                <a href="{%  url 'sigma:adm_i_rev' fase %}">
+                <a href="{%  url 'sigma:adm_i_rev' fase.id %}">
                     <button class="command-button primary">
                         <i class="icon-new on-left"></i><b>Revivir</b>
                         <small>Item</small>
