@@ -3,7 +3,13 @@
     <span class="element-divider"></span>
     <a class="element" href={% url 'sigma:inicio' %}> Página Principal</a>
     <span class="element-divider"></span>
-    <a class="element" href={% url 'sigma:adm_i' item.tipoItems.fase.pk %}> Administrar Item </a>
+    <a class="element" href="{% url 'sigma:des_proyec' %}">Desarrollo</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_fase' item.tipoItems.fase.proyecto.id %}">Proyecto <sub>{{ item.tipoItems.fase.proyecto.nombre }}</sub></a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_i' item.tipoItems.fase.pk %}" > Fase <sub>{{  item.tipoItems.fase.nombre }}</sub></a>
+    <span class="element-divider"></span>
+    <a class="element" >Item: Modificar <sub>{{  item.nombre }}</sub></a>
     <a class="element place-right" href="#">   </a>
     <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
@@ -18,6 +24,8 @@
                     <li><a href={% url 'sigma:finalizar' %}>Cerrar Sesión</a></li>
                 </ul>
             </div>
+            <span class="element-divider place-right"></span>
+            <button class="element place-right"><strong>Usuario: {{ username }}</strong> </button>
         </div>
     </ul>
 {% endblock %}
