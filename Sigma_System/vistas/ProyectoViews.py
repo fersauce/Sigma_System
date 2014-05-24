@@ -51,7 +51,8 @@ def alta_proyecto(request):
     @return: AdministrarProyecto.html, pagina en la cual se trabaja con los
     proyectos.
     """
-    rol = Rol.objects.get(nombre="Lider")
+    rol = Rol.objects.filter(nombre='Lider').first()
+    print rol
     lideres = UsuarioRol.objects.filter(rol__pk=rol.pk)
     if request.method == 'POST':
         proyecto = Proyecto.objects.filter(

@@ -1,7 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'base_menu.html' %}
 {% block navegacion %}
-    <a class="element place-right" href={% url 'sigma:finalizar' %}> Cerrar Sesion </a>
     <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}">P&aacute;gina Principal</a>
+    <a class="element" href="{% url 'sigma:des_proyec' %}">Proyectos</a>
+    <a class="element" href="{% url 'sigma:adm_fase' proyecto %}">Fases</a>
     <a class="pull-menu" href="#"></a>
     <ul class="element-menu">
         <li></li>
@@ -11,14 +13,14 @@
                     <span class="icon-cog"></span>
                 </a>
                 <ul class="dropdown-menu place-right" data-role="dropdown">
-                    <li><a href="Iniciar Sesion.html">Cerrar Sesión</a></li>
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesi&oacute;n</a></li>
                 </ul>
             </div>
         </div>
     </ul>
 {% endblock %}
 {% block contenido %}
-    <div class="container" align = "center">
+    <div class="span10">
         {% if messages %}
             {% for message in messages %}
                 <dialog id="hola" onshow="true"></dialog>
@@ -35,10 +37,11 @@
             {% endfor %}
         {% endif %}
         <h1><a href="#"></a>Modificar<small class="on-right">Fase </small></h1>
-        <div class="">
+        <div class="example">
             <form action = "{% url 'sigma:adm_fase_mod' proyecto fase.pk %}" method="post">
                 {% csrf_token %}
                 <fieldset>
+                    <div class="span4"></div>
                     <div class="span3">
                         {%  if alerta %}
                             <!--script>

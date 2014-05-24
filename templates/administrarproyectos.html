@@ -11,17 +11,93 @@
                     <span class="icon-cog"></span>
                 </a>
                 <ul class="dropdown-menu place-right" data-role="dropdown">
-                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesión</a></li>
+                    <li><a href="{% url 'sigma:finalizar' %}">Cerrar Sesi&oacute;n</a></li>
                 </ul>
             </div>
         </div>
     </ul>
 {% endblock %}
 {% block titulo %}Administraci&oacute;n de Proyectos{% endblock %}
+{% block definicion_script %}
+    <script type="text/javascript">
+        function asignarUsuario(urlAsignar){
+            $.getJSON(urlAsignar, {xhr: "true"}, function(data){
+                $.Dialog({
+                    shadow: true,
+                    overlay: true,
+                    flat: true,
+                    draggable: true,
+                    icon: '<span class="icon-bus"></span>',
+                    title: 'Draggable window',
+                    width: 100,
+                    height: 350,
+                    padding: 10,
+                    scrollTop: 0,
+                    content: 'This Window is draggable by caption.',
+                    draggable: true,
+                    onShow: function(){
+                        var contenido = new String();
+                        $.each(data, function(i, dato){
+                            contenido= contenido +'<tr><td class="rigth">'+
+                                    '<div class="input-control switch" data-role="input-control" align="left" id="usuarios">'+
+                                    '<label class="inline-block" align="left">';
+                            if (dato.activo == true){
+                                contenido = contenido +'<input type="checkbox" name="usuarioAsig" value="' + dato.id + '" align="left" checked>';
+                            }else{
+                                contenido = contenido + '<input type="checkbox" name="usuarioAsig" value="' + dato.id + '" align="left">';
+                            }
+                            contenido = contenido + '<span class="check"></span>'+
+                            '   '+dato.nombre+''+
+                            '</label>'+
+                            '</div>'+
+                            '</td>'+
+                            '</tr>';
+                        });
+                        var content = '<div style=" overflow: scroll">'+
+                                '<form method="get" action="'+urlAsignar+'">' +
+                                '<input type="hidden" value="" name="csrfmiddlewaretoken"></input>'+
+                                '<table class="table striped hovered dataTable span12" id="tablaAsignar" scrolling="auto">'+
+                                '<thead>'+
+                                '<th class="text-left">Asociar?</th>'+
+
+                                '</thead>'+
+                                '<tbody>'+
+
+
+                                contenido+
+
+                                '<br>'+
+
+                                '</tbody>'+
+                                '<tfooter>'+
+                                '<th class="text-left">Asociar?</th>'+
+
+                                '</tfooter>'+
+                                '</table>'+
+                                //'<a class="button primary" href='+ urlAsignar +'> S&iacute; </a>' +
+                                '<input type="submit" value="Aceptar" onclick="">'+
+                                '<a href="{% url 'sigma:adm_proy' %}"><input type="button" value="No" ></a>'+
+                                '</form>'+
+                                '</div>';
+                        $.Dialog.title("Confirmar Eliminaci&oacute;n");
+                        $.Dialog.content(content);
+                        $(document).ready(function() {
+                            $('#tablaAsignar').dataTable( {
+                                "oLanguage": {
+                                    "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                                }
+                            });
+                        } );
+                    }
+                });
+            })
+        };
+    </script>
+{% endblock %}
 {% block contenido %}
     {% load sigma_sytem_tags %}
     <div class="span10">
-        <h2><a href="#"></a>Administrador<small class="on-right">de Proyectos</small></h2>
+        <h2>Administrador<small class="on-right">de Proyectos</small></h2>
         <div class="example">
             <a href="{%  url 'sigma:adm_proy_alta' %}">
                 <button class="command-button primary">

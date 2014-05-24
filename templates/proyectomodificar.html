@@ -18,12 +18,13 @@
     </ul>
 {% endblock %}
 {% block contenido %}
-    <div class="container" align = "center">
-        <h1><a href="#"></a>Modificar<small class="on-right">Proyecto {{ proyecto.nombre }}</small></h1>
-        <div class="">
+    <div class="span10">
+        <h1>Modificar<small class="on-right">Proyecto {{ proyecto.nombre }}</small></h1>
+        <div class="example">
             <form action = "{% url 'sigma:adm_proy_mod' proyecto.pk %}" method="post">
                 {% csrf_token %}
                 <fieldset>
+                    <div class="span4"></div>
                     <div class="span3">
                         <div class="input-control text" data-role="input-control">
                             <label class="label">Nombre de Proyecto</label>
