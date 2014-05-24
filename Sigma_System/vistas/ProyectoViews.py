@@ -271,8 +271,9 @@ def asignarUsuarioProyecto(request, idProyect):
                                          proyecto.nombre)
                         bandera = True
                     except Exception:
-                        messages.error(request, 'Ha ocurrido un erro interno, favor'
-                                                ' contacte al administrador')
+                        messages.error(request,
+                                       'Ha ocurrido un erro interno, favor'
+                                       ' contacte al administrador')
             else:
                 if u.activo:
                     try:
@@ -298,7 +299,9 @@ def asignarUsuarioProyecto(request, idProyect):
         pass
 
     return render(request, 'AsignarUsuario.html', {'usuariosProyecto': usuarios,
-                                                   'proyecto': proyecto})
+                                                   'proyecto': proyecto,
+                                                   'permisos': request.session[
+                                                       'permisos']})
 
 
 def iniciarProyecto(request, idProyect):
@@ -318,9 +321,15 @@ def iniciarProyecto(request, idProyect):
     """
     proyecto = Proyecto.objects.get(pk=idProyect)
     fases = Fase.objects.filter(proyecto=proyecto)
+    comite = Comite.objects.get(proy=proyecto)
+    usuComite = UsuarioPorComite.objects.filter(comite=comite)
     if fases.__len__() != proyecto.nroFases:
         messages.error(request, 'No puede iniciar el proyecto, aun no se han'
                                 ' definido todas las fases')
+        return HttpResponseRedirect(reverse('sigma:adm_proy'))
+    if usuComite.__len__() <= 3:
+        messages.error(request, 'No puede iniciar el proyecto, aun no se han'
+                                ' definido a todos los miembros del comite')
         return HttpResponseRedirect(reverse('sigma:adm_proy'))
     try:
         proyecto.estado = 'Iniciado'
