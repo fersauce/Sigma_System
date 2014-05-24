@@ -34,7 +34,7 @@
     <div class="container" align = "center">
         <h1><a href="#"></a>Crear<small class="on-right">Item</small></h1>
         <div class="">
-            <form action = "{% url 'sigma:adm_i_alta' fase opcion %}" method="post">
+            <form action = "{% url 'sigma:adm_i_alta' idfase opcion %}" method="post">
                 {% csrf_token %}
                 <fieldset>
                     <div class="span9">

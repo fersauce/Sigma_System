@@ -108,10 +108,12 @@ def altaItem(request, idFase, opcion):
     else:
         return render(request, 'AltaItems.html',
                       {'tipos': tis,
-                       'fase': idFase,
+                       'idfase': idFase,
+                       'nombreFase': fase.nombre,
                        'opcion': int(opcion),
                        'listaitems': listaitems,
-                       'ban_defecto': ban_defecto})
+                       'ban_defecto': ban_defecto,
+                       'proyectos': fase.proyecto})
     return HttpResponseRedirect(reverse('sigma:adm_i', args=[idFase]))
 
 
