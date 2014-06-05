@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 import math
 
+
 @login_required(login_url='/login/')
 def adm_roles(request):
     permisos = request.session['permisos']
