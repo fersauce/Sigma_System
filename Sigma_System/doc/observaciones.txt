@@ -31,3 +31,6 @@ se debe verificar que haya un tipo de item cargado antes de que habilite la carg
 el formulario de nombre item no carga el nombre correcto del item
 16:54
 fecha inicio y fecha fin sin datos en administrar fase
+
+05/06/2014
+ocurre un error en intercambiar fase si el proyecto cuenta con una sola fase
