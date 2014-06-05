@@ -9,48 +9,85 @@
     <a class="pull-menu" href="#"></a>
 {% endblock %}
 {% block contenido %}
-    <div class="span10" align="center">
-    <div class="example">
-        <h1>Modificar<small class="on-right">Rol</small></h1>
-        <form action="{%  url 'sigma:adm_r_mod' rol.id %}" method="post">
-            {% csrf_token %}
-            <fieldset>
-                <div class="">
-                    <label>Nombre del rol</label>
-                    <div class="input-control text" data-role="input-control">
-                        <input type="text" name="nombre" value="{{ rol.nombre }}" required>
-                        <button class="btn-clear" tabindex="-1" type="button"></button>
+    {% load sigma_system_tags %}
+    <div class="span10">
+        <h2><small class="on-right"></small></h2>
+        <div class="example">
+            <div class="text-center">
+                <h1>Modificar<small class="on-right">Rol</small></h1>
+            </div>
+            <form action="{%  url 'sigma:adm_r_mod' rol.id %}" method="post">
+                {% csrf_token %}
+                <div class="grid fluid">
+                    <div class="row">
+                        <div class="span4">
+                            <label>Nombre del rol</label>
+                            <div class="input-control text" data-role="input-control">
+                                <input type="text" name="nombre" value="{{ rol.nombre }}" required>
+                                <button class="btn-clear" tabindex="-1" type="button"></button>
+                            </div>
+                        </div>
+                        <div class="span8">
+                            <label>Descripcion</label>
+                            <div class="input-control text" data-role="input-control">
+                                <input type="text" name="descripcion" value="{{ rol.descripcion }}">
+                                <button class="btn-clear" tabindex="-1" type="button"></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="">
-                    <label>Descripcion</label>
-                    <div class="input-control text" data-role="input-control">
-                        <input type="text" name="descripcion" value="{{ rol.descripcion }}">
-                        <button class="btn-clear" tabindex="-1" type="button"></button>
+                <div class="text-center">
+                    <h1>Modificar<small class="on-right">permisos</small></h1>
+                </div>
+                <div class="grid fluid">
+                <div class="input-control switch" data-role="input-control" style="width: 100%;">
+                    <div>
+                        <label class="inline-block">
+                            <input type="checkbox" name="mar_desmar" value="" onclick=marcar(this);>
+                            <span class="check"></span>
+                            Marcar/Desmarcar
+                        </label>
+                    </div>
+                    <div class="row">
+                        {% for p in permisos %}
+                            {% if forloop.counter|divisiblepor:modulo %}
+                                {% if forloop.counter > 1 %}
+                                    </div>
+                                    <div class="span3" align="left">
+                                        <label class="inline-block" align="left">
+                                        <input type="checkbox" name="permisos" value="{{ p.id }}" align="left" {{ p.ban }}>
+                                        <span class="check"></span>
+                                        {{ p.nombre }}
+                                        </label>
+                                        <br>
+                                {% else %}
+                                    <div class="span3" align="left">
+                                        <label class="inline-block" align="left">
+                                        <input type="checkbox" name="permisos" value="{{ p.id }}" align="left" {{ p.ban }}>
+                                        <span class="check"></span>
+                                        {{ p.nombre }}
+                                        </label>
+                                        <br>
+                                {% endif %}
+                            {% else %}
+                                <label class="inline-block" align="left">
+                                    <input type="checkbox" name="permisos" value="{{ p.id }}" align="left" {{ p.ban }}>
+                                    <span class="check"></span>
+                                    {{ p.nombre }}
+                                </label>
+                                <br>
+                            {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
-                <h1>Asignar/Desasignar<small class="on-right">permisos</small></h1>
-                <div class="input-control switch" data-role="input-control" align="left">
-                    <label class="inline-block" align="left">
-                        <input type="checkbox" name="mar_desmar" value="" onclick=marcar(this);>
-                        <span class="check"></span>
-                        Marcar/Desmarcar
-                    </label>
-                    <br><br>
-                    {% for p in permisos %}
-                    <label class="inline-block" align="left">
-                        <input type="checkbox" name="permisos" value="{{ p.id }}" align="left" {{ p.ban }}>
-                        <span class="check"></span>
-                        {{ p.nombre }}
-                    </label>
-                    <br>
-                    {% endfor %}
                 </div>
-                <div class="">
-                    <input type="submit" value="Aceptar" onclick="" class="button success">
-                    <a href="{% url 'sigma:adm_r' %}"><input type="button" value="Cancelar" class="button inverse"></a>
-                </div>
-            </fieldset>
-        </form>
-    </div></div>
+                <br>
+                <br>
+                <!--div class="span12"-->
+                    <input type="submit" value="Aceptar" onclick="">
+                    <a href="{% url 'sigma:adm_r' %}"><input type="button" value="Cancelar" ></a>
+                <!--/div-->
+            </form>
+        </div>
+    </div>
 {% endblock %}

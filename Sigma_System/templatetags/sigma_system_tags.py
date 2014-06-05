@@ -84,3 +84,8 @@ def verificar_lb(value):
         return 'disabled'
     else:
         return ''
+
+
+@register.filter
+def divisiblepor(value, arg):
+    return (value-1) % arg == 0

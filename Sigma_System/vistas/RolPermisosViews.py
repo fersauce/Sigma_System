@@ -3,7 +3,7 @@ from django.http import *
 from Sigma_System.models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
+import math
 
 @login_required(login_url='/login/')
 def adm_roles(request):
@@ -29,7 +29,8 @@ def add_roles(request):
         messages.success(request, 'El rol "'+rol.nombre+'" ha sido creado con \u00E9xito')
     else:
         permisos = Permiso.objects.all()
-        return render(request, 'Agregar_Rol.html', {'permisos': permisos})
+        modulo = int(math.ceil(permisos.__len__()/4))
+        return render(request, 'Agregar_Rol.html', {'permisos': permisos, 'modulo': modulo})
     return HttpResponseRedirect('/ss/rol/')
 
 
@@ -54,8 +55,8 @@ def mod_roles(request, id):
         else:
             diccionario = {'nombre': p.nombre, 'id': p.id, 'ban': ""}
             permisosAux.append(diccionario)
-    rol.permisos.clear()
     if request.method == 'POST':
+        rol.permisos.clear()
         rol.nombre = request.POST['nombre']
         rol.descripcion = request.POST['descripcion']
         rol.save()
@@ -64,7 +65,10 @@ def mod_roles(request, id):
                 rol.permisos.add(Permiso.objects.get(id=p))
         messages.info(request, 'El rol: '+rol.nombre+' ha sido modificado con \u00E9xito')
     else:
-        return render(request, 'ModificarRol.html', {'rol': rol, 'permisos': permisosAux})
+        modulo = int(math.ceil(permisosAux.__len__()/4))
+        return render(request, 'ModificarRol.html', {'rol': rol,
+                                                     'permisos': permisosAux,
+                                                     'modulo': modulo})
     return HttpResponseRedirect('/ss/rol/')
 
 
