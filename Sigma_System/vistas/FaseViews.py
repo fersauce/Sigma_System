@@ -53,13 +53,16 @@ def alta_fase(request, idProyect):
                 messages.error(request, 'Nombre de fase ya utilizado')
                 return render(request, 'fasealta.html',
                               {'proyecto': idProyect})
+        estado_aux = 'Pendiente'
+        if not fase:
+            estado_aux = 'Iniciado'
         Fase.objects.create(
             proyecto=proyecto,
             nombre=request.POST['nombre'],
             descripcion=request.POST['descripcion'],
             posicionFase=Fase.objects.filter(
                 proyecto=proyecto).__len__() + 1,
-            estado='Pendiente',
+            estado=estado_aux,
             fechaInicio=datetime.datetime.now(),
             fechaFin=datetime.datetime.now() + datetime.timedelta(days=1)
         )

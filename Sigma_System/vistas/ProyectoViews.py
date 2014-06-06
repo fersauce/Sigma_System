@@ -152,7 +152,7 @@ def modificar_proyecto(request, idProyecto):
 
 
 @login_required(login_url='/login/')
-@permisos_requeridos(['elimminar_pr'], 'sigma:adm_proy', 'eliminar proyectos')
+@permisos_requeridos(['eliminar_pr'], 'sigma:adm_proy', 'eliminar proyectos')
 def baja_proyecto(request, idProyecto):
     """
     Vista para realizar la baja de un proyecto.
@@ -175,7 +175,7 @@ def baja_proyecto(request, idProyecto):
             except Exception as error:
                 messages.error(request, 'Ocurrio un error al intentar suprimir'
                                         'el proyecto.')
-    return HttpResponseRedirect(reverse('sigma: adm_proy'))
+    return HttpResponseRedirect(reverse('sigma:adm_proy'))
 
 
 def buscar_proyecto(request):

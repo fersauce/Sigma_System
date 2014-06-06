@@ -33,4 +33,6 @@ el formulario de nombre item no carga el nombre correcto del item
 fecha inicio y fecha fin sin datos en administrar fase
 
 05/06/2014
-ocurre un error en intercambiar fase si el proyecto cuenta con una sola fase
+ocurre un error en intercambiar fase si el proyecto cuenta con una sola fase.
+verificar que no se pueda eliminar el rol de lider ni ningun rol asociado, esto
+crea inconsistencia en la base de datos.
