@@ -64,7 +64,7 @@
 {% endblock %}
 {% block navegacion %}
     <span class="element-divider"></span>
-    <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
+    <a class="element" href="{% url 'sigma:inicio' %}"> P&aacute;gina Principal</a>
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:des_proyec' %}">Desarrollo</a>
     <span class="element-divider"></span>
@@ -143,6 +143,8 @@
                                                                 <i class="icon-eye on-left"></i>Historial Item</a></li>
                                                             <li class="text-left"><a href="{% url 'sigma:adm_relacion' i.id %}">
                                                                 <i class="icon-link on-left"></i>Relacionar Item</a></li>
+                                                            <li class="text-left"><a href="{% url 'sigma:adm_arch' i.id %}">
+                                                                <i class="icon-link on-left"></i>Archivos</a></li>
                                                         </ul>
                                                     </li>
                                                 </ul>

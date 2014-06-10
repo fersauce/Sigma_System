@@ -107,6 +107,8 @@ class AtribTipoDeItem(models.Model):
 
 class Archivo(models.Model):
     archivo_adj = models.FileField(upload_to='archivos')
+    fechaCreacion = models.DateTimeField(default=datetime.datetime.now())
+    activo = models.BooleanField(default=True)
 
 
 class LBase(models.Model):

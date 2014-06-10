@@ -1,8 +1,11 @@
 <component name="ProjectDictionaryState">
   <dictionary name="sauce">
     <words>
+      <w>activo</w>
       <w>administracion</w>
       <w>administrar</w>
+      <w>archivo</w>
+      <w>archivos</w>
       <w>asignar</w>
       <w>atributo</w>
       <w>atributos</w>
@@ -12,8 +15,11 @@
       <w>busqueda</w>
       <w>codigo</w>
       <w>comite</w>
+      <w>confirmar</w>
+      <w>csrftoken</w>
       <w>datos</w>
       <w>debe</w>
+      <w>desarrollo</w>
       <w>descripcion</w>
       <w>eliminar</w>
       <w>enviar</w>
