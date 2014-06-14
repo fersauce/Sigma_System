@@ -131,6 +131,7 @@ def linea_base(request, idProyecto, idFase):
 
 
 def establecer_linea_base(request, idProyecto, idFase):
+    #item_finales devuelve todos los items en estado aprobado siguientes a un padre en linea base
     itemfinales = traer_itemfinales(idFase)
     if request.method == 'POST':
         obs = request.POST['obs']
@@ -154,7 +155,7 @@ def establecer_linea_base(request, idProyecto, idFase):
                 faseSig.estado = 'Iniciado'
                 fase.fechaInicio = datetime.datetime.now()
                 faseSig.save()
-                messages.success(request, 'Fase '+fase.nombre+' iniciada.')
+                messages.success(request, 'Fase '+faseSig.nombre+' iniciada.')
         messages.success(request, 'Se agregaron correctamente los items a la linea base')
         return HttpResponseRedirect(reverse('sigma:adm_fase_lb', args=(idProyecto, idFase)))
     else:
@@ -165,11 +166,23 @@ def traer_itemfinales(idFase):
     fase = Fase.objects.get(id=idFase)
     items = Item.objects.filter(tipoItems__fase=fase, estado='aprobado')
     items_finales = []
-    for i in items:
-        i_hijo = Item.objects.filter(item_padre=i.id, tipoItems__fase=fase)
-        if not i_hijo:
-            items_finales.append(i)
-    return items_finales
+    if fase.posicionFase == 1:
+        for i in items:
+            if i.item_padre == 0:
+                items_finales.append(i)
+        return items_finales
+    else:
+        for i in items:
+            padre = Item.objects.get(id=i.item_padre)
+            if padre.estado == 'bloqueado':
+                items_finales.append(i)
+        return items_finales
+    #items_finales = []
+    #for i in items:
+    #    i_hijo = Item.objects.filter(item_padre=i.id, tipoItems__fase=fase)
+    #    if not i_hijo:
+    #        items_finales.append(i)
+    #return items_finales
 
 
 def traer_items_padre(i_finales, idFase):

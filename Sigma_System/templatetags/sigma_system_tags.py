@@ -89,3 +89,13 @@ def verificar_lb(value):
 @register.filter
 def divisiblepor(value, arg):
     return (value-1) % arg == 0
+
+
+@register.filter
+def habilitar_add_atrib(value):
+    ti = TipoDeItem.objects.get(id=value)
+    items = Item.objects.filter(tipoItems=ti)
+    if items:
+        return True
+    else:
+        return False

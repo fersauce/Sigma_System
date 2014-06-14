@@ -13,12 +13,21 @@
     <div class="span10">
         <h2>Administrador<small class="on-right">de Atributos del TI {{ ti_asoc.nombre }}</small></h2>
         <div class="example">
-            <a href="{%  url 'sigma:adm_atrib_alta' ti_asoc.pk %}">
-                <button class="command-button primary">
+            {% if ti_asoc.pk|habilitar_add_atrib %}
+            <a href="#" data-hint="Ya existen">
+                <button class="command-button disabled">
                     <i class="icon-new on-left"></i><b>Agregar</b>
                     <small>Atributo</small>
                 </button>
             </a>
+            {% else %}
+                <a href="{%  url 'sigma:adm_atrib_alta' ti_asoc.pk %}">
+                    <button class="command-button primary">
+                        <i class="icon-new on-left"></i><b>Agregar</b>
+                        <small>Atributo</small>
+                    </button>
+                </a>
+            {% endif %}
             <table class="table striped hovered dataTable" id="tablaTI">
                 <thead>
                     <th class="text-left">Nombre</th>
