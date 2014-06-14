@@ -58,11 +58,11 @@ def altaItem(request, idFase, opcion):
         #definir una funcion para que listaitems reciba items finales en linea base de la fase anterior
         #por ahora recibe todos los items
         fase = Fase.objects.get(proyecto=fase.proyecto, posicionFase=pos)
-        if fase.estado == 'Pendiente':
-            fase.estado = 'Iniciado'
-            fase.fechaInicio = datetime.datetime.now()
-            fase.save()
-            messages.success(request, 'Fase '+fase.nombre+' iniciada.')
+        #if fase.estado == 'Pendiente':
+        #    fase.estado = 'Iniciado'
+        #    fase.fechaInicio = datetime.datetime.now()
+        #    fase.save()
+        #    messages.success(request, 'Fase '+fase.nombre+' iniciada.')
         li = Items_x_LBase.objects.filter(lb__fase=fase, item_final=True)
         listaitems = []
         for l in li:
@@ -124,13 +124,17 @@ def altaItem(request, idFase, opcion):
 
 def aprobar_desaprobar_item(request, idFase, idItem, opcion):
     item = Item.objects.get(id=idItem)
-    if opcion == '0':
-        item.estado = 'aprobado'
-        messages.success(request, 'El item "' + item.nombre + '" ha sido aprobado')
+    fase = Fase.objects.get(id=idFase)
+    if fase.posicionFase == 1:
+        if opcion == '0':
+            item.estado = 'aprobado'
+            messages.success(request, 'El item "' + item.nombre + '" ha sido aprobado')
+        else:
+            item.estado = 'activo'
+            messages.success(request, 'El item "' + item.nombre + '" ha sido desaprobado')
+        item.save()
     else:
-        item.estado = 'activo'
-        messages.success(request, 'El item "' + item.nombre + '" ha sido desaprobado')
-    item.save()
+        print "aca tiene que verificar que su antecesor este en linea base"
     return HttpResponseRedirect(reverse('sigma:adm_i', args=[idFase]))
 
 
@@ -314,7 +318,6 @@ def revivir(request, it):
         descripcion="revivir",
         fecha_mod=datetime.datetime.now()
     )
-
     return HttpResponseRedirect('/ss/adm_i_rev/' + str(its.tipoItems.fase.pk))
 
 
@@ -349,7 +352,6 @@ def revertirItem(request, idItem, versionRev, idHis):
     historial.item.all
 
     """
-
     its = Item.objects.get(id=idItem)
     versionActual = its.version
 
@@ -361,7 +363,6 @@ def revertirItem(request, idItem, versionRev, idHis):
             idHisFinal = h.id
 
     idHisRev = his2.id
-
     ultimo = idHisFinal
     indice = ultimo + 1
     print('id historial rever', idHisRev)
@@ -379,7 +380,6 @@ def revertirItem(request, idItem, versionRev, idHis):
             idLeido = itemAuxiliar.id
             print 'id leido', idLeido
             print 'idParametro', idItem
-
             if (int(idLeido) == int(idItem)):
                 print('id son iguales')
                 if int(historialAux.nro_version_act) > 0:
