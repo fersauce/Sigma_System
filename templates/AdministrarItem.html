@@ -81,8 +81,14 @@
     <div class="span10">
         <h2><a href="#"></a>Administrador<small class="on-right">de &Iacute;tems de la Fase </small>{{ fase.nombre}}</h2>
         <div class="example">
-            <a{{ fase.id|habilitar_evento:0 }}>
+            <!--a{{ fase.id|habilitar_evento:0 }}>
                 <button class="command-button primary"{{ fase.id|habilitar_evento:1 }}>
+                    <i class="icon-new on-left"></i><b>Agregar</b>
+                    <small>Item</small>
+                </button>
+            </a-->
+            <a href='{% url 'sigma:adm_i_alta' fase.id 0 %}'>
+                <button class="command-button primary">
                     <i class="icon-new on-left"></i><b>Agregar</b>
                     <small>Item</small>
                 </button>

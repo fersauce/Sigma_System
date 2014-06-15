@@ -57,17 +57,32 @@
                             <div class="row">
                                 <div class="span3">
                                     {% if opcion == 0 %}
-                                        <label class="text-right">Item padre:</label>
-                                    {% else %}
                                         <label class="text-right">Item antecesor:</label>
+                                    {% else %}
+                                        <!--label class="text-right">Item antecesor:</label-->
                                     {% endif %}
                                 </div>
                                 <div class="span6">
                                     <div class="input-control select" data-role="input-control">
+                                        <select name="i_ant">
+                                            <option value="0">ninguno</option>
+                                            {% for i in items_ant %}
+                                                <option value="{{ i.id }}">{{ i.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <label class="text-right">Item padre:</label>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control select" data-role="input-control">
                                         <select name="i_padre">
-                                            {% if ban_defecto %}
-                                                <option value="0">ninguno</option>
-                                            {% endif %}
+                                            <option value="0">ninguno</option>
                                             {% for i in listaitems %}
                                                 <option value="{{ i.id }}">{{ i.nombre }}</option>
                                             {% endfor %}

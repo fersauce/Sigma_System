@@ -31,7 +31,7 @@ def administrarItem(request, idFase):
     return render(request, 'AdministrarItem.html',
                   {'items': its, 'fase': fs,
                    'username': request.user.username,
-                   'proy':proy, 'permisos':permisos,
+                   'proy': proy, 'permisos':permisos,
                    'nomb': nameFa, 'item_baja': item_baja})
 
 
@@ -45,14 +45,13 @@ def altaItem(request, idFase, opcion):
     print "------------------"
     print "el id fase es " + idFase
     fase = Fase.objects.get(pk=idFase)
-    if fase.posicionFase == 1:
-        ban_defecto = True
-    else:
-        ban_defecto = False
+    items_ant = []
     if opcion == '0':
         listaitems1 = Item.objects.filter(tipoItems__fase=fase, estado='aprobado')
         listaitems2 = Item.objects.filter(tipoItems__fase=fase, estado='bloqueado')
         listaitems = listaitems1 | listaitems2
+        listaitems = Item.objects.filter(tipoItems__fase=fase).exclude(estado='baja')
+        items_ant = []
     else:
         pos = fase.posicionFase-1
         #definir una funcion para que listaitems reciba items finales en linea base de la fase anterior
@@ -77,7 +76,6 @@ def altaItem(request, idFase, opcion):
     else:
         print "tipo de items vacio"
     print(fase.nombre)
-    print tis.first().__getattribute__('nombre')
     if request.method == 'POST':
         try:
             ti = TipoDeItem.objects.get(id=request.POST['tipo'])
@@ -86,6 +84,9 @@ def altaItem(request, idFase, opcion):
             compl = request.POST['complejidad']
             pri = request.POST['prior']
             est = "activo"
+            id_rel = request.POST['i_padre']
+            if id_rel == 0:
+                id_rel = request.POST['i_ant']
             itt = Item.objects.create(
                 tipoItems=ti,
                 nombre=name,
@@ -93,7 +94,7 @@ def altaItem(request, idFase, opcion):
                 complejidad=compl,
                 prioridad=pri,
                 estado=est,
-                item_padre=request.POST['i_padre']
+                item_padre=id_rel
             )
             historial = Historial.objects.create(
                 item=itt,
@@ -117,7 +118,7 @@ def altaItem(request, idFase, opcion):
                        'nombreFase': fase.nombre,
                        'opcion': int(opcion),
                        'listaitems': listaitems,
-                       'ban_defecto': ban_defecto,
+                       'items_ant': items_ant,
                        'proyectos': fase.proyecto})
     return HttpResponseRedirect(reverse('sigma:adm_i', args=[idFase]))
 
