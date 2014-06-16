@@ -128,8 +128,20 @@ def aprobar_desaprobar_item(request, idFase, idItem, opcion):
     fase = Fase.objects.get(id=idFase)
     if fase.posicionFase == 1:
         if opcion == '0':
-            item.estado = 'aprobado'
-            messages.success(request, 'El item "' + item.nombre + '" ha sido aprobado')
+            if item.item_padre != 0:
+                padre = Item.objects.get(id=item.item_padre)
+                if padre.estado == 'aprobado' or padre.estado == 'bloqueado':
+                    item.estado = 'aprobado'
+                    messages.success(request, 'El item "' + item.nombre + '" ha sido aprobado')
+                else:
+                    messages.error(request, 'El item "' + item.nombre +
+                                            '" no ha sido aprobado, el padre del item debe estar '
+                                            'aprobado para dar lugar a la operacion')
+            else:
+                messages.error(request, 'El item "' + item.nombre +
+                                            '" no ha sido aprobado, este item necesita una relacion '
+                                            'con un padre en estado aprobado o bloqueado para dar '
+                                            'lugar a al operacion')
         else:
             item.estado = 'activo'
             messages.success(request, 'El item "' + item.nombre + '" ha sido desaprobado')
