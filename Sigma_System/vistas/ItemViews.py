@@ -126,28 +126,48 @@ def altaItem(request, idFase, opcion):
 def aprobar_desaprobar_item(request, idFase, idItem, opcion):
     item = Item.objects.get(id=idItem)
     fase = Fase.objects.get(id=idFase)
-    if fase.posicionFase == 1:
-        if opcion == '0':
-            if item.item_padre != 0:
-                padre = Item.objects.get(id=item.item_padre)
-                if padre.estado == 'aprobado' or padre.estado == 'bloqueado':
-                    item.estado = 'aprobado'
-                    messages.success(request, 'El item "' + item.nombre + '" ha sido aprobado')
+    if item.estado not in ['bloqueado', 'revision']:
+        if fase.posicionFase == 1:
+            if opcion == '0':
+                if item.estado != 'aprobado':
+                    if item.item_padre != 0:
+                        padre = Item.objects.get(id=item.item_padre)
+                        if padre.estado in ['aprobado', 'bloqueado']:
+                            item.estado = 'aprobado'
+                            item.save()
+                            messages.success(request, 'El item "' + item.nombre + '" ha sido aprobado')
+                        else:
+                            messages.error(request, 'El item "' + item.nombre +
+                                                    '" no ha sido aprobado, el padre del item debe estar '
+                                                    'aprobado para dar lugar a la operacion')
+                    else:
+                        item.estado = 'aprobado'
+                        item.save()
+                        messages.success(request, 'El item "' + item.nombre + '" ha sido aprobado')
+                        #messages.error(request, 'El item "' + item.nombre +
+                        #                            '" no ha sido aprobado, este item necesita una relacion '
+                        #                            'con un padre en estado aprobado o bloqueado para dar '
+                        #                            'lugar a al operacion')
                 else:
-                    messages.error(request, 'El item "' + item.nombre +
-                                            '" no ha sido aprobado, el padre del item debe estar '
-                                            'aprobado para dar lugar a la operacion')
+                    messages.info(request, 'El item "' + item.nombre + '" ya esta aprobado')
             else:
-                messages.error(request, 'El item "' + item.nombre +
-                                            '" no ha sido aprobado, este item necesita una relacion '
-                                            'con un padre en estado aprobado o bloqueado para dar '
-                                            'lugar a al operacion')
+                if item.estado != 'activo':
+                    items = Item.objects.filter(item_padre=item.item_padre,
+                                                tipoItems__fase=fase).exclude(estado='baja')
+                    if items:
+                        messages.error(request, 'El item "' + item.nombre +
+                                                '" no ha sido aprobado, desapruebe el/los item/s hijo/s'
+                                                'antes de desaprobar este item')
+                    else:
+                        item.estado = 'activo'
+                        item.save()
+                        messages.success(request, 'El item "' + item.nombre + '" ha sido desaprobado')
+                else:
+                    messages.info(request, 'El item "' + item.nombre + '" ya esta activo')
         else:
-            item.estado = 'activo'
-            messages.success(request, 'El item "' + item.nombre + '" ha sido desaprobado')
-        item.save()
+            print "aca tiene que verificar que su antecesor este en linea base"
     else:
-        print "aca tiene que verificar que su antecesor este en linea base"
+        messages.error(request, 'No se puede modificar el estado de un item en linea base')
     return HttpResponseRedirect(reverse('sigma:adm_i', args=[idFase]))
 
 
