@@ -126,6 +126,13 @@ def modificar_fase(request, idProyect, idFase):
 
 
 def linea_base(request, idProyecto, idFase):
+    item = Item.objects.get(id=34)
+    print '==========================='
+    print item.nombre
+    print '==========================='
+    lista = lista_des(item)
+    for i in lista:
+        print i.nombre, i.id
     lb = LBase.objects.filter(fase=Fase.objects.get(id=idFase)).order_by('id')
     return render(request, 'LineaBase.html', {'id_proy': idProyecto, 'id_fase': idFase, 'lineasbase': lb})
 
@@ -160,6 +167,17 @@ def establecer_linea_base(request, idProyecto, idFase):
         return HttpResponseRedirect(reverse('sigma:adm_fase_lb', args=(idProyecto, idFase)))
     else:
         return render(request, 'AsignarItemxLB.html', {'id_proy': idProyecto, 'id_fase': idFase, 'itemfinales':itemfinales})
+
+
+def lista_des(item):
+    hijos = Item.objects.filter(tipoItems__fase=item.tipoItems.fase, item_padre=item.id).exclude(estado='baja')
+    lista = [item]
+    if not hijos:
+        return lista
+    else:
+        for h in hijos:
+            lista = lista + lista_des(h)
+        return lista
 
 
 def traer_itemfinales(idFase):
