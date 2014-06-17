@@ -127,55 +127,54 @@ def aprobar_desaprobar_item(request, idFase, idItem, opcion):
     item = Item.objects.get(id=idItem)
     fase = Fase.objects.get(id=idFase)
     if item.estado not in ['bloqueado', 'revision']:
-        if fase.posicionFase == 1:
-            if opcion == '0':
-                if item.estado != 'aprobado':
-                    if item.item_padre != 0:
-                        padre = Item.objects.get(id=item.item_padre)
-                        if padre.estado in ['aprobado', 'bloqueado']:
-                            item.estado = 'aprobado'
-                            item.save()
-                            messages.success(request, 'El item "' + item.nombre + '" ha sido aprobado')
-                        else:
-                            messages.error(request, 'El item "' + item.nombre +
-                                                    '" no puede ser aprobado, el padre del item debe estar '
-                                                    'aprobado para dar lugar a la operacion')
-                    else:
+        if opcion == '0':
+            if item.estado != 'aprobado':
+                if item.item_padre != 0:
+                    padre = Item.objects.get(id=item.item_padre)
+                    if padre.estado in ['aprobado', 'bloqueado']:
                         item.estado = 'aprobado'
                         item.save()
                         messages.success(request, 'El item "' + item.nombre + '" ha sido aprobado')
-                        #messages.error(request, 'El item "' + item.nombre +
-                        #                            '" no ha sido aprobado, este item necesita una relacion '
-                        #                            'con un padre en estado aprobado o bloqueado para dar '
-                        #                            'lugar a al operacion')
+                    else:
+                        messages.error(request, 'El item "' + item.nombre +
+                                                '" no puede ser aprobado, el padre del item debe estar '
+                                                'aprobado para dar lugar a la operacion')
                 else:
-                    messages.info(request, 'El item "' + item.nombre + '" ya esta aprobado')
+                    if fase.posicionFase == 1:
+                        item.estado = 'aprobado'
+                        item.save()
+                        messages.success(request, 'El item "' + item.nombre + '" ha sido aprobado')
+                    else:
+                        messages.error(request, 'El item "' + item.nombre +
+                                                    '" no puede ser aprobado, este item necesita una relacion '
+                                                    'con un padre en estado aprobado o con un antecesor para dar '
+                                                    'lugar a la operacion')
             else:
-                if item.estado != 'activo':
-                    items = Item.objects.filter(item_padre=item.id,
-                                                tipoItems__fase=fase).exclude(estado='baja')
-                    ban = False
-                    if items:
-                        for i in items:
-                            if i.estado != 'activo':
-                                ban = True
-                                break
-                        if ban:
-                            messages.error(request, 'El item "' + item.nombre +
-                                                '" no puede ser desaprobado, desapruebe el/los item/s hijo/s'
-                                                'antes de desaprobar este item')
-                        else:
-                            item.estado = 'activo'
-                            item.save()
-                            messages.success(request, 'El item "' + item.nombre + '" ha sido desaprobado')
+                messages.info(request, 'El item "' + item.nombre + '" ya esta aprobado')
+        else:
+            if item.estado != 'activo':
+                items = Item.objects.filter(item_padre=item.id,
+                                            tipoItems__fase=fase).exclude(estado='baja')
+                ban = False
+                if items:
+                    for i in items:
+                        if i.estado != 'activo':
+                            ban = True
+                            break
+                    if ban:
+                        messages.error(request, 'El item "' + item.nombre +
+                                            '" no puede ser desaprobado, desapruebe el/los item/s hijo/s'
+                                            'antes de desaprobar este item')
                     else:
                         item.estado = 'activo'
                         item.save()
                         messages.success(request, 'El item "' + item.nombre + '" ha sido desaprobado')
                 else:
-                    messages.info(request, 'El item "' + item.nombre + '" ya esta activo')
-        else:
-            print "aca tiene que verificar que su antecesor este en linea base"
+                    item.estado = 'activo'
+                    item.save()
+                    messages.success(request, 'El item "' + item.nombre + '" ha sido desaprobado')
+            else:
+                messages.info(request, 'El item "' + item.nombre + '" ya esta activo')
     else:
         messages.error(request, 'No se puede modificar el estado de un item en linea base')
     return HttpResponseRedirect(reverse('sigma:adm_i', args=[idFase]))
