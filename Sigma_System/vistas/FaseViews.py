@@ -170,7 +170,13 @@ def establecer_linea_base(request, idProyecto, idFase):
 
 
 def lista_des(item):
-    hijos = Item.objects.filter(tipoItems__fase=item.tipoItems.fase, item_padre=item.id).exclude(estado='baja')
+    hijos = Item.objects.filter(tipoItems__fase=item.tipoItems.fase,
+                                item_padre=item.id, estado='aprobado').order_by('id')
+    print '/*/*/*/*/*/*/*/*/*/*/*/*/*/*'
+    print 'item padre: ', item.nombre
+    for i in hijos:
+        print '   item hijos: ', i.nombre
+    print '/*/*/*/*/*/*/*/*/*/*/*/*/*/*'
     lista = [item]
     if not hijos:
         return lista
@@ -181,26 +187,33 @@ def lista_des(item):
 
 
 def traer_itemfinales(idFase):
+    print '***************************'
+    print 'entro en traer item finales'
     fase = Fase.objects.get(id=idFase)
     items = Item.objects.filter(tipoItems__fase=fase, estado='aprobado')
+    for i in items:
+        print i.nombre
+    print '***************************'
     items_finales = []
     if fase.posicionFase == 1:
         for i in items:
             if i.item_padre == 0:
                 items_finales.append(i)
-        return items_finales
+            else:
+                padre = Item.objects.get(id=i.item_padre)
+                if padre.estado == 'bloqueado' or padre.estado == 'revision':
+                    items_finales.append(i)
+        #return items_finales
     else:
         for i in items:
             padre = Item.objects.get(id=i.item_padre)
             if padre.estado == 'bloqueado':
                 items_finales.append(i)
-        return items_finales
-    #items_finales = []
-    #for i in items:
-    #    i_hijo = Item.objects.filter(item_padre=i.id, tipoItems__fase=fase)
-    #    if not i_hijo:
-    #        items_finales.append(i)
-    #return items_finales
+        #return items_finales
+    listafinal = []
+    for i in items_finales:
+        listafinal = lista_des(i) + listafinal
+    return listafinal
 
 
 def traer_items_padre(i_finales, idFase):

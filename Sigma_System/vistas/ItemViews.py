@@ -164,7 +164,7 @@ def aprobar_desaprobar_item(request, idFase, idItem, opcion):
                     if ban:
                         messages.error(request, 'El item "' + item.nombre +
                                             '" no puede ser desaprobado, desapruebe el/los item/s hijo/s'
-                                            'antes de desaprobar este item')
+                                            ' antes de desaprobar este item')
                     else:
                         item.estado = 'activo'
                         item.save()

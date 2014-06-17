@@ -1,4 +1,43 @@
 {% extends 'base_menu.html' %}
+{% block definicion_script %}
+    <script type="text/javascript">
+        function indice(check)
+        {
+            f = check.form;
+            n = check.name;
+            for (var i=0,nombres=f[n],total=nombres.length;i<total;i++){
+                if (f[n][i] == check){
+                    return i;
+                }
+            }
+            //return 0
+        }
+        function marcar_desm(source)
+        {
+            index=indice(source)+2
+            //alert(index)
+            checkboxes=document.getElementsByTagName('input');
+            for(i=0;i<checkboxes.length;i++)
+            {
+                if(checkboxes[i].type == "checkbox")
+                {
+                    //alert(i)
+                    if (source.checked){
+                        if (i<=index){
+                            checkboxes[i].checked=source.checked;
+                        }
+                    }
+                    else
+                    {
+                        if (i>=index){
+                            checkboxes[i].checked=source.checked;
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+{% endblock %}
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
@@ -42,7 +81,8 @@
                                         <td class="right">
                                             <div class="input-control switch" data-role="input-control">
                                                 <label class="inline-block">
-                                                    <input type="checkbox" name="items_finales"  value="{{ i.id }}"/>
+                                                    <input type="checkbox" name="items_finales"  value="{{ i.id }}"
+                                                           onclick=marcar_desm(this);>
                                                     <span class="check"></span>
                                                 </label>
                                             </div>
@@ -64,7 +104,7 @@
                                 </tr>
                             </tfoot>
                         </table>
-                        <script>
+                        <!--script>
                             $(document).ready(function() {
                                 $('#tablaLbxItem').dataTable( {
                                     "oLanguage": {
@@ -72,7 +112,7 @@
                                     }
                                 } );
                             } );
-                        </script>
+                        </script-->
                         <br>
                         <input type="submit" value="Establecer" onclick="">
                         <a href="{% url 'sigma:adm_fase_lb' id_proy id_fase %}"><input type="button" value="Cancelar" ></a>
