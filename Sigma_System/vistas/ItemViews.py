@@ -138,7 +138,7 @@ def aprobar_desaprobar_item(request, idFase, idItem, opcion):
                             messages.success(request, 'El item "' + item.nombre + '" ha sido aprobado')
                         else:
                             messages.error(request, 'El item "' + item.nombre +
-                                                    '" no ha sido aprobado, el padre del item debe estar '
+                                                    '" no puede ser aprobado, el padre del item debe estar '
                                                     'aprobado para dar lugar a la operacion')
                     else:
                         item.estado = 'aprobado'
@@ -152,12 +152,22 @@ def aprobar_desaprobar_item(request, idFase, idItem, opcion):
                     messages.info(request, 'El item "' + item.nombre + '" ya esta aprobado')
             else:
                 if item.estado != 'activo':
-                    items = Item.objects.filter(item_padre=item.item_padre,
+                    items = Item.objects.filter(item_padre=item.id,
                                                 tipoItems__fase=fase).exclude(estado='baja')
+                    ban = False
                     if items:
-                        messages.error(request, 'El item "' + item.nombre +
-                                                '" no ha sido aprobado, desapruebe el/los item/s hijo/s'
+                        for i in items:
+                            if i.estado != 'activo':
+                                ban = True
+                                break
+                        if ban:
+                            messages.error(request, 'El item "' + item.nombre +
+                                                '" no puede ser desaprobado, desapruebe el/los item/s hijo/s'
                                                 'antes de desaprobar este item')
+                        else:
+                            item.estado = 'activo'
+                            item.save()
+                            messages.success(request, 'El item "' + item.nombre + '" ha sido desaprobado')
                     else:
                         item.estado = 'activo'
                         item.save()

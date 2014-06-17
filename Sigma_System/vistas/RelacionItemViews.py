@@ -30,7 +30,7 @@ def adm_relacion(request, id_item):
 
 def asignar_padre(request, id_item):
     item = Item.objects.get(id=id_item)
-    items = Item.objects.filter(tipoItems__fase=item.tipoItems.fase, estado='aprobado').exclude(id=item.id)
+    items = Item.objects.filter(tipoItems__fase=item.tipoItems.fase).exclude(id=item.id).exclude(estado='baja')
     return render(request, 'AsignarPadre.html', {'items': items, 'item': item})
 
 
@@ -45,7 +45,6 @@ def asignar_final(request, hijo, padre):
     else:
         messages.error(request, 'No se puede asociar debido al ciclo que se crearia')
         return HttpResponseRedirect(reverse('sigma:adm_relacion', args=[hijo]))
-
 
 
 def ver_hijos(request, id_item):

@@ -99,3 +99,12 @@ def habilitar_add_atrib(value):
         return True
     else:
         return False
+
+
+@register.filter
+def habilitar_opciones(value):
+    item = Item.objects.get(id=value)
+    if item.estado != 'activo':
+        return 'disabled'
+    else:
+        return ''
