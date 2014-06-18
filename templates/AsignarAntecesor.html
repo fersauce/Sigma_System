@@ -1,0 +1,78 @@
+{% extends 'base_menu.html' %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_fase' item.tipoItems.fase.proyecto.id %}">Fase</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_i' item.tipoItems.fase.id %}">Item</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_relacion' item.id %}">Relacion</a>
+    <a class="pull-menu" href="#"></a>
+{% endblock %}
+{% block titulo %}Asignar Antecesor{% endblock %}
+{% block contenido %}
+    <div class="span10">
+        <h2><a href="#"></a>Asignar<small class="on-right">antecesor al item {{ item.nombre }}</small></h2>
+        <div class="example">
+            <table class="table striped hovered dataTable" id="tablaI">
+                <thead>
+                    <th class="text-left">Nombre</th>
+                    <th class="text-left">Complejidad</th>
+                    <th class="text-left">Prioridad</th>
+                    <th class="text-left">Estado</th>
+                    <th class="text-left">Asignar</th>
+                </thead>
+                <tbody>
+                    {% for i in items %}
+                        <tr>
+                            <td>{{ i.nombre }}</td>
+                            <td class="right">{{ i.complejidad }}</td>
+                            <td class="right">{{ i.prioridad }}</td>
+                            <td class="right">{{ i.estado }}</td>
+                            <td align="center">
+                                <div class="span6">
+                                    <nav class="navigation-bar transparente">
+                                        <div class="navigation-bar-content">
+                                            <ul class="element-menu">
+                                                <li>
+                                                    <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
+                                                    <ul class="dropdown-menu" data-role="dropdown">
+                                                        <li class="text-left">
+                                                            <a href="{% url 'sigma:adm_rel_asig_final' item.id i.id %}">
+                                                            <i class="icon-link-2 on-left"></i>Asociar</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </nav>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-left">Nombre</th>
+                        <th class="text-left">Complejidad</th>
+                        <th class="text-left">Prioridad</th>
+                        <th class="text-left">Estado</th>
+                        <th class="text-left">Asignar</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <script>
+                $(document).ready(function() {
+                    $('#tablaI').dataTable( {
+                        "oLanguage": {
+                            "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                        }
+                    } );
+                } );
+            </script>
+        </div>
+    </div>
+{% endblock %}

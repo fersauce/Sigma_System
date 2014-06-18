@@ -138,7 +138,7 @@ def linea_base(request, idProyecto, idFase):
 
 
 def establecer_linea_base(request, idProyecto, idFase):
-    #item_finales devuelve todos los items en estado aprobado siguientes a un padre en linea base
+    #item_finales devuelve todos los items en estado aprobados
     itemfinales = traer_itemfinales(idFase)
     if request.method == 'POST':
         obs = request.POST['obs']
@@ -149,11 +149,13 @@ def establecer_linea_base(request, idProyecto, idFase):
             item_actual.estado = 'bloqueado'
             item_actual.save()
             Items_x_LBase.objects.create(lb=lb, item=item_actual, item_final=True)
-        i_padres = traer_items_padre(i_finales, idFase)
-        for i in i_padres:
-            i.estado = 'bloqueado'
-            i.save()
-            Items_x_LBase.objects.create(lb=lb, item=i)
+        '''
+            i_padres = traer_items_padre(i_finales, idFase)
+            for i in i_padres:
+                i.estado = 'bloqueado'
+                i.save()
+                Items_x_LBase.objects.create(lb=lb, item=i)
+        '''
         fase = Fase.objects.get(pk=idFase)
         proyecto = fase.proyecto
         if not proyecto.nroFases == fase.posicionFase:
@@ -187,13 +189,8 @@ def lista_des(item):
 
 
 def traer_itemfinales(idFase):
-    print '***************************'
-    print 'entro en traer item finales'
     fase = Fase.objects.get(id=idFase)
     items = Item.objects.filter(tipoItems__fase=fase, estado='aprobado')
-    for i in items:
-        print i.nombre
-    print '***************************'
     items_finales = []
     if fase.posicionFase == 1:
         for i in items:
@@ -203,13 +200,11 @@ def traer_itemfinales(idFase):
                 padre = Item.objects.get(id=i.item_padre)
                 if padre.estado == 'bloqueado' or padre.estado == 'revision':
                     items_finales.append(i)
-        #return items_finales
     else:
         for i in items:
             padre = Item.objects.get(id=i.item_padre)
             if padre.estado == 'bloqueado':
                 items_finales.append(i)
-        #return items_finales
     listafinal = []
     for i in items_finales:
         listafinal = lista_des(i) + listafinal

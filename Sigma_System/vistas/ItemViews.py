@@ -51,7 +51,7 @@ def altaItem(request, idFase, opcion):
         listaitems2 = Item.objects.filter(tipoItems__fase=fase, estado='bloqueado')
         listaitems = listaitems1 | listaitems2
         listaitems = Item.objects.filter(tipoItems__fase=fase).exclude(estado='baja')
-        items_ant = []
+        items_ant = get_antecesores(idFase)
     else:
         pos = fase.posicionFase-1
         #definir una funcion para que listaitems reciba items finales en linea base de la fase anterior
@@ -84,9 +84,9 @@ def altaItem(request, idFase, opcion):
             compl = request.POST['complejidad']
             pri = request.POST['prior']
             est = "activo"
-            id_rel = request.POST['i_padre']
+            id_rel = int(request.POST['i_padre'])
             if id_rel == 0:
-                id_rel = request.POST['i_ant']
+                id_rel = int(request.POST['i_ant'])
             itt = Item.objects.create(
                 tipoItems=ti,
                 nombre=name,
@@ -121,6 +121,20 @@ def altaItem(request, idFase, opcion):
                        'items_ant': items_ant,
                        'proyectos': fase.proyecto})
     return HttpResponseRedirect(reverse('sigma:adm_i', args=[idFase]))
+
+
+def get_antecesores(idfase):
+    fase = Fase.objects.get(id=idfase)
+    lista = []
+    if fase.posicionFase == 1:
+        return lista
+    else:
+        pos = fase.posicionFase-1
+        fase_ant = Fase.objects.get(proyecto=fase.proyecto, posicionFase=pos)
+        i_x_lb = Items_x_LBase.objects.filter(lb__fase=fase_ant)
+        for i in i_x_lb:
+            lista.append(i.item)
+    return lista
 
 
 def aprobar_desaprobar_item(request, idFase, idItem, opcion):
