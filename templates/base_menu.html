@@ -99,20 +99,23 @@
                         <nav class="sidebar dark">
                             <ul>
                                 <li class="title">Modulos</li>
-                                <li {% if 'super_us' not in permisos %} class="disabled" {% endif %}>
+                                <li {% if 'modificar_pr' not in permisos %} class="disabled" {% endif %}>
                                     <a class="dropdown-toggle" href="#">
                                         <i class="icon-globe"></i>
                                         Administracion
                                     </a>
                                     <ul class="dropdown-menu" data-role="dropdown" style="display: none;">
-                                        {% if 'super_us' in permisos %}
+                                        {% if 'modificar_pr' in permisos %}
                                             <li><a href="{% url 'sigma:adm_proy' %}">Proyectos</a></li>
+                                        {% else %}
+                                            <li class="disabled"><a>Proyectos</a></li>
+                                        {% endif %}
+                                        {% if 'super_us' in permisos %}
                                             <li><a href="{% url 'sigma:adm_u' %}">Usuarios</a></li>
                                             <li><a href="{% url 'sigma:adm_r' %}">Roles y Permisos</a></li>
                                         {% else %}
-                                            <li><a >Proyectos</a></li>
-                                            <li><a >Usuarios</a></li>
-                                            <li><a >Roles y Permisos</a></li>
+                                            <li class="disabled"><a>Usuarios</a></li>
+                                            <li class="disabled"><a>Roles y Permisos</a></li>
                                         {% endif %}
                                     </ul>
                                 </li>

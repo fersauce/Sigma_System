@@ -32,6 +32,12 @@ def administrar_proyecto(request):
     proyectos = usuario.proyectos.all()
     if 'super_us' in permisos:
         proyectos = Proyecto.objects.all().order_by('-nombre')
+    elif 'modificar_pr' in permisos:
+        usu_proyectos = UsuariosXProyecto.objects.filter(usuario=request.user.usuario, activo=True)
+        permisos = request.session['permisos']
+        proyectos = []
+        for u in usu_proyectos:
+            proyectos.append(u.proyecto)
     return render(request, 'administrarproyectos.html',
                   {'proyectos': proyectos,
                    'vacio': 'No se encuentran proyectos registrados',
@@ -245,8 +251,9 @@ def asignarUsuarioProyecto(request, idProyect):
     proyectos.
     """
     proyecto = Proyecto.objects.get(pk=idProyect)
-    usuarios = UsuariosXProyecto.objects.filter(proyecto=proyecto).exclude(
-        lider=True).exclude(usuario__user__pk=1)
+    #usuarios = UsuariosXProyecto.objects.filter(proyecto=proyecto).exclude(
+    #    lider=True).exclude(usuario__user__pk=1)
+    usuarios = User.objects.all()
     if request.is_ajax():
         print 'LLamada de ajax'
         enviar = []
@@ -302,7 +309,6 @@ def asignarUsuarioProyecto(request, idProyect):
         return HttpResponseRedirect(reverse('sigma:adm_proy'))
     else:
         pass
-
     return render(request, 'AsignarUsuario.html', {'usuariosProyecto': usuarios,
                                                    'proyecto': proyecto,
                                                    'permisos': request.session[

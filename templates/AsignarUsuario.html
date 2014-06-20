@@ -27,11 +27,10 @@
                                         <label class="inline-block">
                                             <input type="checkbox" name="usuariosAsig" {% if user.activo %} checked {% endif %} value="{{ user.usuario.pk }}"/>
                                             <span class="check"></span>
-
                                         </label>
                                     </div>
                                 </td>
-                                <td class="right">{{ user.usuario.user.first_name }}</td>
+                                <td class="right">{{ user.username }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>

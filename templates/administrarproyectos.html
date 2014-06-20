@@ -86,17 +86,21 @@
     <div class="span10">
         <h2>Administrador<small class="on-right">de Proyectos</small></h2>
         <div class="example">
-            <a href="{%  url 'sigma:adm_proy_alta' %}">
-                <button class="command-button primary">
-                    <i class="icon-new on-left"></i><b>Agregar</b>
-                    <small>Proyecto</small>
-                </button>
-            </a>
+            {% if 'super_us' in permisos %}
+                <a href="{%  url 'sigma:adm_proy_alta' %}">
+                    <button class="command-button primary">
+                        <i class="icon-new on-left"></i><b>Agregar</b>
+                        <small>Proyecto</small>
+                    </button>
+                </a>
+            {% endif %}
             <table class="table striped hovered dataTable" id="tablaProyecto">
                 <thead>
                     <th class="text-left">Nombre</th>
                     <th class="text-left">Descripci&oacute;n</th>
-                    <th class="text-left">L&iacute;der</th>
+                    {% if 'super_us' in permisos %}
+                        <th class="text-left">L&iacute;der</th>
+                    {% endif %}
                     <th class="text-left">Estado</th>
                     <th class="text-left">Fecha Inicio</th>
                     <th class="text-left">Fecha Finalizaci&oacute;n</th>
@@ -108,7 +112,9 @@
                         <tr>
                             <td>{{ proyecto.nombre }}</td>
                             <td class="right">{{ proyecto.descripcion }}</td>
-                            <td class="right">{{ proyecto|lider }}</td>
+                            {% if 'super_us' in permisos %}
+                                <td class="right">{{ proyecto|lider }}</td>
+                            {% endif %}
                             <td class="right">{{ proyecto.estado }}</td>
                             <td class="right">
                                 {% if proyecto.estado != 'Pendiente' %}
@@ -185,7 +191,9 @@
                     <tr>
                         <th class="text-left">Nombre</th>
                         <th class="text-left">Descripci&oacute;n</th>
-                        <th class="text-left">L&iacute;der</th>
+                        {% if 'super_us' in permisos %}
+                            <th class="text-left">L&iacute;der</th>
+                        {% endif %}
                         <th class="text-left">Estado</th>
                         <th class="text-left">Fecha de Inicio</th>
                         <th class="text-left">Fecha Finalizaci&oacute;n</th>

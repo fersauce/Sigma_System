@@ -1,4 +1,15 @@
 {% extends 'base_menu.html' %}
+{% block definicion_script %}
+    <script type="text/javascript">
+        function cambiar_select(opcion){
+            if (opcion==0){
+                document.getElementById("i_padre").selectedIndex = 0;
+            }else{
+                document.getElementById("i_ant").selectedIndex = 0;
+            }
+        }
+    </script>
+{% endblock %}
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href={% url 'sigma:inicio' %}> Página Principal</a>
@@ -64,7 +75,7 @@
                                 </div>
                                 <div class="span6">
                                     <div class="input-control select" data-role="input-control">
-                                        <select name="i_ant">
+                                        <select id="i_ant" name="i_ant" onchange="cambiar_select(0)">
                                             <option value="0">ninguno</option>
                                             {% for i in items_ant %}
                                                 <option value="{{ i.id }}">{{ i.nombre }}</option>
@@ -81,7 +92,7 @@
                                 </div>
                                 <div class="span6">
                                     <div class="input-control select" data-role="input-control">
-                                        <select name="i_padre">
+                                        <select id="i_padre" name="i_padre" onchange="cambiar_select(1)">
                                             <option value="0">ninguno</option>
                                             {% for i in listaitems %}
                                                 <option value="{{ i.id }}">{{ i.nombre }}</option>
