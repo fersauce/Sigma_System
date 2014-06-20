@@ -146,6 +146,9 @@
                                                         <li class="text-left">
                                                             <a href="{% url 'sigma:adm_proy_asig_usu' proyecto.pk %}">
                                                             <i class="icon-user on-left"></i>Asignar Usuarios</a></li>
+                                                        <li class="text-left">
+                                                            <a href="{% url 'sigma:adm_proy_asig_usu' proyecto.pk %}">
+                                                            <i class="icon-user on-left"></i>Miembros del proyecto</a></li>
                                                         <li class="text-left"><a href="{% url 'sigma:adm_proy_comite' proyecto.pk %}">
                                                             <i class="icon-eye on-left"></i>Comit&eacute;</a></li>
                                                         {% if proyecto.estado == 'Pendiente' %}

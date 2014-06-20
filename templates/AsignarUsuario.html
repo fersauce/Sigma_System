@@ -20,17 +20,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for user in usuariosProyecto %}
+                        {% for usuario in usuarios %}
                             <tr>
                                 <td class="right">
                                     <div class="input-control switch" data-role="input-control">
                                         <label class="inline-block">
-                                            <input type="checkbox" name="usuariosAsig" {% if user.activo %} checked {% endif %} value="{{ user.usuario.pk }}"/>
+                                            <input type="checkbox" name="usuariosAsig" value="{{ usuario.id }}"/>
                                             <span class="check"></span>
                                         </label>
                                     </div>
                                 </td>
-                                <td class="right">{{ user.username }}</td>
+                                <td class="right">{{ usuario.user.username }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -51,6 +51,7 @@
                     } );
                 </script>
                 <input value="Agregar" class="button success" type="submit" onmouseover="">
+                <a href="{% url 'sigma:adm_proy' %}"><input type="button" value="Cancelar" ></a>
             </form>
         </div>
     </div>

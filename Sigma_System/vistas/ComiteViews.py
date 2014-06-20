@@ -31,7 +31,6 @@ def ComiteDeCambio(request, idProyect):
     for i in usuarios:
         us.append(i.usuario)
     usuProyec = UsuariosXProyecto.objects.filter(proyecto=proyecto, activo=True)
-
     if request.method == 'POST':
         usuariosComitePOST = request.POST.getlist('usuariosAsig')
         bandera = False

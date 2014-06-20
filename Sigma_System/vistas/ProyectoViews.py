@@ -251,51 +251,48 @@ def asignarUsuarioProyecto(request, idProyect):
     proyectos.
     """
     proyecto = Proyecto.objects.get(pk=idProyect)
-    #usuarios = UsuariosXProyecto.objects.filter(proyecto=proyecto).exclude(
-    #    lider=True).exclude(usuario__user__pk=1)
-    users = User.objects.exclude(id=1)
+    users = User.objects.exclude(id=1).exclude(id=request.user.id)
+    usuarioXproy = UsuariosXProyecto.objects.filter(
+                proyecto=Proyecto.objects.get(pk=idProyect)).exclude(
+                lider=True)
+    usr_proy = []
+    for u in usuarioXproy:
+        usr_proy.append(u.usuario)
     usuarios = []
+    usuarios_aux = []
     for u in users:
         roles = u.usuario.roles.all()
         if roles:
             if roles.__len__() > 1:
-                usuarios.append(u)
+                usuarios_aux.append(u.usuario)
             else:
                 if roles[0].nombre != 'Lider':
-                    usuarios.append(u)
-    if request.is_ajax():
-        print 'LLamada de ajax'
-        enviar = []
-        for u in UsuariosXProyecto.objects.filter(
-                proyecto=Proyecto.objects.get(pk=idProyect)).exclude(
-                lider=True):
-            enviar.append(
-                {'id': u.usuario.pk, 'nombre': u.usuario.user.first_name,
-                 'apellido': u.usuario.user.last_name, 'activo': u.activo})
-        return HttpResponse(simplejson.dumps(enviar),
-                            mimetype='application/json')
+                    usuarios_aux.append(u.usuario)
+    for u in usuarios_aux:
+        if u not in usr_proy:
+            usuarios.append(u)
     if request.method == 'POST':
         usuariosProyect = request.POST.getlist('usuariosAsig')
-        bandera = False
-        for u in usuarios:
-            if str(u.usuario.pk) in usuariosProyect:
-                if not u.activo:
-                    try:
-                        u.activo = True
-                        u.save()
-                        proyecto.nroMiembros += 1
-                        proyecto.save()
-                        messages.success(request,
-                                         'El usuario ' +
-                                         u.usuario.user.first_name
-                                         + ' ha sido asignado al proyecto ' +
-                                         proyecto.nombre)
-                        bandera = True
-                    except Exception:
-                        messages.error(request,
-                                       'Ha ocurrido un erro interno, favor'
-                                       ' contacte al administrador')
-            else:
+        for u in usuariosProyect:
+            usuario = Usuario.objects.get(id=u)
+            try:
+                UsuariosXProyecto.objects.create(
+                        proyecto=proyecto,
+                        usuario=usuario,
+                        activo=True,
+                        lider=False)
+                proyecto.nroMiembros += 1
+                proyecto.save()
+                messages.success(request,
+                                 'El usuario ' +
+                                 usuario.user.username
+                                 + ' ha sido asignado al proyecto ' +
+                                 proyecto.nombre)
+            except Exception:
+                messages.error(request,
+                               'Ha ocurrido un erro interno, favor'
+                               ' contacte al administrador')
+            '''else:
                 if u.activo:
                     try:
                         u.activo = False
@@ -310,18 +307,13 @@ def asignarUsuarioProyecto(request, idProyect):
                         bandera = True
                     except Exception:
                         messages.error(request, 'Ha ocurrido un error interno,'
-                                                'favor contacte al administrador')
-        if not bandera:
-            messages.info(request, 'No se han realizados asignaciones/'
-                                   'desasignaciones en el proyecto ' +
-                                   proyecto.nombre)
+                                                'favor contacte al administrador')'''
         return HttpResponseRedirect(reverse('sigma:adm_proy'))
     else:
         pass
-    return render(request, 'AsignarUsuario.html', {'usuariosProyecto': usuarios,
+    return render(request, 'AsignarUsuario.html', {'usuarios': usuarios,
                                                    'proyecto': proyecto,
-                                                   'permisos': request.session[
-                                                       'permisos']})
+                                                   'permisos': request.session['permisos']})
 
 
 def iniciarProyecto(request, idProyect):
