@@ -253,7 +253,16 @@ def asignarUsuarioProyecto(request, idProyect):
     proyecto = Proyecto.objects.get(pk=idProyect)
     #usuarios = UsuariosXProyecto.objects.filter(proyecto=proyecto).exclude(
     #    lider=True).exclude(usuario__user__pk=1)
-    usuarios = User.objects.all()
+    users = User.objects.exclude(id=1)
+    usuarios = []
+    for u in users:
+        roles = u.usuario.roles.all()
+        if roles:
+            if roles.__len__() > 1:
+                usuarios.append(u)
+            else:
+                if roles[0].nombre != 'Lider':
+                    usuarios.append(u)
     if request.is_ajax():
         print 'LLamada de ajax'
         enviar = []
