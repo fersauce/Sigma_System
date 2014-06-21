@@ -1,0 +1,152 @@
+{% extends 'base_menu.html' %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}"> P&aacute;gina Principal</a>
+    <a class="element" href="{% url 'sigma:solic_proy' %}"> Proyecto Asociado <sub><small>{{ proyecto.nombre }}</small></sub> </a>
+
+    <a class="pull-menu" href="#"></a>
+{% endblock %}
+{% block titulo %}Fases del proyecto {{ proyecto.nombre }}{% endblock %}
+{% block definicion_script %}
+    <script>
+        function cambiarPosicion(urlAsignar){
+            $.getJSON(urlAsignar, {xhr: "true"}, function(data){
+                $.Dialog({
+                    shadow: true,
+                    overlay: true,
+                    flat: true,
+                    draggable: true,
+                    icon: '<span class="icon-bus"></span>',
+                    title: 'Draggable window',
+                    width: 250,
+                    height: 100,
+                    padding: 10,
+                    scrollTop: 0,
+                    content: 'This Window is draggable by caption.',
+                    draggable: true,
+                    onShow: function(){
+                        var contenido = new String();
+                        contenido= contenido +'<div class="input-control switch" data-role="input-control" align="left" id="usuarios">'+
+                                    '<label class="inline-block" align="left">'+
+                                    '<select name="posicion">';
+                        $.each(data, function(i, dato){
+                            contenido = contenido + '<option value="'+ dato.pkFase +'">'+dato.posicion+' - '+ dato.nombre +'</option>';
+                        });
+                        contenido = contenido + '</select></label></div>';
+                        var content = '<div style=" overflow: auto">'+
+                                '<form method="get" action="'+urlAsignar+'">' +
+                                '<input type="hidden" value="" name="csrfmiddlewaretoken"></input>'+
+                                contenido+
+                                '<br>'+
+                                //'<a class="button primary" href='+ urlAsignar +'> S&iacute; </a>' +
+                                '<input type="submit" value="Aceptar" class="button success">'+
+                                '<a href="#" onclick="$.Dialog.close();"><input class="button inverse" type="button" value="No" ></a>'+
+                                '</form>'+
+                                '</div>';
+                        $.Dialog.title("Realizar Intercambio de Fases");
+                        $.Dialog.content(content);
+                    }
+                });
+            })
+        };
+    </script>
+{% endblock %}
+{% block contenido %}
+    {% load sigma_sytem_tags %}
+    <div class="span10">
+        <h2><a href="#"></a>Fases del Proyecto <small class="on-right">{{ proyecto.nombre }}</small></h2>
+        <div class="example">
+            <table class="table striped hovered dataTable" id="tablaFase">
+                <thead>
+                     <tr>
+                         <th class="text-left">Nombre</th>
+                         <th class="text-left">Posici&oacute;n</th>
+                         <th class="text-left">Estado</th>
+                         <th class="text-left">Fecha de Inicio</th>
+                         <th class="text-left">Fecha de Fin</th>
+                         <th class="text-left">Editar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fase in fases %}
+                        <tr>
+                            <td>{{ fase.nombre }}</td>
+                            <td class="right" width>{{ fase.posicionFase }}</td>
+                            <td class="right" width>{{ fase.estado }}</td>
+                            <td class="right" width>
+                                {% if fase.estado == 'Iniciado' %}
+                                    {{ fase.fechaInicio}}
+                                {% endif %}
+                            </td>
+                            <td class="right" width>
+                                {% if fase.estado == 'Finalizado' %}
+                                    {{ fase.fechaFin }}
+                                {% endif %}
+                            </td>
+                            <td align="center">
+                                <div class="span8">
+                                    <nav class="navigation-bar transparente">
+                                        <div class="navigation-bar-content">
+                                            <ul class="element-menu">
+                                                <li>
+                                                    <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
+                                                    <ul class="dropdown-menu" data-role="dropdown">
+                                                        <li class="text-left "><a href="{% url 'sigma:solic_adm' fase.pk %}">
+                                                            <i class="icon-flag-2"></i>Solicitudes</a></li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </nav>
+                                </div>
+                            </td>
+                        </tr>
+                        <script>
+                            $("#botBaja{{ fase.pk }}").on('click', function(){
+                            $.Dialog({
+                                shadow: true,
+                                overlay: true,
+                                flat: true,
+                                draggable: true,
+                                icon: '<span class="icon-bus"></span>',
+                                title: 'Draggable window',
+                                width: 500,
+                                padding: 10,
+                                content: 'This Window is draggable by caption.',
+                                onShow: function(){
+                                    var content = '<form>' +
+                                            '<p>¿Est&aacute; seguro de querer eliminar esta fase?</p>' +
+                                            '<a class="button primary" href="{% url 'sigma:adm_fase_baja' proyecto.pk fase.pk %}"> S&iacute; </a>' +
+                                            '<a href="{% url 'sigma:adm_fase' proyecto.pk %}"><input type="button" value="No" ></a>'+
+                                            '</form>';
+                                    $.Dialog.title("Confirmar Eliminaci&oacute;n");
+                                    $.Dialog.content(content);
+                                }
+                            });
+                        });
+                        </script>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-left">Nombre</th>
+                        <th class="text-left">Descripci&oacute;n</th>
+                        <th class="text-left">Estado</th>
+                        <th class="text-left">Fecha de Inicio</th>
+                        <th class="text-left">Fecha de Fin</th>
+                        <th class="text-left">Editar</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <script>
+                $(document).ready(function() {
+                    $('#tablaFase').dataTable( {
+                        "oLanguage": {
+                            "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                        }
+                    } );
+                } );
+            </script>
+        </div>
+    </div>
+{% endblock %}

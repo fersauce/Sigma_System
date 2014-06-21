@@ -1,0 +1,236 @@
+{% extends 'base_menu.html' %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}"> P&aacute;gina Principal</a>
+    <a class="element" href="{% url 'sigma:solic_proy' %}"> Proyecto Asociado <sub><small>{{ proyecto.nombre }}</small></sub> </a>
+    <a class="element" href="{% url 'sigma:solic_proy' %}"> Fase Asociada <sub><small>{{ fase.nombre }}</small></sub> </a>
+    <a class="pull-menu" href="#"></a>
+{% endblock %}
+{% block titulo %}Solicitudes de la Fase {{ fase.nombre }}{% endblock %}
+{% block definicion_script %}
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        function agregar(urlAgregar){
+            var csrftoken = getCookie('csrftoken');
+            $.getJSON("{% url 'sigma:solic_rec_items' proyecto.pk %}", {'xhr': true}, function(data){
+                if (data==''){
+                    $.Notify({style: {background: '#1ba1e2', color: 'white'}, content: 'No hay &Iacute;tems en LB en esta fase.'})
+                }else{
+                    var content = '';
+                    var fase;
+                    var bandera = true;
+                    var alto = 0;
+                    $.each(data, function(i, dato){
+                        if (fase != dato.fase.nombre){
+                            fase = dato.fase.nombre;
+                            if (bandera == false){
+                                content = content + '</ul></li>'
+                            }
+                            bandera = false;
+                            content = content + '<li><a class="dropdown-toggle" href="#">'+
+                                    fase+
+                                    '</a>'+
+                                    '<ul class="dropdown-menu" data-role="dropdown" style="display: none">';
+                        }
+                        content = content + '<li><div class="input-control switch" data-role="input-control"' +
+                                'align="left"><label class="inline-block" align="left">' +
+                                '<input type="checkbox" name="itemSeleccionado"' +
+                                'onclick="verItems(\'{% url 'sigma:solic_rec_items_lb' %}\', '+dato.lb.pk_id+', '+dato.item.pk_id+')"  ' +
+                                'id= "itemSelecc'+dato.item.pk_id+'"'+
+                                'value="' + dato.item.pk_id +'" align="left"><span class="check"></span> '+dato.item.nombre+
+                                '</label></div></li>';
+                        alto = alto + 1;
+                    });
+                    alto = alto * 70;
+                    alert(alto);
+                    $.Dialog({
+                        shadow: true,
+                        overlay: true,
+                        flat: true,
+                        draggable: true,
+                        icon: '<span class="icon-bus"></span>',
+                        title: 'Draggable window',
+                        scroll: true,
+                        modal: true,
+                        resizable: true,
+                        height: alto,
+                        width: 70,
+                        padding: 10,
+                        content: 'This Window is draggable by caption.',
+                        onShow: function(){
+                            var content1 = '<div><form method="post" action="'+urlAgregar+'" enctype="multipart/form-data" style="overflow: visible;">' +
+                                    '<p>Seleccione el/los items que quiera modificar </p>' +
+                                    '<input type="hidden" name="csrfmiddlewaretoken" value="'+csrftoken+'">'+
+                                    '<div class="example"><nav class="sidebar dark"><ul>'+content+'</ul></nav>' +
+                                    '<label>Justificaci&oacute;n</label><input type="text" name="justificacion" required>'+
+                                    '</div>'+
+                                    '<div><input type="submit" class="button success" value="S&iacute;">' +
+                                    '<a href="#"><input type="button" class="button inverse" value="No" onclick="$.Dialog.close();"></a></div>'+
+                                    '</form></div>';
+                            $.Dialog.title("Agregar Solicitud");
+                            $.Dialog.content(content1);
+                            $.Metro.initInputs();
+                        }
+                    });
+                }
+            });
+        }
+        function confirmar(urlAux, idA){
+            var csrftoken = getCookie('csrftoken');
+            $("#botBaja"+idA).on('click', function(){
+                $.Dialog({
+                    shadow: true,
+                    overlay: true,
+                    flat: true,
+                    draggable: true,
+                    icon: '<span class="icon-bus"></span>',
+                    title: 'Draggable window',
+                    width: 500,
+                    padding: 10,
+                    content: 'This Window is draggable by caption.',
+                    onShow: function(){
+                        var content = '<form method="post" action="'+urlAux+'">' +
+                                '<input type="hidden" name="csrfmiddlewaretoken" value="'+csrftoken+'">'+
+                                '<p>¿Est&aacute; seguro de querer eliminar esta solicitud?</p>' +
+                                '<input type="submit" value="S&iacute;">' +
+                                '<a href="#"><input type="button" class="button inverse" value="No" onclick="$.Dialog.close();"></a>'+
+                                '</form>';
+                        $.Dialog.title("Confirmar Eliminaci&oacute;n");
+                        $.Dialog.content(content);
+                    }
+                });
+            });
+        }
+        function dialogo(titulo, contenido){
+            $.Dialog({
+                shadow: true,
+                overlay: true,
+                flat: true,
+                draggable: true,
+                icon: '<span class="icon-bus"></span>',
+                title: 'Draggable window',
+                width: 500,
+                padding: 10,
+                content: 'This Window is draggable by caption.',
+                onShow: function(){
+                    $.Dialog.title(titulo);
+                    $.Dialog.modal = true;
+                    $.Dialog.content(contenido);
+                }
+            });
+        }
+        function verItems(urlAux, id1, id2){
+            $.getJSON(urlAux, {'xhr': true, 'lb': id1, 'item': id2}, function(data){
+                var csrftoken = getCookie('csrftoken');
+                if ($('#itemSelecc'+id2).is(':checked')){
+                    $.each(data, function(i, dato){
+                        var hola = '#itemSelecc'+dato.pk_id;
+                        if($(hola).length){
+                            $(hola).attr('disabled', true);
+                        }
+                    });
+                }else{
+                    $.each(data, function(i, dato){
+                        var hola = '#itemSelecc'+dato.pk_id;
+                        if($(hola).length){
+                            $(hola).removeAttr('disabled');
+                        }
+                    });
+                }
+            });
+        }
+        function actualizarTabla(){
+            $.getJSON('{% url 'sigma:solic_adm' fase.pk %}', {'xhr': true}, function (data) {
+                var tabla = document.getElementById("tablaSolicitudes");
+                tabla.refresh();
+            });
+        }
+    </script>
+{% endblock %}
+{% block contenido %}
+    <div class="span10">
+        <h2><a href="#"></a>Solicitudes de la Fase <small class="on-right">{{ fase.nombre }}</small></h2>
+        <div class="example">
+            <table class="table striped hovered dataTable" id="tablaSolicitudes">
+                <a href="#" onclick="agregar('{% url 'sigma:solic_alta' fase.pk %}')">
+                    <button class="command-button primary">
+                        <i class="icon-new on-left"></i><b>Agregar</b>
+                        <small>Solicitud</small>
+                    </button>
+                </a>
+                <thead>
+                    <th class="text-left">Observaci&oacute;n</th>
+                    <th class="text-left">Impacto</th>
+                    <th class="text-left">Estado</th>
+                    <th class="text-left">Ejecutado</th>
+                    <th class="text-left">Editar</th>
+                </thead>
+                <tbody>
+                    {% for solicitud in solicitudes %}
+                        <tr>
+                            <td>{{ solicitud.justificacion }}</td>
+                            <td class="right">{{ solicitud.impacto }}</td>
+                            <td class="right">{{ solicitud.estado }}</td>
+                            <td class="right">{{ solicitud.activo }}</td>
+                            <td align="center">
+                                <div class="span12">
+                                    <nav class="navigation-bar transparente">
+                                        <div class="navigation-bar-content">
+                                            <ul class="element-menu">
+                                                <li>
+                                                    <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
+                                                    <ul class="dropdown-menu" data-role="dropdown">
+                                                        <li class="text-left"><a href="#">
+                                                            <i class="icon-book on-left"></i>Ver &Iacute;tems</a></li>
+                                                        <li class="text-left"><a href="{% url 'sigma:solic_baja' solicitud.pk %}">
+                                                            <i class="icon-book on-left"></i>Eliminar</a></li>
+                                                        <li class="text-left"><a href="{% url 'sigma:solic_enviar' solicitud.pk %}">
+                                                            <i class="icon-book on-left"></i>Enviar</a></li>
+                                                        <li class="text-left"><a href="{% url 'sigma:solic_ejec' solicitud.pk %}">
+                                                            <i class="icon-book on-left"></i>Ejecutar</a></li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </nav>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-left">Observaci&oacute;n</th>
+                        <th class="text-left">Impacto</th>
+                        <th class="text-left">Estado</th>
+                        <th class="text-left">Ejecutado</th>
+                        <th class="text-left">Editar</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <script>
+                $(document).ready(function() {
+                    $('#tablaSolicitudes').dataTable( {
+                        "oLanguage": {
+                            "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                        }
+                    } );
+                } );
+            </script>
+        </div>
+    </div>
+{% endblock %}

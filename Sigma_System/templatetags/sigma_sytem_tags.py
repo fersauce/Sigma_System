@@ -1,7 +1,10 @@
 from django import template
+from django.contrib.auth.models import User
 from django.utils.html import format_html
 from django.core.urlresolvers import reverse
-from Sigma_System.models import Fase, Item, UsuariosXProyecto, TipoDeItem
+from Sigma_System.models import Fase, Item, UsuariosXProyecto, TipoDeItem, \
+    Solicitud
+
 register = template.Library()
 
 
@@ -84,3 +87,19 @@ def verificar_lb(value):
         return 'disabled'
     else:
         return ''
+
+
+@register.filter
+def habilitarVerificacion(value, arg):
+    print value, arg
+    user_hab = User.objects.get(pk=value)
+    item = Item.objects.get(pk=arg)
+    solicitud = Solicitud.objects.filter(item=item, estado='Ejecucion').first()
+    if solicitud is None:
+        return 'disabled'
+    print solicitud.id_usuario
+    print solicitud.pk
+    if solicitud.id_usuario == user_hab.usuario.pk:
+        return ''
+    else:
+        return 'disabled'
