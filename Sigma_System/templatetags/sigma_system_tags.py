@@ -89,3 +89,36 @@ def verificar_lb(value):
 @register.filter
 def divisiblepor(value, arg):
     return (value-1) % arg == 0
+
+
+@register.filter
+def habilitar_add_atrib(value):
+    ti = TipoDeItem.objects.get(id=value)
+    items = Item.objects.filter(tipoItems=ti)
+    if items:
+        return True
+    else:
+        return False
+
+
+@register.filter
+def habilitar_opciones(value):
+    item = Item.objects.get(id=value)
+    if item.estado != 'activo':
+        return 'disabled'
+    else:
+        return ''
+
+
+@register.filter
+def rol_proy(value, arg):
+    u_r = UsuarioRol.objects.get(usuario=arg, idProyecto=value.id, idFase=0)
+    nombre_rol = 'indefinido'
+    if u_r:
+        nombre_rol = u_r.rol.nombre
+    return nombre_rol
+
+@register.filter
+def rol_fase(value, arg):
+    u_r = UsuarioRol.objects.filter(usuario=arg, idProyecto=value.proyecto.id, idFase=value.id)[0]
+    return u_r.rol.nombre
