@@ -103,3 +103,12 @@ def habilitarVerificacion(value, arg):
         return ''
     else:
         return 'disabled'
+
+
+@register.filter
+def faseFinalizada(value):
+    fase = Fase.objects.get(pk=value)
+    if fase.estado == 'Finalizado':
+        return 'disabled'
+    else:
+        return ''

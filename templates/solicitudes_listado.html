@@ -162,12 +162,13 @@
     </script>
 {% endblock %}
 {% block contenido %}
+    {% load sigma_sytem_tags %}
     <div class="span10">
         <h2><a href="#"></a>Solicitudes de la Fase <small class="on-right">{{ fase.nombre }}</small></h2>
         <div class="example">
             <table class="table striped hovered dataTable" id="tablaSolicitudes">
                 <a href="#" onclick="agregar('{% url 'sigma:solic_alta' fase.pk %}')">
-                    <button class="command-button primary">
+                    <button class="command-button primary {{ fase.pk|faseFinalizada }}">
                         <i class="icon-new on-left"></i><b>Agregar</b>
                         <small>Solicitud</small>
                     </button>

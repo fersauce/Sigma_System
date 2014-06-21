@@ -236,6 +236,9 @@ def recuperarItems(request, idFase):
     """
     if request.is_ajax():
         fase = Fase.objects.get(pk=idFase)
+        if fase.estado == 'Finalizado':
+            return HttpResponse(simplejson.dumps([]),
+                                content_type='application/json')
         try:
             lbs = LBase.objects.filter(fase=fase)
             c = []
