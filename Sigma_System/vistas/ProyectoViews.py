@@ -234,6 +234,17 @@ def administrarProyectosAsociados(request):
                    'permisos': permisos})
 
 
+def administrarUsuariosAsociados(request, idProyect):
+    proyecto = Proyecto.objects.get(id=idProyect)
+    usu_proy = UsuariosXProyecto.objects.filter(proyecto=proyecto).exclude(lider=True)
+    usuarios = []
+    for u_p in usu_proy:
+        usuarios.append(u_p.usuario)
+    return render(request, 'AdministradorUsuarioProyecto.html', {'usuarios': usuarios,
+                                                   'proyecto': proyecto,
+                                                   'permisos': request.session['permisos']})
+
+
 def asignarUsuarioProyecto(request, idProyect):
     """
     Vista que asigna los usuarios a un proyecto determinado.
@@ -308,12 +319,70 @@ def asignarUsuarioProyecto(request, idProyect):
                     except Exception:
                         messages.error(request, 'Ha ocurrido un error interno,'
                                                 'favor contacte al administrador')'''
-        return HttpResponseRedirect(reverse('sigma:adm_proy'))
+        return HttpResponseRedirect(reverse('sigma:adm_proy_usu', args=[idProyect]))
     else:
         pass
     return render(request, 'AsignarUsuario.html', {'usuarios': usuarios,
                                                    'proyecto': proyecto,
                                                    'permisos': request.session['permisos']})
+
+
+def desasignarUsuarioProyecto(request, idProyect, idUser):
+    usuario = Usuario.objects.get(id=idUser)
+    proyecto = Proyecto.objects.get(id=idProyect)
+    uxp = UsuariosXProyecto.objects.get(proyecto=proyecto, usuario=usuario)
+    uxp.delete()
+    messages.success(request, 'El usuario ' +
+                              usuario.user.username
+                              + ' ha sido desasignado del proyecto ' +
+                              proyecto.nombre)
+    return HttpResponseRedirect(reverse('sigma:adm_proy_usu', args=[idProyect]))
+
+
+def asig_desagig_roles_proyecto(request, idProyect, idUser):
+    proyecto = Proyecto.objects.get(id=idProyect)
+    usuario = Usuario.objects.get(id=idUser)
+    #roles = usuario.roles.all().exclude(nombre='Lider')
+    rol_lider = Rol.objects.get(nombre='Lider')
+    roles_usuario = UsuarioRol.objects.filter(usuario=usuario,
+                               idProyecto=0,
+                               idFase=0,
+                               idItem=0).exclude(rol=rol_lider)
+    roles = []
+    for r_u in roles_usuario:
+        roles.append(r_u.rol)
+    rolXusuario = UsuarioRol.objects.filter(usuario=usuario, idProyecto=idProyect)
+    rol_usr = roles[0]
+    if rolXusuario:
+        rol_usr = rolXusuario[0].rol
+    if request.method == 'POST':
+        idrol = request.POST['roles']
+        rol = Rol.objects.get(id=idrol)
+        if rolXusuario:
+            if rol != rol_usr:
+                UsuarioRol.objects.get(id=rolXusuario[0].id).delete()
+                UsuarioRol.objects.create(usuario=usuario, rol=rol, idProyecto=idProyect)
+                messages.success(request, 'El usuario ' +
+                                      usuario.user.username
+                                      + ' ahora posee el rol ' +
+                                      rol.nombre)
+                return HttpResponseRedirect(reverse('sigma:adm_proy_usu', args=[idProyect]))
+            else:
+                messages.info(request, 'El usuario no sufrio modificacion alguna')
+                return HttpResponseRedirect(reverse('sigma:adm_proy_usu', args=[idProyect]))
+        else:
+            UsuarioRol.objects.create(usuario=usuario, rol=rol, idProyecto=idProyect)
+            messages.success(request, 'El usuario ' +
+                                  usuario.user.username
+                                  + ' ahora posee el rol ' +
+                                  rol.nombre)
+        return HttpResponseRedirect(reverse('sigma:adm_proy_usu', args=[idProyect]))
+    return render(request, 'UsuarioRolProyecto.html', {'proyecto': proyecto,
+                                                       'usuario': usuario,
+                                                       'roles': roles,
+                                                       'rol_usr': rol_usr})
+
+
 
 
 def iniciarProyecto(request, idProyect):
