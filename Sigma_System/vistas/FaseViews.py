@@ -57,8 +57,6 @@ def alta_fase(request, idProyect):
                 return render(request, 'fasealta.html',
                               {'proyecto': idProyect})
         estado_aux = 'Pendiente'
-        if not fase:
-            estado_aux = 'Iniciado'
         Fase.objects.create(
             proyecto=proyecto,
             nombre=request.POST['nombre'],
@@ -70,9 +68,6 @@ def alta_fase(request, idProyect):
             fechaFin=datetime.datetime.now() + datetime.timedelta(days=1)
         )
         fases = Fase.objects.filter(proyecto=proyecto)
-        if fases and proyecto.estado != "Iniciado":
-            proyecto.estado = "Iniciado"
-        proyecto.save()
         messages.success(request, 'Fase creada con exito')
         return HttpResponseRedirect(
             '/ss/proyecto/' + str(idProyect) + '/fase/')
