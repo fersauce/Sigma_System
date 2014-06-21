@@ -3369,7 +3369,7 @@ a {
 }
 .metro input[type=number]::-webkit-inner-spin-button,
 .metro input[type=number]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
+  /*-webkit-appearance: none;*/
   margin: 0;
 }
 .metro img {

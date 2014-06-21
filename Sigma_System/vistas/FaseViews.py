@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.http import *
 import simplejson
 from Sigma_System.forms import BusquedaFasesForm
-from Sigma_System.models import Proyecto, Usuario, Fase, TipoDeItem, LBase, Items_x_LBase, Item
+from Sigma_System.models import Proyecto, Usuario, Fase, TipoDeItem, LBase, Items_x_LBase, Item, UsuarioRol
 from Sigma_System.decoradores import permisos_requeridos
 from django.contrib.auth.decorators import login_required
 import datetime, time
@@ -126,11 +126,19 @@ def modificar_fase(request, idProyect, idFase):
 
 
 def linea_base(request, idProyecto, idFase):
+    item = Item.objects.get(id=34)
+    print '==========================='
+    print item.nombre
+    print '==========================='
+    lista = lista_des(item)
+    for i in lista:
+        print i.nombre, i.id
     lb = LBase.objects.filter(fase=Fase.objects.get(id=idFase)).order_by('id')
     return render(request, 'LineaBase.html', {'id_proy': idProyecto, 'id_fase': idFase, 'lineasbase': lb})
 
 
 def establecer_linea_base(request, idProyecto, idFase):
+    #item_finales devuelve todos los items en estado aprobados
     itemfinales = traer_itemfinales(idFase)
     if request.method == 'POST':
         obs = request.POST['obs']
@@ -141,11 +149,13 @@ def establecer_linea_base(request, idProyecto, idFase):
             item_actual.estado = 'bloqueado'
             item_actual.save()
             Items_x_LBase.objects.create(lb=lb, item=item_actual, item_final=True)
-        i_padres = traer_items_padre(i_finales, idFase)
-        for i in i_padres:
-            i.estado = 'bloqueado'
-            i.save()
-            Items_x_LBase.objects.create(lb=lb, item=i)
+        '''
+            i_padres = traer_items_padre(i_finales, idFase)
+            for i in i_padres:
+                i.estado = 'bloqueado'
+                i.save()
+                Items_x_LBase.objects.create(lb=lb, item=i)
+        '''
         fase = Fase.objects.get(pk=idFase)
         proyecto = fase.proyecto
         if not proyecto.nroFases == fase.posicionFase:
@@ -154,22 +164,51 @@ def establecer_linea_base(request, idProyecto, idFase):
                 faseSig.estado = 'Iniciado'
                 fase.fechaInicio = datetime.datetime.now()
                 faseSig.save()
-                messages.success(request, 'Fase '+fase.nombre+' iniciada.')
+                messages.success(request, 'Fase '+faseSig.nombre+' iniciada.')
         messages.success(request, 'Se agregaron correctamente los items a la linea base')
         return HttpResponseRedirect(reverse('sigma:adm_fase_lb', args=(idProyecto, idFase)))
     else:
         return render(request, 'AsignarItemxLB.html', {'id_proy': idProyecto, 'id_fase': idFase, 'itemfinales':itemfinales})
 
 
+def lista_des(item):
+    hijos = Item.objects.filter(tipoItems__fase=item.tipoItems.fase,
+                                item_padre=item.id, estado='aprobado').order_by('id')
+    print '/*/*/*/*/*/*/*/*/*/*/*/*/*/*'
+    print 'item padre: ', item.nombre
+    for i in hijos:
+        print '   item hijos: ', i.nombre
+    print '/*/*/*/*/*/*/*/*/*/*/*/*/*/*'
+    lista = [item]
+    if not hijos:
+        return lista
+    else:
+        for h in hijos:
+            lista = lista + lista_des(h)
+        return lista
+
+
 def traer_itemfinales(idFase):
     fase = Fase.objects.get(id=idFase)
     items = Item.objects.filter(tipoItems__fase=fase, estado='aprobado')
     items_finales = []
-    for i in items:
-        i_hijo = Item.objects.filter(item_padre=i.id, tipoItems__fase=fase)
-        if not i_hijo:
-            items_finales.append(i)
-    return items_finales
+    if fase.posicionFase == 1:
+        for i in items:
+            if i.item_padre == 0:
+                items_finales.append(i)
+            else:
+                padre = Item.objects.get(id=i.item_padre)
+                if padre.estado == 'bloqueado' or padre.estado == 'revision':
+                    items_finales.append(i)
+    else:
+        for i in items:
+            padre = Item.objects.get(id=i.item_padre)
+            if padre.estado == 'bloqueado':
+                items_finales.append(i)
+    listafinal = []
+    for i in items_finales:
+        listafinal = lista_des(i) + listafinal
+    return listafinal
 
 
 def traer_items_padre(i_finales, idFase):
@@ -311,6 +350,97 @@ def intercambiarFase(request, idFase):
         messages.error(request, 'Solo es precaucion')
     return HttpResponseRedirect(
         reverse('sigma:adm_fase', args=[fase.proyecto.pk]))
+
+
+def administrarUsuariosAsociadosFase(request, idProyect, idFase):
+    proyecto = Proyecto.objects.get(id=idProyect)
+    fase = Fase.objects.get(id=idFase)
+    usu_rol = UsuarioRol.objects.filter(idProyecto=idProyect, idFase=idFase)
+    usuarios = []
+    for u_r in usu_rol:
+        usuarios.append(u_r.usuario)
+    return render(request, 'AdministradorUsuarioFase.html', {'usuarios': usuarios,
+                                                   'proyecto': proyecto,
+                                                   'fase': fase,
+                                                   'permisos': request.session['permisos']})
+
+
+def asignarUsuarioFase(request, idProyect, idFase):
+    """
+    Vista que asigna los usuarios a un proyecto determinado.
+
+    @type request: django.http.HttpRequest.
+    @param request: Contiene la informacion sobre la solicitud de la pagina
+    que lo llamo.
+
+    @type idProyect: Unicode
+    @param idProyect: Contiene el id del proyecto que se va a asociar/desasociar
+    usuarios.
+
+    @rtype django.shortcuts.render
+    @return: AdministrarProyecto.html, pagina en la cual se trabaja con los
+    proyectos.
+    """
+    proyecto = Proyecto.objects.get(pk=idProyect)
+    fase = Fase.objects.get(id=idFase)
+    usu_rol = UsuarioRol.objects.filter(idProyecto=idProyect, idFase=0)
+    usuarios3 = []
+    for u_r in usu_rol:
+        usuarios3.append(u_r.usuario)
+
+
+    usu_rol2 = UsuarioRol.objects.filter(idProyecto=idProyect, idFase=idFase)
+    usuarios2 = []
+    for u_r in usu_rol2:
+        usuarios2.append(u_r.usuario)
+
+    usuarios = []
+
+    for u in usuarios3:
+        if u not in usuarios2:
+            usuarios.append(u)
+
+    if request.method == 'POST':
+        print 'entra en post'
+        usuariosfase = request.POST.getlist('usuariosAsig')
+        print '/*-85*/-65*-/*-/-*/'
+        for u in usuariosfase:
+            usuario = Usuario.objects.get(id=u)
+            rol = UsuarioRol.objects.filter(usuario=usuario, idProyecto=idProyect)[0].rol
+            try:
+                UsuarioRol.objects.create(
+                        rol=rol,
+                        usuario=usuario,
+                        idProyecto=idProyect,
+                        idFase=idFase)
+                messages.success(request,
+                                 'El usuario ' +
+                                 usuario.user.username
+                                 + ' ha sido asignado a la fase ' +
+                                 fase.nombre)
+            except Exception:
+                messages.error(request,
+                               'Ha ocurrido un erro interno, favor'
+                               ' contacte al administrador')
+        return HttpResponseRedirect(reverse('sigma:adm_fase_usu', args=(idProyect, idFase)))
+    return render(request, 'AsignarUsuarioFase.html', {'usuarios': usuarios,
+                                                   'proyecto': proyecto,
+                                                   'fase': fase,
+                                                   'permisos': request.session['permisos']})
+
+
+def desasignarUsuarioFase(request, idProyect, idFase, idUser):
+    fase = Fase.objects.get(id=idFase)
+    usuario = Usuario.objects.get(id=idUser)
+    uxr = UsuarioRol.objects.filter(usuario=usuario, idProyecto=idProyect, idFase=idFase)[0]
+    uxr.delete()
+    messages.success(request, 'El usuario ' +
+                              usuario.user.username
+                              + ' ha sido desasignado de la fase ' +
+                              fase.nombre)
+    return HttpResponseRedirect(reverse('sigma:adm_fase_usu', args=(idProyect, idFase)))
+
+
 
 
 def finalizar_fase(request, idp, idf):

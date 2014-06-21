@@ -10,7 +10,7 @@
     <div class="span10">
         <h2><a href="#"></a>Administrador<small class="on-right">de Usuarios del Proyecto</small> {{ proyecto.nombre }}</h2>
         <div class="example">
-            <form action="{% url 'sigma:adm_proy_asig_usu' proyecto.pk %}" method="post" id="formUsu">
+            <form action="{% url 'sigma:adm_fase_usu_asig' proyecto.pk fase.pk %}" method="post" id="formUsu">
                 {% csrf_token %}
                 <table class="table striped hovered dataTable" id="tabla02">
                     <thead>
@@ -51,7 +51,7 @@
                     } );
                 </script>
                 <input value="Agregar" class="button success" type="submit" onmouseover="">
-                <a href="{% url 'sigma:adm_proy_usu' proyecto.id %}"><input type="button" value="Cancelar" ></a>
+                <a href="{% url 'sigma:adm_fase_usu' proyecto.id fase.id %}"><input type="button" value="Cancelar" ></a>
             </form>
         </div>
     </div>

@@ -31,7 +31,7 @@ def administrarItem(request, idFase):
     return render(request, 'AdministrarItem.html',
                   {'items': its, 'fase': fs,
                    'username': request.user.username,
-                   'proy':proy, 'permisos':permisos,
+                   'proy': proy, 'permisos':permisos,
                    'nomb': nameFa, 'item_baja': item_baja})
 
 
@@ -45,24 +45,23 @@ def altaItem(request, idFase, opcion):
     print "------------------"
     print "el id fase es " + idFase
     fase = Fase.objects.get(pk=idFase)
-    if fase.posicionFase == 1:
-        ban_defecto = True
-    else:
-        ban_defecto = False
+    items_ant = []
     if opcion == '0':
         listaitems1 = Item.objects.filter(tipoItems__fase=fase, estado='aprobado')
         listaitems2 = Item.objects.filter(tipoItems__fase=fase, estado='bloqueado')
         listaitems = listaitems1 | listaitems2
+        listaitems = Item.objects.filter(tipoItems__fase=fase).exclude(estado='baja')
+        items_ant = get_antecesores(idFase)
     else:
         pos = fase.posicionFase-1
         #definir una funcion para que listaitems reciba items finales en linea base de la fase anterior
         #por ahora recibe todos los items
         fase = Fase.objects.get(proyecto=fase.proyecto, posicionFase=pos)
-        if fase.estado == 'Pendiente':
-            fase.estado = 'Iniciado'
-            fase.fechaInicio = datetime.datetime.now()
-            fase.save()
-            messages.success(request, 'Fase '+fase.nombre+' iniciada.')
+        #if fase.estado == 'Pendiente':
+        #    fase.estado = 'Iniciado'
+        #    fase.fechaInicio = datetime.datetime.now()
+        #    fase.save()
+        #    messages.success(request, 'Fase '+fase.nombre+' iniciada.')
         li = Items_x_LBase.objects.filter(lb__fase=fase, item_final=True)
         listaitems = []
         for l in li:
@@ -77,7 +76,6 @@ def altaItem(request, idFase, opcion):
     else:
         print "tipo de items vacio"
     print(fase.nombre)
-    print tis.first().__getattribute__('nombre')
     if request.method == 'POST':
         try:
             ti = TipoDeItem.objects.get(id=request.POST['tipo'])
@@ -86,6 +84,9 @@ def altaItem(request, idFase, opcion):
             compl = request.POST['complejidad']
             pri = request.POST['prior']
             est = "activo"
+            id_rel = int(request.POST['i_padre'])
+            if id_rel == 0:
+                id_rel = int(request.POST['i_ant'])
             itt = Item.objects.create(
                 tipoItems=ti,
                 nombre=name,
@@ -93,7 +94,7 @@ def altaItem(request, idFase, opcion):
                 complejidad=compl,
                 prioridad=pri,
                 estado=est,
-                item_padre=request.POST['i_padre']
+                item_padre=id_rel
             )
             #guardarHistorial(its,verAct,verAnt,cod,valorActual,valorAnterior,descrip):
             guardarHistorial(itt,1,0,'a',0,0,'alta')
@@ -133,20 +134,79 @@ def altaItem(request, idFase, opcion):
                        'nombreFase': fase.nombre,
                        'opcion': int(opcion),
                        'listaitems': listaitems,
-                       'ban_defecto': ban_defecto,
+                       'items_ant': items_ant,
                        'proyectos': fase.proyecto})
     return HttpResponseRedirect(reverse('sigma:adm_i', args=[idFase]))
 
 
+def get_antecesores(idfase):
+    fase = Fase.objects.get(id=idfase)
+    lista = []
+    if fase.posicionFase == 1:
+        return lista
+    else:
+        pos = fase.posicionFase-1
+        fase_ant = Fase.objects.get(proyecto=fase.proyecto, posicionFase=pos)
+        i_x_lb = Items_x_LBase.objects.filter(lb__fase=fase_ant)
+        for i in i_x_lb:
+            lista.append(i.item)
+    return lista
+
+
 def aprobar_desaprobar_item(request, idFase, idItem, opcion):
     item = Item.objects.get(id=idItem)
-    if opcion == '0':
-        item.estado = 'aprobado'
-        messages.success(request, 'El item "' + item.nombre + '" ha sido aprobado')
+    fase = Fase.objects.get(id=idFase)
+    if item.estado not in ['bloqueado', 'revision']:
+        if opcion == '0':
+            if item.estado != 'aprobado':
+                if item.item_padre != 0:
+                    padre = Item.objects.get(id=item.item_padre)
+                    if padre.estado in ['aprobado', 'bloqueado']:
+                        item.estado = 'aprobado'
+                        item.save()
+                        messages.success(request, 'El item "' + item.nombre + '" ha sido aprobado')
+                    else:
+                        messages.error(request, 'El item "' + item.nombre +
+                                                '" no puede ser aprobado, el padre del item debe estar '
+                                                'aprobado para dar lugar a la operacion')
+                else:
+                    if fase.posicionFase == 1:
+                        item.estado = 'aprobado'
+                        item.save()
+                        messages.success(request, 'El item "' + item.nombre + '" ha sido aprobado')
+                    else:
+                        messages.error(request, 'El item "' + item.nombre +
+                                                    '" no puede ser aprobado, este item necesita una relacion '
+                                                    'con un padre en estado aprobado o con un antecesor para dar '
+                                                    'lugar a la operacion')
+            else:
+                messages.info(request, 'El item "' + item.nombre + '" ya esta aprobado')
+        else:
+            if item.estado != 'activo':
+                items = Item.objects.filter(item_padre=item.id,
+                                            tipoItems__fase=fase).exclude(estado='baja')
+                ban = False
+                if items:
+                    for i in items:
+                        if i.estado != 'activo':
+                            ban = True
+                            break
+                    if ban:
+                        messages.error(request, 'El item "' + item.nombre +
+                                            '" no puede ser desaprobado, desapruebe el/los item/s hijo/s'
+                                            ' antes de desaprobar este item')
+                    else:
+                        item.estado = 'activo'
+                        item.save()
+                        messages.success(request, 'El item "' + item.nombre + '" ha sido desaprobado')
+                else:
+                    item.estado = 'activo'
+                    item.save()
+                    messages.success(request, 'El item "' + item.nombre + '" ha sido desaprobado')
+            else:
+                messages.info(request, 'El item "' + item.nombre + '" ya esta activo')
     else:
-        item.estado = 'activo'
-        messages.success(request, 'El item "' + item.nombre + '" ha sido desaprobado')
-    item.save()
+        messages.error(request, 'No se puede modificar el estado de un item en linea base')
     return HttpResponseRedirect(reverse('sigma:adm_i', args=[idFase]))
 
 
@@ -351,7 +411,6 @@ def revivir(request, it):
         descripcion="revivir",
         fecha_mod=datetime.datetime.now()
     )
-
     return HttpResponseRedirect('/ss/adm_i_rev/' + str(its.tipoItems.fase.pk))
 
 
@@ -386,7 +445,6 @@ def revertirItem(request, idItem, versionRev, idHis):
     historial.item.all
 
     """
-
     its = Item.objects.get(id=idItem)
     versionActual = its.version
 
@@ -398,7 +456,6 @@ def revertirItem(request, idItem, versionRev, idHis):
             idHisFinal = h.id
 
     idHisRev = his2.id
-
     ultimo = idHisFinal
     indice = ultimo + 1
     print('id historial rever', idHisRev)
@@ -416,7 +473,6 @@ def revertirItem(request, idItem, versionRev, idHis):
             idLeido = itemAuxiliar.id
             print 'id leido', idLeido
             print 'idParametro', idItem
-
             if (int(idLeido) == int(idItem)):
                 print('id son iguales')
                 if int(historialAux.nro_version_act) > 0:

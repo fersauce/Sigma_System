@@ -1,0 +1,41 @@
+{% extends "base_menu.html" %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_u' %}"> Administracion <sub>Usuario</sub></a>
+    <span class="element-divider"></span>
+    <a class="element"> Seleccionar Rol de Usuario <sub>{{ usuario.user.username }}</sub></a>
+    <span class="element-divider"></span>
+    <a class="pull-menu" href="#"></a>
+{% endblock %}
+{% block titulo %}Seleccionar Rol de Usuario{% endblock %}
+{% block contenido %}
+    <div class="span10">
+        <h2>Asignar<small class="on-right">Rol</small></h2>
+        <div class="example">
+            <form action="{%  url 'sigma:adm_proy_usu_roles' proyecto.id usuario.id %}" method="post">
+                {% csrf_token %}
+                <fieldset>
+                    <div class="input-control radio default-style inline-block" data-role="input-control">
+                        <div class="input-control radio default-style inline-block" data-role="input-control">
+                            {% for rol in roles %}
+                                <label class="inline-block" align="left">
+                                    <input type="radio" name="roles" value="{{ rol.id }}"
+                                    {% if rol == rol_usr %} checked {% endif %}>
+                                    <span class="check"></span>
+                                    {{ rol.nombre }}
+                                </label>
+                                <br>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="">
+                        <input type="submit" value="Aceptar" onclick="" class="button success">
+                        <a href="{% url 'sigma:adm_proy_usu' proyecto.id %}"><input type="button" value="Cancelar" class="button inverse"></a>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}

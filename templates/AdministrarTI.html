@@ -2,8 +2,13 @@
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
-    <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
-    <a class="element" href="{% url 'sigma:adm_fase' pkProyecto %}">Fases</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_proy' %}">Administracion</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_fase' pkProyecto %}">Proyecto <sub>{{ fase.proyecto.nombre }}</sub></a>
+    <span class="element-divider"></span>
+    <a class="element">Fase {{ fase.nombre }}<sub>Tipo de Items</sub></a>
+    <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
 {% endblock %}
 {% block titulo %}Administrar Tipos de &Iacute;tem{% endblock %}

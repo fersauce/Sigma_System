@@ -14,6 +14,7 @@ from Sigma_System.decoradores import permisos_requeridos
 from Sigma_System.funciones_aux import permisos_disponibles
 from django.core.urlresolvers import reverse
 from Sigma_System.models import Fase, TipoDeItem, Item
+from Sigma_System.vistas.ItemViews import get_antecesores
 
 
 def adm_relacion(request, id_item):
@@ -30,12 +31,17 @@ def adm_relacion(request, id_item):
 
 def asignar_padre(request, id_item):
     item = Item.objects.get(id=id_item)
-    items = Item.objects.filter(tipoItems__fase=item.tipoItems.fase, estado='aprobado').exclude(id=item.id)
+    items = Item.objects.filter(tipoItems__fase=item.tipoItems.fase).exclude(id=item.id).exclude(estado='baja')
+    return render(request, 'AsignarPadre.html', {'items': items, 'item': item})
+
+
+def asignar_ant(request, id_item):
+    item = Item.objects.get(id=id_item)
+    items = get_antecesores(item.tipoItems.fase.id)
     return render(request, 'AsignarPadre.html', {'items': items, 'item': item})
 
 
 def asignar_final(request, hijo, padre):
-    print verificar_ciclos(Item.objects.get(id=1), 9)
     if not verificar_ciclos(Item.objects.get(id=int(hijo)), int(padre)):
         item = Item.objects.get(id=hijo)
         item.item_padre = padre
@@ -45,7 +51,6 @@ def asignar_final(request, hijo, padre):
     else:
         messages.error(request, 'No se puede asociar debido al ciclo que se crearia')
         return HttpResponseRedirect(reverse('sigma:adm_relacion', args=[hijo]))
-
 
 
 def ver_hijos(request, id_item):

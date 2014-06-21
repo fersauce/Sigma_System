@@ -1,4 +1,43 @@
 {% extends 'base_menu.html' %}
+{% block definicion_script %}
+    <script type="text/javascript">
+        function indice(check)
+        {
+            f = check.form;
+            n = check.name;
+            for (var i=0,nombres=f[n],total=nombres.length;i<total;i++){
+                if (f[n][i] == check){
+                    return i;
+                }
+            }
+            //return 0
+        }
+        function marcar_desm(source)
+        {
+            index=indice(source)+2
+            //alert(index)
+            checkboxes=document.getElementsByTagName('input');
+            for(i=0;i<checkboxes.length;i++)
+            {
+                if(checkboxes[i].type == "checkbox")
+                {
+                    //alert(i)
+                    if (source.checked){
+                        if (i<=index){
+                            checkboxes[i].checked=source.checked;
+                        }
+                    }
+                    else
+                    {
+                        if (i>=index){
+                            checkboxes[i].checked=source.checked;
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+{% endblock %}
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
@@ -14,68 +53,69 @@
         <div class="example">
             <form action="{%  url 'sigma:adm_fase_lb_est' id_proy id_fase %}" method="post">
                 {% csrf_token %}
-                    <div class="grid fluid">
-                        <div class="row">
-                            <div class="span3">
-                                <label class="text-right">Observaciones(opcional)</label>
-                            </div>
-                            <div class="span7">
-                                <div class="input-control text" data-role="input-control">
-                                    <input type="text" name="obs">
-                                </div>
+                <div class="grid fluid">
+                    <div class="row">
+                        <div class="span3">
+                            <label class="text-right">Observaciones(opcional)</label>
+                        </div>
+                        <div class="span7">
+                            <div class="input-control text" data-role="input-control">
+                                <input type="text" name="obs">
                             </div>
                         </div>
                     </div>
-                        <table class="table striped hovered dataTable" id="tablaLbxItem">
-                            <thead>
-                                 <tr>
-                                     <th class="text-left">Establecer?</th>
-                                     <th class="text-left">Nombre</th>
-                                     <th class="text-left">Complejidad</th>
-                                     <th class="text-left">Prioridad</th>
-                                     <th class="text-left">Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for i in itemfinales %}
-                                    <tr>
-                                        <td class="right">
-                                            <div class="input-control switch" data-role="input-control">
-                                                <label class="inline-block">
-                                                    <input type="checkbox" name="items_finales"  value="{{ i.id }}"/>
-                                                    <span class="check"></span>
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td class="right">{{ i.nombre }}</td>
-                                        <td class="right">{{ i.complejidad }}</td>
-                                        <td class="right">{{ i.prioridad }}</td>
-                                        <td class="right">{{ i.estado }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th class="text-left">Establecer?</th>
-                                    <th class="text-left">Nombre</th>
-                                    <th class="text-left">Complejidad</th>
-                                    <th class="text-left">Prioridad</th>
-                                    <th class="text-left">Estado</th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                        <script>
-                            $(document).ready(function() {
-                                $('#tablaLbxItem').dataTable( {
-                                    "oLanguage": {
-                                        "sUrl": "/static/MetroBoostrap/data/spanish.txt"
-                                    }
-                                } );
-                            } );
-                        </script>
-                        <br>
-                        <input type="submit" value="Establecer" onclick="">
-                        <a href="{% url 'sigma:adm_fase_lb' id_proy id_fase %}"><input type="button" value="Cancelar" ></a>
+                </div>
+                <table class="table striped hovered dataTable" id="tablaLbxItem">
+                    <thead>
+                         <tr>
+                             <th class="text-left">Establecer?</th>
+                             <th class="text-left">Nombre</th>
+                             <th class="text-left">Complejidad</th>
+                             <th class="text-left">Prioridad</th>
+                             <th class="text-left">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in itemfinales %}
+                            <tr>
+                                <td class="right">
+                                    <div class="input-control switch" data-role="input-control">
+                                        <label class="inline-block">
+                                            <input type="checkbox" name="items_finales"  value="{{ i.id }}"
+                                                   onclick=marcar_desm(this);>
+                                            <span class="check"></span>
+                                        </label>
+                                    </div>
+                                </td>
+                                <td class="right">{{ i.nombre }}</td>
+                                <td class="right">{{ i.complejidad }}</td>
+                                <td class="right">{{ i.prioridad }}</td>
+                                <td class="right">{{ i.estado }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th class="text-left">Establecer?</th>
+                            <th class="text-left">Nombre</th>
+                            <th class="text-left">Complejidad</th>
+                            <th class="text-left">Prioridad</th>
+                            <th class="text-left">Estado</th>
+                        </tr>
+                    </tfoot>
+                </table>
+                <!--script>
+                    $(document).ready(function() {
+                        $('#tablaLbxItem').dataTable( {
+                            "oLanguage": {
+                                "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                            }
+                        } );
+                    } );
+                </script-->
+                <br>
+                <input type="submit" value="Establecer" onclick="">
+                <a href="{% url 'sigma:adm_fase_lb' id_proy id_fase %}"><input type="button" value="Cancelar" ></a>
             </form>
         </div>
     </div>

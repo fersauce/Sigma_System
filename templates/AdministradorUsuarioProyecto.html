@@ -1,0 +1,113 @@
+{% extends 'base_menu.html' %}
+{% block definicion_script %}
+<script>
+    function confirmar(url_aux)
+    {
+        $.Dialog({
+            shadow: true,
+            overlay: true,
+            flat: true,
+            draggable: true,
+            icon: '<i class="icon-warning"></span>',
+            title: 'Draggable window',
+            width: 500,
+            padding: 10,
+            content: 'This Window is draggable by caption.',
+            onShow: function(){
+                var content =
+                    '<div class="example">'+
+                        '<form>' +
+                            '<h2>Est&aacute; a punto de desvincular a este usuario...</h2>' +
+                            '<div class="form-actions" align="center">'+
+                                '<a class="button" href="' + url_aux + '"> Aceptar </a>' + ' ' +
+                                '<button class="button" onclick=$.Dialog.close()>' +
+                                    'Cancelar</button>'+
+                            '</div>'+
+                        '</form>'+
+                    '</div>';
+                $.Dialog.title("Confirmar Desvinculaci&oacute;n");
+                $.Dialog.content(content);
+            }
+        });
+    }
+</script>
+{% endblock %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_proy' %}">Administracion <sub>Proyecto {{ proyecto.nombre }}</sub></a>
+    <span class="element-divider"></span>
+    <a class="element">Administracion <sub>Usuario</sub></a>
+    <span class="element-divider"></span>
+    <a class="pull-menu" href="#"></a>
+{% endblock %}
+{% block titulo %}Administracion: Usuario{% endblock %}
+{% block contenido %}
+    {% load sigma_system_tags %}
+    <div class="span10">
+        <h2><a href="#"></a>Usuarios<small class="on-right">del Proyecto {{ proyecto.nombre }}</small></h2>
+        <div class="example">
+            <a href="{% url 'sigma:adm_proy_asig_usu' proyecto.id %}">
+                <button class="command-button primary">
+                    <i class="icon-enter on-left"></i><b>Asignar</b>
+                    <small>Usuario</small>
+                </button>
+            </a>
+            <table class="table striped hovered dataTable" id="datatable2">
+                <thead>
+                    <th class="text-left">Username</th>
+                    <th class="text-left">E-mail</th>
+                    <th class="text-left">Rol en el proyecto</th>
+                    <th class="text-center">Editar</th>
+                </thead>
+                <tbody>
+                    {% for u in usuarios %}
+                        <tr>
+                            <td>{{ u.user.username }}</td>
+                            <td class="right">{{ u.user.email }}</td>
+                            <td class="right">{{ proyecto|rol_proy:u }}</td>
+                            <td align="">
+                                <div class="span12">
+                                    <nav class="navigation-bar transparente">
+                                        <div class="navigation-bar-content">
+                                            <ul class="element-menu">
+                                                <li>
+                                                    <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
+                                                    <ul class="dropdown-menu" data-role="dropdown">
+                                                        <li class="text-left" onclick="confirmar('{% url 'sigma:adm_proy_desasig_usu' proyecto.id u.id %}')">
+                                                            <a href="#">
+                                                            <i class="icon-exit on-left"></i>Desasignar Usuario</a></li>
+                                                        <li class="text-left"><a href="{% url 'sigma:adm_proy_usu_roles' proyecto.id u.id %}">
+                                                            <i class="icon-user-3 on-left"></i>Roles de Proyecto</a></li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </nav>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-left">Username</th>
+                        <th class="text-left">E-mail</th>
+                        <th class="text-left">Rol en el proyecto</th>
+                        <th class="text-center">Editar</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <script>
+                $(document).ready(function() {
+                    $('#datatable2').dataTable( {
+                        "oLanguage": {
+                            "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                        }
+                    } );
+                } );
+            </script>
+        </div>
+    </div>
+{% endblock %}

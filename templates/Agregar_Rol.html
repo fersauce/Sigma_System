@@ -1,4 +1,19 @@
 {% extends "base_menu.html" %}
+{% block definicion_script %}
+    <script type="text/javascript">
+        function marcar(source)
+        {
+            checkboxes=document.getElementsByTagName('input');
+            for(i=0;i<checkboxes.length;i++)
+            {
+                if(checkboxes[i].type == "checkbox")
+                {
+                    checkboxes[i].checked=source.checked;
+                }
+            }
+        }
+    </script>
+{% endblock %}
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>

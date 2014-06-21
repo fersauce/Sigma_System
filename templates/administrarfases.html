@@ -2,7 +2,11 @@
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
-    <a class="element" href="{% url 'sigma:des_proyec' %}">Proyectos</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:adm_proy' %}">Administracion</a>
+    <span class="element-divider"></span>
+    <a class="element">Proyecto <sub>{{ proyecto.nombre }}</sub></a>
+    <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
 {% endblock %}
 {% block titulo %}Fases del proyecto {{ proyecto.nombre }}{% endblock %}
@@ -96,6 +100,9 @@
                                                 <li>
                                                     <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
                                                     <ul class="dropdown-menu" data-role="dropdown">
+                                                        <li class="text-left">
+                                                            <a href="{% url 'sigma:adm_fase_usu' proyecto.pk fase.pk %}">
+                                                            <i class="icon-user on-left"></i>Usuarios de fase</a></li>
                                                         {% if fase.estado != 'Iniciado' %}
                                                         <li class="text-left {{ fase.id|verificar_fase }}"><a href="{% url 'sigma:adm_fase_mod' proyecto.pk fase.pk %}">
                                                             <i class="icon-pencil on-left"></i>Modificar</a></li>
