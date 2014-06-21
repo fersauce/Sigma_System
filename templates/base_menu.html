@@ -25,8 +25,8 @@
         <!--script src="{{ STATIC_URL }}MetroBoostrap/js/load-metro.js"></script>
 
         <!-- Local JavaScript -->
-        <!--script src="/static/MetroBoostrap/js/docs.js"></script-->
-        <!--script src="/static/MetroBoostrap/js/github.info.js"></script-->
+        <script src="/static/MetroBoostrap/js/docs.js"></script>
+        <script src="/static/MetroBoostrap/js/github.info.js"></script>
         <script src="/static/MetroBoostrap/js/metro.min.js"></script>
 
         <!-- funciones JavaScript -->
@@ -91,6 +91,7 @@
                 </div>
             </nav>
         </header>
+        {% load sigma_sytem_tags %}
         <div class="container" align="center">
             <div class="grid fluid">
                 <div class="row">
@@ -98,7 +99,7 @@
                         <h2><a href="#"></a><small class="on-right"></small></h2>
                         <nav class="sidebar dark">
                             <ul>
-                                <li class="title">Modulos</li>
+                                <li class="title">M&oacute;dulos</li>
                                 <li {% if 'modificar_pr' not in permisos %} class="disabled" {% endif %}>
                                     <a class="dropdown-toggle" href="#">
                                         <i class="icon-globe"></i>
@@ -125,11 +126,15 @@
                                         Desarrollo
                                     </a>
                                 </li>
-                                <li class="stick">
-                                    <a href="#">
+                                <li >
+                                    <a class="dropdown-toggle" href="#">
                                         <i class="icon-tree-view"></i>
-                                        Gestion de cambio
+                                        <small>Gestion de cambio</small>
                                     </a>
+                                    <ul class="dropdown-menu" data-role="dropdown" style="display: none">
+                                        <li><a href="{% url 'sigma:solic_proy' %}">Solicitudes</a></li>
+                                        <li><a href="{% url 'sigma:voto_adm' %}">Votos</a></li>
+                                    </ul>
                                 </li>
                             </ul>
                         </nav>

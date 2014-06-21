@@ -1,10 +1,13 @@
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.db import transaction
 from django.shortcuts import render
 from django.http import *
 import simplejson
+import sys
 from Sigma_System.forms import BusquedaFasesForm
-from Sigma_System.models import Proyecto, Usuario, Fase, TipoDeItem, LBase, Items_x_LBase, Item, UsuarioRol
+from Sigma_System.models import Proyecto, Usuario, Fase, TipoDeItem, LBase, \
+    Items_x_LBase, Item, Solicitud, UsuarioRol
 from Sigma_System.decoradores import permisos_requeridos
 from django.contrib.auth.decorators import login_required
 import datetime, time
@@ -105,7 +108,8 @@ def modificar_fase(request, idProyect, idFase):
     fase = Fase.objects.get(pk=idFase)
     proyecto = Proyecto.objects.get(pk=idProyect)
     if request.method == 'POST':
-        if fase.nombre == request.POST['nombre'] or Fase.objects.get(nombre=request.POST['nombre']):
+        if fase.nombre == request.POST['nombre'] or Fase.objects.get(
+                nombre=request.POST['nombre']):
             print proyecto.nroFases
             fases = Fase.objects.filter(proyecto=proyecto).exclude(pk=idFase)
             fase.nombre = request.POST['nombre']
@@ -134,7 +138,8 @@ def linea_base(request, idProyecto, idFase):
     for i in lista:
         print i.nombre, i.id
     lb = LBase.objects.filter(fase=Fase.objects.get(id=idFase)).order_by('id')
-    return render(request, 'LineaBase.html', {'id_proy': idProyecto, 'id_fase': idFase, 'lineasbase': lb})
+    return render(request, 'LineaBase.html',
+                  {'id_proy': idProyecto, 'id_fase': idFase, 'lineasbase': lb})
 
 
 def establecer_linea_base(request, idProyecto, idFase):
@@ -159,7 +164,8 @@ def establecer_linea_base(request, idProyecto, idFase):
         fase = Fase.objects.get(pk=idFase)
         proyecto = fase.proyecto
         if not proyecto.nroFases == fase.posicionFase:
-            faseSig = Fase.objects.get(posicionFase=fase.posicionFase+1, proyecto=proyecto)
+            faseSig = Fase.objects.get(posicionFase=fase.posicionFase + 1,
+                                       proyecto=proyecto)
             if faseSig.estado == 'Pendiente':
                 faseSig.estado = 'Iniciado'
                 fase.fechaInicio = datetime.datetime.now()
@@ -168,7 +174,9 @@ def establecer_linea_base(request, idProyecto, idFase):
         messages.success(request, 'Se agregaron correctamente los items a la linea base')
         return HttpResponseRedirect(reverse('sigma:adm_fase_lb', args=(idProyecto, idFase)))
     else:
-        return render(request, 'AsignarItemxLB.html', {'id_proy': idProyecto, 'id_fase': idFase, 'itemfinales':itemfinales})
+        return render(request, 'AsignarItemxLB.html',
+                      {'id_proy': idProyecto, 'id_fase': idFase,
+                       'itemfinales': itemfinales})
 
 
 def lista_des(item):
@@ -298,7 +306,7 @@ def buscar_fase(request, idProyect):
                 fases = Fase.objects.filter(
                     fechaInicio=form.cleaned_data['busqueda'])
             if form.cleaned_data['columna'] == '3':
-                #Si el patron a utilizar es la fecha de fin de la fase
+                # Si el patron a utilizar es la fecha de fin de la fase
                 fases = Fase.objects.filter(
                     fechaFin=form.cleaned_data['busqueda'])
     return render(request, 'administrarfases.html',
@@ -444,8 +452,62 @@ def desasignarUsuarioFase(request, idProyect, idFase, idUser):
 
 
 def finalizar_fase(request, idp, idf):
-        fase = Fase.objects.get(id=idf)
-        fase.estado = 'Cerrado'
-        fase.save()
-        messages.success(request, 'Se ha finalizado correctamente la fase "'+fase.nombre+'"')
-        return HttpResponseRedirect(reverse('sigma:adm_fase', args=[idp]))
+    fase = Fase.objects.get(id=idf)
+    anteriores = Fase.objects.filter(posicionFase__lt=fase.posicionFase)
+    for ante in anteriores:
+        if ante.estado != 'Cerrado':
+            messages.error(request, 'No se puede finalizar la fase, aun '
+                                    'hay fases anteriores sin finalizar, '
+                                    'finalicelas y luego vuelva '
+                                    'a intentarlo')
+            return HttpResponseRedirect(reverse('sigma:adm_fase', args=[idp]))
+    items = Item.objects.get(tipoItems__fase=fase)
+    for item in items:
+        if item.estado != 'Bloqueado':
+            messages.error(request, 'No se puede finalizar la fase, aun '
+                                    'hay fases items flotantes, '
+                                    'verifiquelos y luego vuelva '
+                                    'a intentarlo')
+            return HttpResponseRedirect(reverse('sigma:adm_fase', args=[idp]))
+    solicitudes = Solicitud.objects.filter(fase=fase, activo=True)
+    for solicitud in solicitudes:
+        if solicitud.estado in ['Pendiente', 'Votacion', 'Aprobado',
+                                'Ejecucion']:
+            messages.error(request, 'No se puede finalizar la fase, aun '
+                                    'hay solicitudes sin finalizar, '
+                                    'verifiquelos y luego vuelva '
+                                    'a intentarlo')
+            return HttpResponseRedirect(reverse('sigma:adm_fase', args=[idp]))
+    try:
+        with transaction.atomic():
+            fase.estado = 'Cerrado'
+            fase.fechaFin = datetime.datetime.now()
+            fase.save()
+            messages.success(request,
+                             'Se ha finalizado correctamente la fase "' + fase.nombre + '"')
+    except Exception:
+        print sys.exc_info()
+        messages.error(request,
+                       'Ocurrio un error al intentar finalizar la fase')
+    proyecto = Proyecto.objects.get(pk=idp)
+    if fase.posicionFase < proyecto.nroFases:
+        faseSiguiente = fase.objects.filter(proyecto=proyecto).get(
+            posicionFase=fase.posicionFase + 1)
+        if faseSiguiente.estado == 'Pendiente':
+            try:
+                with transaction.atomic():
+                    faseSiguiente.estado = 'Iniciado'
+                    faseSiguiente.fechaInicio = fase.fechaFin
+                    fase.save()
+                    messages.success(request,
+                                     'Se ha iniciado correctamente la fase "' +
+                                     faseSiguiente.nombre + '"')
+            except Exception:
+                print sys.exc_info()
+                messages.error(request,
+                               'Ocurrio un error al intentar iniciar la fase.')
+    else:
+        proyecto.estado = 'Culminado'
+        proyecto.fechaFinalizacion = fase.fechaFin
+        proyecto.save()
+    return HttpResponseRedirect(reverse('sigma:adm_fase', args=[idp]))

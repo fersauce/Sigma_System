@@ -1,0 +1,62 @@
+{% extends 'base_menu.html' %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}"> P&aacute;gina Principal</a>
+    <a class="pull-menu" href="#"></a>
+{% endblock %}
+{% block titulo %}Proyectos Asociados{% endblock %}
+{% block contenido %}
+    <div class="span10">
+        <h2><a href="#"></a>Proyectos <small class="on-right">Asociados</small></h2>
+        <div class="example">
+            <table class="table striped hovered dataTable" id="tablaVotosProyecto">
+                <thead>
+                    <th class="text-left">Nombre</th>
+                    <th class="text-left">Descripci&oacute;n</th>
+                    <th class="text-left">Editar</th>
+                </thead>
+                <tbody>
+                    {% for proyecto in proyectos %}
+                        <tr>
+                            <td>{{ proyecto.nombre }}</td>
+                            <td class="right">{{ proyecto.descripcion }}</td>
+                            <td align="center">
+                                <div class="span12">
+                                    <nav class="navigation-bar transparente">
+                                        <div class="navigation-bar-content">
+                                            <ul class="element-menu">
+                                                <li>
+                                                    <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
+                                                    <ul class="dropdown-menu" data-role="dropdown">
+                                                        <li class="text-left"><a href="{% url 'sigma:voto_adm_proy' proyecto.pk %}">
+                                                            <i class="icon-book on-left"></i>Fases</a></li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </nav>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="text-left">Nombre</th>
+                        <th class="text-left">Descripci&oacute;n</th>
+                        <th class="text-left">Editar</th>
+                    </tr>
+                </tfoot>
+            </table>
+            <script>
+                $(document).ready(function() {
+                    $('#tablaVotosProyecto').dataTable( {
+                        "oLanguage": {
+                            "sUrl": "/static/MetroBoostrap/data/spanish.txt"
+                        }
+                    } );
+                } );
+            </script>
+        </div>
+    </div>
+{% endblock %}

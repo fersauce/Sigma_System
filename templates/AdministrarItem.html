@@ -60,11 +60,71 @@
             }
         });
     }
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    function aprobarCambios(urlDes, idItem, idFase){
+        $.getJSON(urlDes, {'xhr': true, 'idItem': idItem}, function(data){
+            var content = '';
+            content = content + '<ul>';
+            var alto = 0;
+            if (data==''){
+                alto = 50;
+            }else {
+                $.each(data, function (i, dato) {
+                    content = content + '<li>'+dato.nombre+'</li>';
+                    alto = alto + 1;
+                });
+                alto = alto * 20;
+            }
+            content = content + '</ul>';
+            $.Dialog({
+                shadow: true,
+                overlay: true,
+                flat: true,
+                draggable: true,
+                icon: '<span class="icon-bus"></span>',
+                title: 'Draggable window',
+                scroll: true,
+                modal: true,
+                resizable: true,
+                height: alto,
+                width: 70,
+                padding: 10,
+                content: 'This Window is draggable by caption.',
+                onShow: function(){
+                    var content1 = '<p>Quiere confirmar el cambio realizado en el item</p>'+
+                            '<p>Items que se confirman de forma indirecta con esto:</p>' +
+                            '<div>'+content+'</div>'+
+                            '<div><form action="{% url 'sigma:solic_ver_sol' %}">' +
+                            '<input type="hidden" value="'+idItem+'" name="idItem">'+
+                            '<input type="hidden" value="'+idFase+'" name="idFase">'+
+                            '<input type="submit" value="S&iacute;" class="button success">'+
+                            '<a href="#"><input type="button" class="button inverse" value="No" onclick="$.Dialog.close();"></a></div>';
+                    $.Dialog.title("Confirmar Cambio");
+                    $.Dialog.content(content1);
+                    $.Metro.initInputs();
+                }
+            });
+        });
+    }
 </script>
 {% endblock %}
 {% block navegacion %}
     <span class="element-divider"></span>
-    <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
+    <a class="element" href="{% url 'sigma:inicio' %}"> P&aacute;gina Principal</a>
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:des_proyec' %}">Desarrollo</a>
     <span class="element-divider"></span>
@@ -133,6 +193,9 @@
                                                             {% if i.estado == 'aprobado' %}
                                                                 <li class="text-left"><a href="{% url 'sigma:ap_desap_i' fase.id i.id 1 %}">
                                                                 <i class="icon-thumbs-down on-left"></i>Desaprobar</a></li>
+                                                            {% elif i.estado == 'revision-desbloq' %}
+                                                                <li class="text-left {{ user.pk|habilitarVerificacion:i.pk }}"><a href="#" onclick="aprobarCambios('{% url 'sigma:solic_des_dir' %}', {{ i.id }}, {{ fase.id }});">
+                                                                <i class="icon-thumbs-up on-left"></i>Verificado</a></li>
                                                             {% elif i.estado != 'bloqueado' %}
                                                                 <li class="text-left"><a href="{% url 'sigma:ap_desap_i' fase.id i.id 0 %}">
                                                                 <i class="icon-thumbs-up on-left"></i>Aprobar</a></li>
@@ -155,6 +218,8 @@
                                                                 <i class="icon-eye on-left"></i>Historial Item</a></li>
                                                             <li class="text-left {{ i.id|habilitar_opciones }}"><a href="{% url 'sigma:adm_relacion' i.id %}">
                                                                 <i class="icon-link on-left"></i>Relacionar Item</a></li>
+                                                            <li class="text-left"><a href="{% url 'sigma:adm_arch' i.id %}">
+                                                                <i class="icon-link on-left"></i>Archivos</a></li>
                                                         </ul>
                                                     </li>
                                                 </ul>

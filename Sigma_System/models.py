@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
-from django import forms
 import datetime
 # Create your models here.
 
@@ -107,6 +106,8 @@ class AtribTipoDeItem(models.Model):
 
 class Archivo(models.Model):
     archivo_adj = models.FileField(upload_to='archivos')
+    fechaCreacion = models.DateTimeField(default=datetime.datetime.now())
+    activo = models.BooleanField(default=True)
 
 
 class LBase(models.Model):
@@ -122,11 +123,13 @@ class Item(models.Model):
     version = models.IntegerField(default=1)
     complejidad = models.IntegerField()
     prioridad = models.IntegerField()
-    estado = models.CharField(max_length=10, default='Activo')
+    estado = models.CharField(max_length=20, default='Activo')
     items_atrib = models.ManyToManyField(AtribTipoDeItem,
                                          through='ItemAtributosTipoI')
     arch_adjuntos = models.ManyToManyField(Archivo)
 
+    def __json__(self):
+        return {'tipoItems': self.tipoItems}
 
 class Items_x_LBase(models.Model):
     lb = models.ForeignKey(LBase)
@@ -156,14 +159,21 @@ class Historial(models.Model):
 
 
 class Solicitud(models.Model):
+    codigo = models.CharField(max_length=20, default='')
     justificacion = models.CharField(max_length=500)
-    fecha_redaccion = models.DateField()
+    fecha_redaccion = models.DateTimeField(default=datetime.datetime.now())
     nro_votos_posit = models.IntegerField()
     nro_votos_neg = models.IntegerField()
-    fecha_respuesta = models.DateField()
+    impacto = models.IntegerField(default=0)
+    fecha_respuesta = models.DateTimeField(default=datetime.datetime.now())
+    fecha_limite = models.DateTimeField(default=datetime.datetime.now())
     estado = models.CharField(max_length=10, default='Pendiente')
     id_usuario = models.IntegerField()
-    item = models.ForeignKey(Item)
+    proyecto = models.ForeignKey(Proyecto, default=0)
+    fase = models.ForeignKey(Fase, default=0)
+    activo = models.BooleanField(default=True)
+    item = models.ManyToManyField(Item, default=[])
+    lb_relacionadas = models.ManyToManyField(LBase, default=[])
 
 
 class Comite(models.Model):
@@ -180,9 +190,10 @@ class UsuarioPorComite(models.Model):
 
 
 class HistorialLineabase(models.Model):
-    fecha_cambio = models.DateField()
+    fecha_cambio = models.DateTimeField(default=datetime.datetime.now())
     id_usuario = models.IntegerField()
     tipo_operacion = models.CharField(max_length=50)
+    id_solicitud = models.IntegerField(default=0)
     linea_base = models.ForeignKey(LBase)
 
 
@@ -194,3 +205,10 @@ class UsuariosXProyecto(models.Model):
     usuario = models.ForeignKey(Usuario)
     activo = models.BooleanField(default=False)
     lider = models.BooleanField(default=False)
+
+
+class Votacion(models.Model):
+    miembro = models.ForeignKey(Usuario)
+    solicitud = models.ForeignKey(Solicitud)
+    fechaVotacion = models.DateTimeField(default=datetime.datetime.now())
+    voto = models.BooleanField(default=False)

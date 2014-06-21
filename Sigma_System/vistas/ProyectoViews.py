@@ -60,7 +60,7 @@ def alta_proyecto(request):
     """
     rol = Rol.objects.filter(nombre='Lider').first()
     print rol
-    lideres = UsuarioRol.objects.filter(rol__pk=rol.pk)
+    lideres = UsuarioRol.objects.filter(rol__nombre='Lider')
     if request.method == 'POST':
         proyecto = Proyecto.objects.filter(
             nombre=request.POST['nombreProyecto'])

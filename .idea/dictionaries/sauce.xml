@@ -1,8 +1,11 @@
 <component name="ProjectDictionaryState">
   <dictionary name="sauce">
     <words>
+      <w>activo</w>
       <w>administracion</w>
       <w>administrar</w>
+      <w>archivo</w>
+      <w>archivos</w>
       <w>asignar</w>
       <w>atributo</w>
       <w>atributos</w>
@@ -10,10 +13,15 @@
       <w>bandera</w>
       <w>buscar</w>
       <w>busqueda</w>
+      <w>calcular</w>
       <w>codigo</w>
       <w>comite</w>
+      <w>comprometida</w>
+      <w>confirmar</w>
+      <w>csrftoken</w>
       <w>datos</w>
       <w>debe</w>
+      <w>desarrollo</w>
       <w>descripcion</w>
       <w>eliminar</w>
       <w>enviar</w>
@@ -21,7 +29,10 @@
       <w>fase</w>
       <w>fases</w>
       <w>fecha</w>
+      <w>hijo</w>
+      <w>hijos</w>
       <w>hola</w>
+      <w>impacto</w>
       <w>importar</w>
       <w>iniciado</w>
       <w>inicio</w>
@@ -29,7 +40,9 @@
       <w>intercambiada</w>
       <w>intercambiar</w>
       <w>intercambio</w>
+      <w>justificacion</w>
       <w>lideres</w>
+      <w>listado</w>
       <w>modificacion</w>
       <w>modificar</w>
       <w>opcion</w>
@@ -38,7 +51,12 @@
       <w>proyecto</w>
       <w>proyectos</w>
       <w>realizar</w>
+      <w>satisfactoriamente</w>
       <w>saucedo</w>
+      <w>seleccionado</w>
+      <w>solic</w>
+      <w>solicitud</w>
+      <w>solicitudes</w>
       <w>tipo</w>
       <w>tipos</w>
     </words>

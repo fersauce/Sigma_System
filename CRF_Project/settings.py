@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+PROJECT_PATH = os.path.dirname(os.path.realpath(__file__))
 
 
 # Quick-start development settings - unsuitable for production
@@ -53,7 +54,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'CRF_Project.urls'
-
+ROOT_ARCHIVOS = os.path.join(PROJECT_PATH, 'archivos')
 WSGI_APPLICATION = 'CRF_Project.wsgi.application'
 
 ADMINS = (
