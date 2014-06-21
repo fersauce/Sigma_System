@@ -341,3 +341,8 @@ def desasignar_roles(request, id):
         else:
             messages.info(request, 'El usuario "' + user.username + '" no posee ningun rol')
     return HttpResponseRedirect(reverse('sigma:adm_u'))
+
+
+
+def pruebaGrafos(request):
+        return render(request, 'atlas/pruebaGrafos.html')

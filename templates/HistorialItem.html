@@ -19,37 +19,49 @@
 {% endblock %}
 {% block titulo %}Historial Items{% endblock %}
 {% block contenido %}
+     {% load sigma_system_tags %}
     <div class="span10" align="center">
-        <h1><a href="#"></a>Historial<small class="on-right">Items </small></h1>
+        <h2><a href="#"></a>Historial<small class="on-right">Items </small></h2>
         <div class="example">
             <table class="table striped hovered dataTable" id="datatable2">
                 <thead>
-                    <th class="text-left">Id del historial</th>
-                    <th class="text-left">Id del Item</th>
-                    <th class="text-left">Nombre del Item</th>
+
+                    <th class="text-left">Fecha de modificacion</th>
                     <th class="text-left">Version Actual </th>
                     <th class="text-left">Version Anterior</th>
+                    <th class="text-left">Valor Actual</th>
+                    <th class="text-left">Valor Anterior</th>
+                    <th class="text-left">Descripcion del cambio</th>
                 </thead>
                 <tbody>
                     {% for h in his %}
                         {% if h.nro_version_act > 0 %}
                             <tr>
-                                <td class="right">{{ h.id }}</td>
-                                <td class="right">{{ item.id}}</td>
-                                <td class="right">{{ item.nombre }}</td>
+
+
+                                <td class="right">{{ h.fecha_mod }}</td>
                                 <td class="right">{{ h.nro_version_act  }}</td>
                                 <td class="right">{{ h.nro_version_ant }}</td>
+                                <td class="right">{{ h.valor_act }}</td>
+                                <td class="right">{{ h.valor_ant }}</td>
+                                <td class="right">{{ h.id|mensajeHistorial }} </td>
                             </tr>
                         {% endif %}
                     {% endfor %}
+
+                 Tipo: {{ item.tipoItems.nombre }}
+                        {% for at in atributos  %}
+                            {{ at.tipoItemAtrib.nombre }}
+                        {% endfor %}
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th class="text-left">Id del historial</th>
-                        <th class="text-left">Id del Item</th>
-                        <th class="text-left">Nombre del Item</th>
+                        <th class="text-left">Fecha de modificacion</th>
                         <th class="text-left">Version Actual </th>
                         <th class="text-left">Version Anterior</th>
+                        <th class="text-left">Valor Actual</th>
+                        <th class="text-left">Valor Anterior</th>
+                        <th class="text-left">Descripcion del cambio</th>
                     </tr>
                 </tfoot>
             </table>

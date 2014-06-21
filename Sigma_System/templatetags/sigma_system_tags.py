@@ -1,7 +1,7 @@
 from django import template
 from django.utils.html import format_html
 from django.core.urlresolvers import reverse
-from Sigma_System.models import Fase, Item, UsuariosXProyecto, TipoDeItem
+from Sigma_System.models import Fase, Item, UsuariosXProyecto, TipoDeItem,Historial
 register = template.Library()
 
 
@@ -89,3 +89,37 @@ def verificar_lb(value):
 @register.filter
 def divisiblepor(value, arg):
     return (value-1) % arg == 0
+
+
+@register.filter
+def mensajeHistorial(value):
+    his=Historial.objects.get(id=value)
+    if his.descripcion=='alta':
+        return 'Item creado'
+    if his.descripcion=='baja':
+        return 'Item eliminado'
+    if his.descripcion=='revivir':
+        return 'Item revivido'
+    if his.descripcion=='complejidad':
+        return 'Cambio en la complejidad'
+    if his.descripcion=='prioridad':
+        return 'Cambio en la prioridad'
+    if his.descripcion=='baja':
+        return 'Item Eliminado'
+    else:
+        return 'Cambio en el atributo '+his.descripcion+' del item '
+
+
+@register.filter
+def get_rango(value):
+    return range(value)
+
+
+@register.filter
+def get_prioridad(value):
+    if value==1:
+        return 'Baja'
+    if value==2:
+        return 'Media'
+    if value==3:
+        return 'Alta'

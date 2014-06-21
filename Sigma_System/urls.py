@@ -10,12 +10,14 @@ urlpatterns = patterns('',
     url(r'^adm_u_altas/$', 'Sigma_System.views.alta_usuario', name='adm_u_altas'),
     url(r'^nuevopass/$', 'Sigma_System.views.recuperarPass', name='recu_pass'),
     url(r'^cambiarPass/$', 'Sigma_System.views.cambiarPass', name='cambiarPass'),
+     url(r'^pruebaGrafos/$', 'Sigma_System.views.pruebaGrafos', name='pruebaGrafos'),
 
     url(r'^adm_u_baja/(?P<us>\d+)$', 'Sigma_System.views.baja_usuario', name='adm_u_baja'),
     url(r'^adm_u_mod/(?P<us>\d+)/$', 'Sigma_System.views.modificar_usuario', name='adm_u_mod'),
     url(r'^adm_u_bus/$', 'Sigma_System.views.buscar_usuario', name='adm_u_bus'),
     url(r'^adm_u_ver/(?P<us>\d+)$', 'Sigma_System.views.ver_detalle', name='adm_u_ver'),
     url(r'^adm_u_cambiar/(?P<us>\d+)$', 'Sigma_System.views.cambiar', name='adm_u_cambiar'),
+
 
     url(r'^adm_u_asig_rol/(?P<id>\d+)$', 'Sigma_System.views.asignar_roles', name='adm_u_asig_rol'),
     url(r'^adm_u_desasig_rol/(?P<id>\d+)$', 'Sigma_System.views.desasignar_roles', name='adm_u_desasig_rol'),

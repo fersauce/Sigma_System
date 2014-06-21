@@ -152,7 +152,7 @@ class Historial(models.Model):
     valor_act = models.CharField(max_length=20)
     valor_ant = models.CharField(max_length=20)
     descripcion = models.CharField(max_length=200)
-    fecha_mod = models.DateField()
+    fecha_mod = models.DateTimeField()
 
 
 class Solicitud(models.Model):

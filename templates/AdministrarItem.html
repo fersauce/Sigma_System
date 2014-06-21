@@ -97,7 +97,7 @@
             {% endif %}
             <table class="table striped hovered dataTable" id="datatable2">
                 <thead>
-                    <th class="text-left">Nombre de la fase</th>
+
                     <th class="text-left">Nombre del Item</th>
                     <th class="text-left">Tipo del Item</th>
                     <th class="text-left">Version</th>
@@ -108,7 +108,7 @@
                     {% for i in items %}
                         {% if i.version > 0 %}
                             <tr>
-                                <td class="right">{{ fase.nombre }}</td>
+
                                 <td class="right">{{ i.nombre }}</td>
                                 <td class="right">{{ i.tipoItems.nombre }}</td>
                                 <td class="right">{{ i.version }}</td>
