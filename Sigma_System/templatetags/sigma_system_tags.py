@@ -112,10 +112,10 @@ def habilitar_opciones(value):
 
 @register.filter
 def rol_proy(value, arg):
-    u_r = UsuarioRol.objects.get(usuario=arg, idProyecto=value.id, idFase=0)
+    u_r = UsuarioRol.objects.filter(usuario=arg, idProyecto=value.id, idFase=0)
     nombre_rol = 'indefinido'
     if u_r:
-        nombre_rol = u_r.rol.nombre
+        nombre_rol = u_r[0].rol.nombre
     return nombre_rol
 
 @register.filter
