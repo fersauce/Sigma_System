@@ -1,4 +1,17 @@
 {% extends 'base_menu.html' %}
+{% block definicion_script %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            setear();
+        });
+    </script>
+    <script type="text/javascript">
+        function setear(){
+            document.getElementById("complejidad").selectedIndex=parseInt({{ item.complejidad }})-1;
+            document.getElementById("prior").selectedIndex=parseInt({{ item.prioridad }})-1;
+        }
+    </script>
+{% endblock %}
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href={% url 'sigma:inicio' %}> Página Principal</a>
@@ -43,7 +56,7 @@
                                 </div>
                                 <div class="span6">
                                     <div class="input-control select" data-role="input-control">
-                                        <select name="complejidad" required>
+                                        <select name="complejidad" id="complejidad" required>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -58,6 +71,7 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
 
                         <div class="grid fluid">
@@ -67,7 +81,7 @@
                                 </div>
                                 <div class="span6">
                                     <div class="input-control select" data-role="input-control">
-                                        <select name="prior" required>
+                                        <select name="prior" id="prior" required>
                                             <option value="1">Baja</option>
                                             <option value="2">Media</option>
                                             <option value="3">Alta</option>
@@ -98,11 +112,47 @@
                                 </div>
                                 <div class="span6">
                                     <div class="input-control text disabled" data-role="input-control" >
-                                        <input type="text" name="estado" required value={{item.estado }}>
+                                        <input type="text" name="estado" required value={{item.estado }} disabled >
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        Atributos del Tipo de Item
+                        <div class="grid fluid">
+                            <div class="row">
+                                <div class="span3">
+                                    <lavel>Tipo de Item</lavel>
+                                </div>
+                                <div class="span6">
+                                    <div class="input-control text disabled" data-role="input-control" >
+                                        <input type="text" name="tipo" required value= {{ item.tipoItems.nombre }} disabled>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% for a in atributos %}
+                            <div class="grid fluid">
+                                <div class="row">
+                                    <div class="span3">
+                                        <label>{{ a.tipoItemAtrib.nombre }}</label>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="input-control text disabled" data-role="input-control" >
+                                            <input type="text" name="def_{{ a.tipoItemAtrib.nombre }}" required value= {{ a.valor_atrib }} >
+                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+
+
+
+
+
+
+
+
 
                         <br>
                         <br>

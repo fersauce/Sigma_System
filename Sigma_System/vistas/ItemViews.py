@@ -95,17 +95,33 @@ def altaItem(request, idFase, opcion):
                 estado=est,
                 item_padre=request.POST['i_padre']
             )
-            historial = Historial.objects.create(
-                item=itt,
-                nro_version_act=1,
-                nro_version_ant=0,
-                cod_mod="a",
-                valor_act=0,
-                valor_ant=0,
-                descripcion="alta",
-                fecha_mod=datetime.datetime.now()
-            )
-            print historial.pk
+            #guardarHistorial(its,verAct,verAnt,cod,valorActual,valorAnterior,descrip):
+            guardarHistorial(itt,1,0,'a',0,0,'alta')
+
+            #lgkgka
+            tipo=itt.tipoItems
+            print('nombre del tipo del item '+tipo.nombre)
+
+            idTI=tipo.id
+            print('id del tipo de item',tipo.id)
+            listaDeAtributos=AtribTipoDeItem.objects.filter(tipoDeItem=idTI)
+
+            for lA in listaDeAtributos:
+                print(' nombre del atributo '+ lA.nombre)
+                ItemAtributosTipoI.objects.create(
+                    item=itt,
+                    tipoItemAtrib = lA,
+                    valor_atrib = " "
+                )
+
+
+            losItems=ItemAtributosTipoI.objects.filter(item=itt)
+            for at in losItems:
+                print(at.item.id)
+
+            #,glflas
+
+
             messages.success(request,
                              'El item "' + name + '" ha sido creado con exito')
         except Exception:
@@ -142,8 +158,27 @@ def modificar_item(request, it):
     """
 
     its = Item.objects.get(id=it)
+    losItems=ItemAtributosTipoI.objects.filter(item=its)
+    print("entro en modificar")
+#lgkgka
+    tipo=its.tipoItems
+    print('nombre del tipo del item '+tipo.nombre)
+
+    idTI=tipo.id
+    print('id del tipo de item',tipo.id)
+    listaDeAtributos=AtribTipoDeItem.objects.filter(tipoDeItem=idTI)
+
+    for lA in listaDeAtributos:
+        print(' nombre del atributo '+ lA.nombre)
+        """ItemAtributosTipoI.objects.create(
+            item=itt,
+            tipoItemAtrib = lA,
+            valor_atrib = " "
+        )"""
+
+    losItems=ItemAtributosTipoI.objects.filter(item=its)
+
     if request.method == 'POST':
-        print(it)
         nAct = its.nombre
         comAct = its.complejidad
         priAct = its.prioridad
@@ -152,90 +187,89 @@ def modificar_item(request, it):
         nNuevo = request.POST['nombre']
         comNuevo = request.POST['complejidad']
         priNuevo = request.POST['prior']
-        estNuevo = request.POST['estado']
+       # estNuevo = request.POST['estado']
+        listaDeIndices=[]
+        listaDeAtributosDelForm=[]
+        for li in losItems:
+            index='def_'+li.tipoItemAtrib.nombre.__str__()
+            listaDeIndices.append(index)
+
+        for i in listaDeIndices:
+            listaDeAtributosDelForm.append(request.POST[i])
+
         print "nombre", nNuevo
         print "complejidad", comNuevo
         print "prioridad", priNuevo
-        print "estado", estNuevo
-
+       # print "estado", estNuevo
         historias=Historial.objects.filter(item=its)
+        ultimaVersion=int(its.version)+1
+        mayor=historias.order_by('-nro_version_act')
+        ultimaVersion=mayor[0].nro_version_act
+        print mayor[0].nro_version_act
+        """
         for h in historias:
             vh=int(h.nro_version_act)
             va=int(its.version)
             if vh > va:
-                vh=vh*(-1)
-                h.nro_version_act=vh
-                deReversion=1
+                if vh>=mayor:
+                    print 'version en el historial, buscando el mayor ',vh,' es mayor que ',va
+                    ""vh=vh*(-1)
+                    h.nro_version_act=vh
+                    deReversion=1"
+                    ultimaVersion=vh+1
+                    """
+
 
         its.nombre = request.POST['nombre']
         its.complejidad = request.POST['complejidad']
         its.prioridad = request.POST['prior']
 
-        vers = its.version + 1
+        vers = ultimaVersion+1
         vNuevo = vers
         its.version = vers
-        its.estado = request.POST['estado']
+       # its.estado = request.POST['estado']
 
         its.save()
+        """ modificar los atributos del tipo de item """
+        for i in range(listaDeAtributosDelForm.__len__()):
+            print 'en la tabla ',losItems[i].valor_atrib
+            print 'en el form ',listaDeAtributosDelForm[i]
+            if losItems[i].valor_atrib == listaDeAtributosDelForm[i]:
+                print "son iguales los atributos"
+            else:
+                print "no son iguales los atibutos del item"
+                #guardarHistorial(its,vNuevo,vAct,'m',nNuevo,nAct,'nombre')
+                print 'lo que se va a guardar en el historial'
+                print 'valor anterior',losItems[i].valor_atrib,'valor actual',listaDeAtributosDelForm[i],'nombre del campo',listaDeIndices[i]
+
+                guardarHistorial(its,vNuevo,vAct,'m',listaDeAtributosDelForm[i],losItems[i].valor_atrib,losItems[i].id)
+                losItems[i].valor_atrib=listaDeAtributosDelForm[i]
+                print(losItems[i].valor_atrib)
+                losItems[i].save()
+                print 'id del atributo: ',losItems[i].id
+
+
+
+
         messages.info(request, 'Item modificado correctamente')
 
         if nAct != nNuevo:
             print("entro en el if de nombre")
-            Historial.objects.create(
-                item=its,
-                nro_version_act=vNuevo,
-                nro_version_ant=vAct,
-                cod_mod="m",
-                valor_act=nNuevo,
-                valor_ant=nAct,
-                descripcion="nombre",
-                fecha_mod=datetime.datetime.now()
-            )
-        print request.POST['complejidad']
+            #guardarHistorial(its,vNuevo,vAct,'m',nNuevo,nAct,'nombre')
+            guardarHistorial(its,vNuevo,vAct,'m',nNuevo,nAct,'nombre')
+
         if comAct == int(comNuevo):
             print("entro en el if de complejidad")
-            print("complejidad1", comAct)
-            print('complejidad2', comNuevo)
         else:
-            Historial.objects.create(
-                item=its,
-                nro_version_act=vNuevo,
-                nro_version_ant=vAct,
-                cod_mod="m",
-                valor_act=comNuevo,
-                valor_ant=comAct,
-                descripcion="complejidad",
-                fecha_mod=datetime.datetime.now()
-            )
+             #guardarHistorial(its,vNuevo,vAct,'m',nNuevo,nAct,'nombre')
+            guardarHistorial(its,vNuevo,vAct,'m',comNuevo,comAct,'complejidad')
 
         if priAct == int(priNuevo):
             print("entro en el if de pri")
         else:
-            Historial.objects.create(
-                item=its,
-                nro_version_act=vNuevo,
-                nro_version_ant=vAct,
-                cod_mod="m",
-                valor_act=priNuevo,
-                valor_ant=priAct,
-                descripcion="prioridad",
-                fecha_mod=datetime.datetime.now()
-            )
-        if estAct != estNuevo:
-            print("entro en el if de estado")
-            Historial.objects.create(
-                item=its,
-                nro_version_act=vNuevo,
-                nro_version_ant=vAct,
-                cod_mod="m",
-                valor_act=estNuevo,
-                valor_ant=estAct,
-                descripcion="estado",
-                fecha_mod=datetime.datetime.now()
-            )
-
+            guardarHistorial(its,vNuevo,vAct,'m',priNuevo,priAct,'prioridad')
     else:
-        return render(request, 'ModificarItem.html', {'item': its, 'username': request.user.username})
+        return render(request, 'ModificarItem.html', {'item': its, 'username': request.user.username,'atributos':losItems})
     return HttpResponseRedirect('/ss/adm_i/' + str(its.tipoItems.fase.pk))
 
 
@@ -248,7 +282,7 @@ def baja_item(request, it):
     #user = User.objects.get(id=us)
 
     its = Item.objects.get(id=it)
-    estAct = its.estado
+    estAnt = its.estado
     its.estado = "baja"
     verActual = its.version
     nVersion = verActual + 1
@@ -256,17 +290,20 @@ def baja_item(request, it):
 
     its.save()
     messages.error(request, 'El item  ha sido eliminado')
-
+    #guardarHistorial(its,verAct,verAnt,cod,valorActual,valorAnterior,descrip):
+    guardarHistorial(its,nVersion,verActual,'b','baja',estAnt,'baja')
+    """
     Historial.objects.create(
         item=its,
         nro_version_act=nVersion,
         nro_version_ant=verActual,
         cod_mod="b",
         valor_act="baja",
-        valor_ant=estAct,
+        valor_ant=estAnt,
         descripcion="baja",
         fecha_mod=datetime.datetime.now()
     )
+    """
     return HttpResponseRedirect('/ss/adm_i/' + str(its.tipoItems.fase.pk))
 
 
@@ -280,7 +317,7 @@ def revivir_item(request, idFase):
 
     fs = Fase.objects.get(pk=idFase)
     nameFa = fs.nombre
-    its = Item.objects.filter(estado='baja')
+    its = Item.objects.filter(estado='baja',tipoItems__fase=fs)
     proyecto=fs.proyecto
 
     return render(request, 'RevivirItem.html',
@@ -419,16 +456,16 @@ def revertirItem(request, idItem, versionRev, idHis):
                                     messages.info(request, 'Item reversionado')
                                     print 'revertir de prioridad'
                                     its.save()
-
-
-                                if historialAux.descripcion == 'estado':
-                                    print 'revertir de estado'
-
-                                    messages.info(request, 'Item reversionado')
-                                    valorActualEnHistorial = historialAux.valor_act
-                                    valorAnteriorEnHistorial = historialAux.valor_ant
-                                    its.estado = valorActualEnHistorial
-                                    its.version = versionRev
+                                if historialAux.descripcion != 'nombre':
+                                    if historialAux.descripcion!='complejidad':
+                                        if historialAux.descripcion != 'prioridad':
+                                            print('cambio en el valor del atributo de id '+historialAux.descripcion+ ' del tipo del item')
+                                            numero=int(historialAux.descripcion)
+                                            print(numero)
+                                            atributoItem=ItemAtributosTipoI.objects.get(id=historialAux.descripcion)
+                                            atributoItem.valor_atrib=historialAux.valor_act
+                                            atributoItem.save()
+                                            its.version = versionRev
                                     its.save()
                             if versionActual == 1:
                                 messages.error(request,
@@ -464,12 +501,6 @@ def revertirItem(request, idItem, versionRev, idHis):
                                     valorActualEnHistorial = historialAux.valor_act
                                     valorAnteriorEnHistorial = historialAux.valor_ant
                                     its.prioridad = valorAnteriorEnHistorial
-                                    its.version = versionRev
-                                    its.save()
-                                if historialAux.descripcion == 'estado':
-                                    valorActualEnHistorial = historialAux.valor_act
-                                    valorAnteriorEnHistorial = historialAux.valor_ant
-                                    its.estado = valorAnteriorEnHistorial
                                     its.version = versionRev
                                     its.save()
     if int(versionRev) == int(versionActual):
@@ -530,16 +561,17 @@ def revertirItem(request, idItem, versionRev, idHis):
                                 print 'revertir de prioridad'
                                 its.save()
 
-
-                            if historialAux.descripcion == 'estado':
-                                print 'revertir de estado'
-
-                                messages.info(request, 'Item reversionado')
-                                valorActualEnHistorial = historialAux.valor_act
-                                valorAnteriorEnHistorial = historialAux.valor_ant
-                                its.estado = valorActualEnHistorial
-                                its.version = versionRev
-                                its.save()
+                            if historialAux.descripcion != 'nombre':
+                                if historialAux.descripcion!='complejidad':
+                                    if historialAux.descripcion != 'prioridad':
+                                        print('cambio en el valor del atributo de id '+historialAux.descripcion+ ' del tipo del item')
+                                        numero=int(historialAux.descripcion)
+                                        print(numero)
+                                        atributoItem=ItemAtributosTipoI.objects.get(id=historialAux.descripcion)
+                                        atributoItem.valor_atrib=historialAux.valor_act
+                                        atributoItem.save()
+                                        its.version = versionRev
+                                        its.save()
     return HttpResponseRedirect('/ss/adm_i/' + str(its.tipoItems.fase.pk))
 
 
@@ -555,7 +587,33 @@ def historialItem(request, idItem):
     his1 = Historial.objects.filter(item__pk=its.pk)
     for hi in his1:
         print hi.descripcion
-
+    tipo=its.tipoItems
+    print('nombre del tipo del item '+tipo.nombre)
     return render(request, 'HistorialItem.html',
                   {'his': his1, 'item': its, 'fase': fase})
+    #guardarHistorial(its,vNuevo,vAct,'m', nNuevo,    nAct,' nombre')
 
+
+def guardarHistorial(its,verAct,verAnt,cod,valorActual,valorAnterior,descrip):
+
+
+    his=Historial.objects.create(
+        item=its,
+        nro_version_act=verAct,
+        nro_version_ant=verAnt,
+        cod_mod=cod,
+        valor_act="",
+        valor_ant=valorAnterior,
+        descripcion=descrip,
+        fecha_mod=datetime.datetime.now()
+    )
+    if cod=='b':
+        his.valor_act='baja'
+
+    if cod=='a':
+        his.valor_act=0
+
+    if cod== 'm':
+        his.valor_act=valorActual
+    his.save()
+    return
