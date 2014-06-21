@@ -303,22 +303,6 @@ def asignarUsuarioProyecto(request, idProyect):
                 messages.error(request,
                                'Ha ocurrido un erro interno, favor'
                                ' contacte al administrador')
-            '''else:
-                if u.activo:
-                    try:
-                        u.activo = False
-                        u.save()
-                        proyecto.nroMiembros -= 1
-                        proyecto.save()
-                        messages.success(request,
-                                         'El usuario ' +
-                                         u.usuario.user.first_name
-                                         + ' ha sido desasignado del proyecto ' +
-                                         proyecto.nombre)
-                        bandera = True
-                    except Exception:
-                        messages.error(request, 'Ha ocurrido un error interno,'
-                                                'favor contacte al administrador')'''
         return HttpResponseRedirect(reverse('sigma:adm_proy_usu', args=[idProyect]))
     else:
         pass

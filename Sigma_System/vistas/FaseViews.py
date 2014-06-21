@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.http import *
 import simplejson
 from Sigma_System.forms import BusquedaFasesForm
-from Sigma_System.models import Proyecto, Usuario, Fase, TipoDeItem, LBase, Items_x_LBase, Item
+from Sigma_System.models import Proyecto, Usuario, Fase, TipoDeItem, LBase, Items_x_LBase, Item, UsuarioRol
 from Sigma_System.decoradores import permisos_requeridos
 from django.contrib.auth.decorators import login_required
 import datetime, time
@@ -350,6 +350,97 @@ def intercambiarFase(request, idFase):
         messages.error(request, 'Solo es precaucion')
     return HttpResponseRedirect(
         reverse('sigma:adm_fase', args=[fase.proyecto.pk]))
+
+
+def administrarUsuariosAsociadosFase(request, idProyect, idFase):
+    proyecto = Proyecto.objects.get(id=idProyect)
+    fase = Fase.objects.get(id=idFase)
+    usu_rol = UsuarioRol.objects.filter(idProyecto=idProyect, idFase=idFase)
+    usuarios = []
+    for u_r in usu_rol:
+        usuarios.append(u_r.usuario)
+    return render(request, 'AdministradorUsuarioFase.html', {'usuarios': usuarios,
+                                                   'proyecto': proyecto,
+                                                   'fase': fase,
+                                                   'permisos': request.session['permisos']})
+
+
+def asignarUsuarioFase(request, idProyect, idFase):
+    """
+    Vista que asigna los usuarios a un proyecto determinado.
+
+    @type request: django.http.HttpRequest.
+    @param request: Contiene la informacion sobre la solicitud de la pagina
+    que lo llamo.
+
+    @type idProyect: Unicode
+    @param idProyect: Contiene el id del proyecto que se va a asociar/desasociar
+    usuarios.
+
+    @rtype django.shortcuts.render
+    @return: AdministrarProyecto.html, pagina en la cual se trabaja con los
+    proyectos.
+    """
+    proyecto = Proyecto.objects.get(pk=idProyect)
+    fase = Fase.objects.get(id=idFase)
+    usu_rol = UsuarioRol.objects.filter(idProyecto=idProyect, idFase=0)
+    usuarios3 = []
+    for u_r in usu_rol:
+        usuarios3.append(u_r.usuario)
+
+
+    usu_rol2 = UsuarioRol.objects.filter(idProyecto=idProyect, idFase=idFase)
+    usuarios2 = []
+    for u_r in usu_rol2:
+        usuarios2.append(u_r.usuario)
+
+    usuarios = []
+
+    for u in usuarios3:
+        if u not in usuarios2:
+            usuarios.append(u)
+
+    if request.method == 'POST':
+        print 'entra en post'
+        usuariosfase = request.POST.getlist('usuariosAsig')
+        print '/*-85*/-65*-/*-/-*/'
+        for u in usuariosfase:
+            usuario = Usuario.objects.get(id=u)
+            rol = UsuarioRol.objects.filter(usuario=usuario, idProyecto=idProyect)[0].rol
+            try:
+                UsuarioRol.objects.create(
+                        rol=rol,
+                        usuario=usuario,
+                        idProyecto=idProyect,
+                        idFase=idFase)
+                messages.success(request,
+                                 'El usuario ' +
+                                 usuario.user.username
+                                 + ' ha sido asignado a la fase ' +
+                                 fase.nombre)
+            except Exception:
+                messages.error(request,
+                               'Ha ocurrido un erro interno, favor'
+                               ' contacte al administrador')
+        return HttpResponseRedirect(reverse('sigma:adm_fase_usu', args=(idProyect, idFase)))
+    return render(request, 'AsignarUsuarioFase.html', {'usuarios': usuarios,
+                                                   'proyecto': proyecto,
+                                                   'fase': fase,
+                                                   'permisos': request.session['permisos']})
+
+
+def desasignarUsuarioFase(request, idProyect, idFase, idUser):
+    fase = Fase.objects.get(id=idFase)
+    usuario = Usuario.objects.get(id=idUser)
+    uxr = UsuarioRol.objects.filter(usuario=usuario, idProyecto=idProyect, idFase=idFase)[0]
+    uxr.delete()
+    messages.success(request, 'El usuario ' +
+                              usuario.user.username
+                              + ' ha sido desasignado de la fase ' +
+                              fase.nombre)
+    return HttpResponseRedirect(reverse('sigma:adm_fase_usu', args=(idProyect, idFase)))
+
+
 
 
 def finalizar_fase(request, idp, idf):

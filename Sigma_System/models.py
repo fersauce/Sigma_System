@@ -91,7 +91,7 @@ class TipoDeItem(models.Model):
     fase = models.ForeignKey(Fase)
     usuario = models.ForeignKey(Usuario)
     nombre = models.CharField(max_length=30)
-    codigo = models.CharField(max_length=10, unique=True)
+    codigo = models.CharField(max_length=20, unique=True)
     descripcion = models.CharField(max_length=100)
     importar = models.BooleanField(default=True)
     atributos = models.ManyToManyField(Atributo, through='AtribTipoDeItem')

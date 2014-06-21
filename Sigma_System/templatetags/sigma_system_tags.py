@@ -1,7 +1,7 @@
 from django import template
 from django.utils.html import format_html
 from django.core.urlresolvers import reverse
-from Sigma_System.models import Fase, Item, UsuariosXProyecto, TipoDeItem
+from Sigma_System.models import Fase, Item, UsuariosXProyecto, TipoDeItem, UsuarioRol
 register = template.Library()
 
 
@@ -108,3 +108,17 @@ def habilitar_opciones(value):
         return 'disabled'
     else:
         return ''
+
+
+@register.filter
+def rol_proy(value, arg):
+    u_r = UsuarioRol.objects.get(usuario=arg, idProyecto=value.id, idFase=0)
+    nombre_rol = 'indefinido'
+    if u_r:
+        nombre_rol = u_r.rol.nombre
+    return nombre_rol
+
+@register.filter
+def rol_fase(value, arg):
+    u_r = UsuarioRol.objects.filter(usuario=arg, idProyecto=value.proyecto.id, idFase=value.id)[0]
+    return u_r.rol.nombre

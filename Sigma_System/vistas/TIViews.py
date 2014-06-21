@@ -60,7 +60,7 @@ def altaTI(request, idProyect, idFase):
             messages.error(request, 'El nombre de Tipo de item ya existe en '
                                     'esta fase del proyecto')
             return render(request, 'timodificar.html',
-                          {'pkProyecto': idProyect, 'pkFase': idFase})
+                          {'pkProyecto': idProyect, 'pkFase': idFase, 'tipoItem': TI})
         if request.POST['importar'] == 'True':
             importar = True
         else:
