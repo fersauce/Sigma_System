@@ -8,6 +8,7 @@ do
         FALSE "Realizar Backup de Base de Datos de Desarrollo." \
         FALSE "Restaurar copia de Base de Datos de Producción." \
         FALSE "Restaurar copia de Base de Datos de Desarrollo." \
+        FALSE "Levantar un release en el servidor." \
         FALSE "Salir")
     echo ${NUMERO}
     case "$NUMERO" in
@@ -56,6 +57,19 @@ do
             else
                 zenity --width 300 --height 100 --info --text="Restauración realizada a la BD de Desarrollo"
             fi
+        ;;
+        "Levantar un release en el servidor.")
+            hola=$(git tag)
+            export OPCIONES=""
+            for h in ${hola};
+            do
+                OPCIONES=${OPCIONES}" FALSE "${h};
+            done
+            export NUMERO=$(zenity --title="Por favor, digite la opción que desea realizar:" \
+                --width 500 --height 240 --list --radiolist  --column "Choose" \
+                --column "Option" ${OPCIONES}
+                FALSE "Salir")
+                echo ${NUMERO};
         ;;
         "Salir")
             break
