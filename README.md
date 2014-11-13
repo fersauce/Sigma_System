@@ -3,16 +3,6 @@ Sygma_System
 
 Proyecto de Software utilizando Python, Django y Postgres para la asignatura Ingeniería de Software II - Grupo Q05
 
-<p align="center">
-  Ingeniería Informática
-</p>
-<p align="center">  
-  Facultad Politécnica - Universidad Nacional de Asunción
-</p>
-<p align="center">  
-  San Lorenzo - Paraguay
-</p>
-
 
 ------------
 Integrantes
