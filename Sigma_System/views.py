@@ -335,7 +335,10 @@ def desasignar_roles(request, id):
             UsuarioRol.objects.create(usuario=user.usuario, rol=rol, idProyecto=0, idFase=0, idItem=0)
         messages.success(request, 'Desasignacion correcta de roles del usuario "' + user.username + '"')
     else:
-        roles = user.usuario.roles.all()
+        #roles = user.usuario.roles.all()
+        roles = user.usuario.roles.all().filter(usuariorol__idProyecto=0,
+                                                usuariorol__idFase=0,
+                                                usuariorol__idItem=0)
         if roles.__len__() != 0:
             return render(request, 'DesasignarRol.html', {'roles': roles, 'user': user})
         else:
