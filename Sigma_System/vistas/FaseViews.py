@@ -4,9 +4,11 @@ from django.shortcuts import render
 from django.http import *
 import simplejson
 from Sigma_System.forms import BusquedaFasesForm
-from Sigma_System.models import Proyecto, Usuario, Fase, TipoDeItem, LBase, Items_x_LBase, Item, UsuarioRol
+from Sigma_System.models import Proyecto, Usuario, Fase, TipoDeItem, LBase, Items_x_LBase, Item, \
+    UsuarioRol, UsuariosXProyecto
 from Sigma_System.decoradores import permisos_requeridos
 from django.contrib.auth.decorators import login_required
+from Sigma_System.funciones_aux import permisos_disponibles
 import datetime, time
 
 
@@ -22,8 +24,10 @@ def administrar_fases(request, idProyect):
     """
     request.session['idProyectoActual'] = idProyect
     proyecto = Proyecto.objects.get(pk=idProyect)
-    fases = Fase.objects.filter(proyecto=proyecto).order_by('posicionFase')
+    #fases = Fase.objects.filter(proyecto=proyecto).order_by('posicionFase')
     permisos = request.session['permisos']
+    fases = fases_por_usuario(idProyect, request.user, permisos)
+    #request.session['permisos'] = permisos_disponibles(request.user, 1, int(idProyect), 0)
     return render(request, 'administrarfases.html',
                   {'proyecto': proyecto, 'fases': fases,
                    'form': BusquedaFasesForm(),
@@ -32,6 +36,22 @@ def administrar_fases(request, idProyect):
                    'permisos': permisos})
 
 
+def fases_por_usuario(idp, usuario, permisos):
+    usu_roles = UsuarioRol.objects.filter(usuario=usuario.usuario, idProyecto=idp)
+    fases = []
+    usu_proyecto = UsuariosXProyecto.objects.filter(usuario=usuario.usuario, proyecto=Proyecto.objects.get(id=idp))
+    if usu_proyecto:
+        if usu_proyecto[0].lider and usu_proyecto[0].activo:
+            return Fase.objects.filter(proyecto=idp).order_by('posicionFase')
+    if 'super_us' in permisos:
+        return Fase.objects.filter(proyecto=idp).order_by('posicionFase')
+    for u_r in usu_roles:
+        if u_r.idFase != 0:
+            fases.append(Fase.objects.get(id=u_r.idFase))
+    return fases
+
+
+    pass
 @login_required(login_url='/login/')
 @permisos_requeridos(['crear_fa'], 'sigma:adm_fase', 'crear fases', 1)
 def alta_fase(request, idProyect):

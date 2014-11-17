@@ -27,7 +27,7 @@ def iniciarsesion(request):
                 if user.is_active:
                     login(request, user)
                     request.session['userpk'] = username
-                    request.session['permisos'] = permisos_disponibles(user)
+                    request.session['permisos'] = permisos_disponibles(user, 0, 0, 0)
                     #if 'super_us' in request.session['permisos']:
                     return HttpResponseRedirect(reverse('sigma:inicio'))
                     #else:
