@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.html import format_html
 from django.core.urlresolvers import reverse
 from Sigma_System.models import Fase, Item, UsuariosXProyecto, TipoDeItem, \
-    Solicitud, UsuarioRol
+    Solicitud, UsuarioRol,Historial
 
 register = template.Library()
 

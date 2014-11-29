@@ -430,8 +430,14 @@ def revertir(request, idFase):
     idf = fase.pk  # Fase.objects.get(nombre=nameFa)
     histor = Historial.objects.filter(item=idFase)
 
+    hist_aux= []
+    h_nv= []
+    for h in histor:
+        if h.nro_version_act not in h_nv:
+            hist_aux.append(h)
+        h_nv.append(h.nro_version_act)
     return render(request, 'RevertirItem.html',
-                  {'hist': histor, 'idfase': idf, 'nomb': nameFa,
+                  {'hist': hist_aux, 'idfase': idf, 'nomb': nameFa,
                    'items': itemAux, 'username': request.user.username,
                    'permisos':request.session['permisos'],'proyecto':proyecto})
 
@@ -448,12 +454,18 @@ def revertirItem(request, idItem, versionRev, idHis):
     its = Item.objects.get(id=idItem)
     versionActual = its.version
 
+    print ('id del historial a la version que se quiere ir', int(idHis))
+
     his2 = Historial.objects.get(id=idHis)
+    print ('version actual del item', versionActual)
+    print ('version a revertir del item', versionRev)
 
     his1 = Historial.objects.filter(item=its)
     for h in his1:
+        print ('version actual en historial', h.nro_version_act)
         if h.nro_version_act == versionActual:
-            idHisFinal = h.id
+            idHisFinal = int(h.id)
+            print ('id en el historial de la version actual', idHisFinal)
 
     idHisRev = his2.id
     ultimo = idHisFinal
@@ -462,6 +474,7 @@ def revertirItem(request, idItem, versionRev, idHis):
     print('id historial ultimo', ultimo)
     print('reversion', int(versionRev))
     print('ver actual', int(versionActual))
+    b=0
     if int(versionRev) < int(versionActual):
         print('entro en la reversion es menor a la ver actual')
         for i in range(idHisRev, ultimo+1):
@@ -482,36 +495,42 @@ def revertirItem(request, idItem, versionRev, idHis):
                         print int(versionRev)
                         if int(historialAux.nro_version_act) == int(versionRev):
                             print('reversion encontrada')
+                            #messages.info(request, 'Item reversionado')
+                            b=1
+                            print('messages.info(request, Item reversionado)')
                             if historialAux.cod_mod == 'm':
                                 if historialAux.descripcion == 'nombre':
                                     print 'revertir de nombre'
-                                    messages.info(request, 'Item reversionado')
+                                    #messages.info(request, 'Item reversionado')
                                     valorActualEnHistorial = historialAux.valor_act
                                     valorAnteriorEnHistorial = historialAux.valor_ant
                                     its.nombre = valorActualEnHistorial
-                                    its.version = versionRev
+                                    its.version = versionActual+1
                                     its.save()
+                                    guardarHistorial(its,its.version,versionActual,'rever',valorActualEnHistorial,valorAnteriorEnHistorial,'reversion')
 
                                 if historialAux.descripcion == 'complejidad':
                                     print('reversion a un cambio de complejidad')
 
                                     print 'revertir de complejidad'
-                                    messages.info(request, 'Item reversionado')
+                                    #messages.info(request, 'Item reversionado')
                                     valorActualEnHistorial = historialAux.valor_act
                                     valorAnteriorEnHistorial = historialAux.valor_ant
                                     its.complejidad = valorActualEnHistorial
-                                    its.version = versionRev
+                                    its.version = versionActual+1
                                     print 'valorActualEnHistorial :', valorActualEnHistorial
                                     print 'its.version :',  its.version
                                     its.save()
+                                    guardarHistorial(its,its.version,versionActual,'rever',valorActualEnHistorial,valorAnteriorEnHistorial,'reversion')
                                 if historialAux.descripcion == 'prioridad':
                                     valorActualEnHistorial = historialAux.valor_act
                                     valorAnteriorEnHistorial = historialAux.valor_ant
                                     its.prioridad = valorActualEnHistorial
-                                    its.version = versionRev
-                                    messages.info(request, 'Item reversionado')
+                                    its.version = versionActual+1
+                                    #messages.info(request, 'Item reversionado')
                                     print 'revertir de prioridad'
                                     its.save()
+                                    guardarHistorial(its,its.version,versionActual,'rever',valorActualEnHistorial,valorAnteriorEnHistorial,'reversion')
                                 if historialAux.descripcion != 'nombre':
                                     if historialAux.descripcion!='complejidad':
                                         if historialAux.descripcion != 'prioridad':
@@ -521,16 +540,19 @@ def revertirItem(request, idItem, versionRev, idHis):
                                             atributoItem=ItemAtributosTipoI.objects.get(id=historialAux.descripcion)
                                             atributoItem.valor_atrib=historialAux.valor_act
                                             atributoItem.save()
-                                            its.version = versionRev
+                                            its.version = versionActual+1
                                     its.save()
+                                    #guardarHistorial(its,its.version,versionActual,'rever',valorActualEnHistorial,valorAnteriorEnHistorial,'reversion')
                             if versionActual == 1:
                                 messages.error(request,
                                                'Item no tiene version anterior, no puede reversionarse')
+
                             if historialAux.cod_mod == 'b':
-                                messages.info(request, 'Item reversionado')
+                                #messages.info(request, 'Item reversionado')
                                 its.estado = 'baja'
-                                its.version = versionRev
+                                its.version = versionActual+1
                                 its.save()
+                                guardarHistorial(its,its.version,versionActual,'rever',valorActualEnHistorial,valorAnteriorEnHistorial,'reversion')
                             if historialAux.cod_mod=='a':
                                 print 'revertir a alta, la primera version'
                                 its.version=1
@@ -538,96 +560,33 @@ def revertirItem(request, idItem, versionRev, idHis):
                                 messages.info(request, 'Item reversionado')
                                 its.save()
                         else:
+                            #cambia los valores en la tabla item
                             print 'entro en el si no'
                             if historialAux.cod_mod == 'm':
                                 if historialAux.descripcion == 'nombre':
                                     valorActualEnHistorial = historialAux.valor_act
                                     valorAnteriorEnHistorial = historialAux.valor_ant
                                     its.nombre = valorAnteriorEnHistorial
-                                    its.version = versionRev
+                                    its.version = versionActual+1
                                     its.save()
                                 if historialAux.descripcion == 'complejidad':
                                     print('reversion a un cambio de complejidad')
                                     valorActualEnHistorial = historialAux.valor_act
                                     valorAnteriorEnHistorial = historialAux.valor_ant
                                     its.complejidad = valorAnteriorEnHistorial
-                                    its.version = versionRev
+                                    its.version = versionActual+1
                                     its.save()
                                 if historialAux.descripcion == 'prioridad':
                                     valorActualEnHistorial = historialAux.valor_act
                                     valorAnteriorEnHistorial = historialAux.valor_ant
                                     its.prioridad = valorAnteriorEnHistorial
-                                    its.version = versionRev
+                                    its.version = versionActual+1
                                     its.save()
+        if b>0:
+            messages.info(request, 'Item reversionado')
+
     if int(versionRev) == int(versionActual):
         messages.error(request,'No puede reversionarse  a una misma version')
-    if int(versionRev) > int(versionActual):
-        print 'entro a la reversion mayor a la actual'
-        idHprimero=ultimo
-        idHreversionar=idHisRev
-        indice=idHprimero-1
-        print('id historial rever', idHreversionar)
-        print('id historial actual',idHprimero)
-        print('reversion', int(versionRev))
-        print('ver actual', int(versionActual))
-        for i in range(idHprimero, idHreversionar+1):
-            print('for')
-            indice = indice + 1
-            print(indice)
-            historialAux = Historial.objects.get(id=indice)
-            itemAuxiliar = historialAux.item
-            idLeido = itemAuxiliar.id
-            print 'id leido', idLeido
-            print 'idParametro', idItem
-            if (int(idLeido) == int(idItem)):
-                print('id son iguales')
-                if int(historialAux.nro_version_act) >= int(versionActual):
-                    print 'version mayor', historialAux.nro_version_act
-                    print int(historialAux.nro_version_act)
-                    print int(versionRev)
-                    if int(historialAux.nro_version_act) == int(versionRev):
-                        print('reversion encontrada')
-                        if historialAux.cod_mod == 'm':
-                            if historialAux.descripcion == 'nombre':
-                                print 'revertir de nombre'
-                                messages.info(request, 'Item reversionado')
-                                valorActualEnHistorial = historialAux.valor_act
-                                valorAnteriorEnHistorial = historialAux.valor_ant
-                                its.nombre = valorActualEnHistorial
-                                its.version = versionRev
-                                its.save()
-                            if historialAux.descripcion == 'complejidad':
-                                print('reversion a un cambio de complejidad')
-
-                                print 'revertir de complejidad'
-                                messages.info(request, 'Item reversionado')
-                                valorActualEnHistorial = historialAux.valor_act
-                                valorAnteriorEnHistorial = historialAux.valor_ant
-                                its.complejidad = valorActualEnHistorial
-                                its.version = versionRev
-                                print 'valorActualEnHistorial :', valorActualEnHistorial
-                                print 'its.version :',  its.version
-                                its.save()
-                            if historialAux.descripcion == 'prioridad':
-                                valorActualEnHistorial = historialAux.valor_act
-                                valorAnteriorEnHistorial = historialAux.valor_ant
-                                its.prioridad = valorActualEnHistorial
-                                its.version = versionRev
-                                messages.info(request, 'Item reversionado')
-                                print 'revertir de prioridad'
-                                its.save()
-
-                            if historialAux.descripcion != 'nombre':
-                                if historialAux.descripcion!='complejidad':
-                                    if historialAux.descripcion != 'prioridad':
-                                        print('cambio en el valor del atributo de id '+historialAux.descripcion+ ' del tipo del item')
-                                        numero=int(historialAux.descripcion)
-                                        print(numero)
-                                        atributoItem=ItemAtributosTipoI.objects.get(id=historialAux.descripcion)
-                                        atributoItem.valor_atrib=historialAux.valor_act
-                                        atributoItem.save()
-                                        its.version = versionRev
-                                        its.save()
     return HttpResponseRedirect('/ss/adm_i/' + str(its.tipoItems.fase.pk))
 
 
