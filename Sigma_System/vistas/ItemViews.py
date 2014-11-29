@@ -561,6 +561,7 @@ def revertirItem(request, idItem, versionRev, idHis):
                                 its.save()
                         else:
                             #cambia los valores en la tabla item
+
                             print 'entro en el si no'
                             if historialAux.cod_mod == 'm':
                                 if historialAux.descripcion == 'nombre':
