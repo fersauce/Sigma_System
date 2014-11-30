@@ -348,4 +348,4 @@ def desasignar_roles(request, id):
 
 
 def pruebaGrafos(request):
-        return render(request, 'atlas/pruebaGrafos.html')
+        return render(request, 'grafo_sencillo/index.html')

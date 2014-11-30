@@ -46,7 +46,7 @@
       },
       
       getDoc:function(e){
-        $.getJSON('library/'+e.id+'.json', function(doc){
+        $.getJSON('/static/arbor-v0.92/demos/halfviz/library/'+e.id+'.json', function(doc){
 
           // update the system parameters
           if (doc.sys){

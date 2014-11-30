@@ -6,7 +6,7 @@
 //
 (function(){
   
-  trace = arbor.etc.trace
+  //trace = arbor.etc.trace
   objmerge = arbor.etc.objmerge
   objcopy = arbor.etc.objcopy
   var parse = Parseur().parse
@@ -41,12 +41,12 @@
         _grabber.bind('mousedown', that.grabbed)
 
         $(that.io).bind('get', that.getDoc)
-        $(that.io).bind('clear', that.newDoc)
+        //$(that.io).bind('clear', that.newDoc)
         return that
       },
       
       getDoc:function(e){
-        $.getJSON('library/'+e.id+'.json', function(doc){
+        $.getJSON('/static/arbor-v0.92/demos/halfviz/library/'+e.id+'.json', function(doc){
 
           // update the system parameters
           if (doc.sys){
@@ -61,10 +61,17 @@
           _editing = false
         })
         
-      },
-
+      }
+      ,
       newDoc:function(){
-        var lorem = "; some example nodes\nhello {color:red, label:HELLO}\nworld {color:orange}\n\n; some edges\nhello -> world {color:yellow}\nfoo -> bar {weight:5}\nbar -> baz {weight:2}"
+        var lorem = "; some example nodes\n" +
+                    "hello {color:red, label:HELLO}\n" +
+                    "world {color:orange}\n\n" +
+                    "" +
+                    "; some edges\n" +
+                    "hello -> world {color:yellow}\n" +
+                    "foo -> bar {weight:5}\n" +
+                    "bar -> baz {weight:2}"
         
         _code.val(lorem).focus()
         $.address.value("")
@@ -110,7 +117,7 @@
         sys.screenSize(canvW, canvH)
                 
         _code.css({height:h-20,  width:edW-4, marginLeft:2})
-      },
+      }/*,
       
       grabbed:function(e){
         $(window).bind('mousemove', that.dragged)
@@ -141,14 +148,15 @@
         if (_updateTimeout) clearTimeout(_updateTimeout)
         _updateTimeout = setTimeout(that.updateGraph, 900)
       }
+        */
     }
     
-    return that.init()    
+    return that.init()
   }
 
 
   $(document).ready(function(){
-    var mcp = HalfViz("#halfviz")    
+    var mcp = HalfViz("#halfviz")
   })
 
   
