@@ -104,10 +104,20 @@
                                                             <a href="{% url 'sigma:adm_fase_usu' proyecto.pk fase.pk %}">
                                                             <i class="icon-user on-left"></i>Usuarios de fase</a></li>
                                                         {% if fase.estado != 'Iniciado' %}
-                                                        <li class="text-left {{ fase.id|verificar_fase }}"><a href="{% url 'sigma:adm_fase_mod' proyecto.pk fase.pk %}">
-                                                            <i class="icon-pencil on-left"></i>Modificar</a></li>
-                                                        <li class="text-left {{ fase.id|verificar_fase }}"><a id="botBaja{{ fase.pk }}" >
-                                                            <i class="icon-remove on-left"></i>Eliminar</a></li>
+                                                            {% if 'modificar_fa' not in permisos %}
+                                                                <li class="text-left disabled"><a href="{% url 'sigma:adm_fase_mod' proyecto.pk fase.pk %}">
+                                                                <i class="icon-pencil on-left"></i>Modificar</a></li>
+                                                            {% else %}
+                                                                <li class="text-left {{ fase.id|verificar_fase }}"><a href="{% url 'sigma:adm_fase_mod' proyecto.pk fase.pk %}">
+                                                                <i class="icon-pencil on-left"></i>Modificar</a></li>
+                                                            {% endif %}
+                                                            {% if 'eliminar_fa' not in permisos %}
+                                                                <li class="text-left disabled"><a>
+                                                                <i class="icon-remove on-left"></i>Eliminar</a></li>
+                                                            {% else %}
+                                                                <li class="text-left {{ fase.id|verificar_fase }}"><a id="botBaja{{ fase.pk }}">
+                                                                <i class="icon-remove on-left"></i>Eliminar</a></li>
+                                                            {% endif %}
                                                         {% endif %}
                                                         <li class="text-left "><a href="{% url 'sigma:adm_ti' fase.proyecto.pk fase.pk %}">
                                                             <i class="icon-accessibility"></i>Tipos de &Iacute;tem</a></li>

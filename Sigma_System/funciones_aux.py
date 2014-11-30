@@ -14,7 +14,7 @@ def permisos_disponibles(user=None, nivel=0, idp=0, idf=0):
     if nivel == 0:
         roles = user.usuario.roles.all()
     if nivel != 0:
-        usu_roles = UsuarioRol.objects.filter(usuario=user.usuario, idProyecto=idp)
+        usu_roles = UsuarioRol.objects.filter(usuario=user.usuario, idProyecto=idp, idFase=idf)
         roles = []
         for u_r in usu_roles:
             roles.append(u_r.rol)

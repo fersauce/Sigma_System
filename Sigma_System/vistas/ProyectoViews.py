@@ -13,6 +13,7 @@ from Sigma_System.models import Proyecto, Usuario, Fase, UsuariosXProyecto, \
 import datetime, time
 from Sigma_System.decoradores import permisos_requeridos
 from django.contrib.auth.decorators import login_required
+from Sigma_System.funciones_aux import permisos_disponibles
 
 
 @login_required(login_url='/login/')
@@ -27,6 +28,7 @@ def administrar_proyecto(request):
     @return: AdministrarProyecto.html, pagina en la cual se trabaja con los
     proyectos.
     """
+    request.session['permisos'] = permisos_disponibles(request.user, 0, 0, 0)
     permisos = request.session['permisos']
     usuario = request.user.usuario
     proyectos = usuario.proyectos.all()

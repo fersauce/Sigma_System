@@ -25,9 +25,9 @@ def administrar_fases(request, idProyect):
     request.session['idProyectoActual'] = idProyect
     proyecto = Proyecto.objects.get(pk=idProyect)
     #fases = Fase.objects.filter(proyecto=proyecto).order_by('posicionFase')
+    request.session['permisos'] = permisos_disponibles(request.user, 1, int(idProyect), 0)
     permisos = request.session['permisos']
     fases = fases_por_usuario(idProyect, request.user, permisos)
-    #request.session['permisos'] = permisos_disponibles(request.user, 1, int(idProyect), 0)
     return render(request, 'administrarfases.html',
                   {'proyecto': proyecto, 'fases': fases,
                    'form': BusquedaFasesForm(),
