@@ -181,7 +181,7 @@ def generar_nuevo_pass(request, correo):
                                    + string.digits) for i in range(10)])
         user.password = make_password(password)
         user.save()
-        return str(password)
+        return str('Usuario: '+user.username+'\nPassword: '+password)
     return None
 
 
