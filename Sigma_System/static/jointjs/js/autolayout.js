@@ -75,6 +75,9 @@ $(document).ready(function(){
 });
 
 function layout() {
+   $.getJSON('/ss/grafo/', {xhr: "true"}, function(data){
+        alert(data)
+   });
    var cadena = '{"T":["b","c"],' +
                  '"b":["f"],' +
                  '"c":["e","d"],' +
