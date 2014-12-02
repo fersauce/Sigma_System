@@ -1,18 +1,21 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
-   "http://www.w3.org/TR/html4/strict.dtd">
-
-<html lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>arbor.js project template</title>
-	<link rel="stylesheet" href="/static/jointjs/css/joint.css" type="text/css"/>
-
-    <script src="/static/jointjs/js/jointjs.js"></script>
-
-    <script src="/static/jointjs/main.js"></script>
-
-</head>
-<body>
-  <canvas id="viewport" width="800" height="600"></canvas>
-</body>
-</html>
+{% extends 'base_menu.html' %}
+{% block navegacion %}
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
+    <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
+    <a class="pull-menu" href="#"></a>
+{% endblock %}
+{% block titulo %}Grafo del proyecto{% endblock %}
+{% block contenido %}
+    <div class="span10">
+        <h2><a href="#"></a>Grafo<small class="on-right">del Proyecto</small> X</h2>
+        <div class="example">
+            <div id="paper"></div>
+            <link rel="stylesheet" href="/static/jointjs/css/joint.css" type="text/css"/>
+            <script src="/static/MetroBoostrap/js/jquery/jquery-1.6.1.min.js"></script>
+            <script src="/static/jointjs/js/joint.min.js"></script>
+            <script src="/static/jointjs/js/joint.layout.DirectedGraph.min.js"></script>
+            <script src="/static/jointjs/js/autolayout.js"></script>
+        </div>
+    </div>
+{% endblock %}
