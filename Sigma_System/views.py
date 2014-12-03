@@ -1,5 +1,6 @@
 from random import choice
 import string
+import simplejson
 from django.contrib.auth.hashers import make_password
 from django.core.mail import EmailMessage
 from django.shortcuts import render, render_to_response
@@ -346,8 +347,10 @@ def desasignar_roles(request, id):
     return HttpResponseRedirect(reverse('sigma:adm_u'))
 
 
+def dibujar_grafo(request, idp):
+    if request.is_ajax():
+        lista_ady = {'dos': [], 'uno': ['dos']}
 
-def dibujar_grafo(request):
-
-
-    return render(request, 'grafo_sencillo/index_.html')
+        return HttpResponse(simplejson.dumps(lista_ady), mimetype='application/json')
+    print "entro en dibujar grafo: ", idp
+    return render(request, 'grafo_sencillo/index_.html', {'idp':idp})

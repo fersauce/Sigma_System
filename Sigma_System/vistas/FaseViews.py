@@ -51,7 +51,6 @@ def fases_por_usuario(idp, usuario, permisos):
     return fases
 
 
-    pass
 @login_required(login_url='/login/')
 @permisos_requeridos(['crear_fa'], 'sigma:adm_fase', 'crear fases', 1)
 def alta_fase(request, idProyect):

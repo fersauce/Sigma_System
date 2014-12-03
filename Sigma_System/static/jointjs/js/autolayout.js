@@ -70,23 +70,23 @@ var paper = new joint.dia.Paper({
 // Just give the viewport a little padding.
 V(paper.viewport).translate(20, 20);
 
-$(document).ready(function(){
-    layout();
-});
-
-function layout() {
-   $.getJSON('/ss/grafo/', {xhr: "true"}, function(data){
-        alert(data)
-   });
-   var cadena = '{"T":["b","c"],' +
-                 '"b":["f"],' +
-                 '"c":["e","d"],' +
-                 '"d":[],"e":[],' +
+function layout(idp) {
+   $.getJSON('/ss/grafo/'+idp, {xhr: "true"}, function(data){
+        var cad3 = JSON.stringify(data);
+        alert(cad3);
+        var obj = jQuery.parseJSON( '{ "uno": ["dos"], "dos":[] }' );
+        var cad2 = '{ "uno": ["dos"], "dos":[] }';
+        var cadena = '{"Ruthi":["Carolina","P"],' +
+                 '"P":["f"],' +
+                 '"Carolina":["e","Ruthi"],' +
+                 '"e":[], ' +
+                 '"d":[],' +
                  '"f":["g"],' +
-                 '"g":[]}';
-   var adjacencyList = JSON.parse(cadena);
+                 '"g":["d"]}';
 
-   var cells = buildGraphFromAdjacencyList(adjacencyList);
-   graph.resetCells(cells);
-   joint.layout.DirectedGraph.layout(graph, { setLinkVertices: false, rankDir: 'LR' });
+        var adjacencyList = JSON.parse(cad3);
+        var cells = buildGraphFromAdjacencyList(adjacencyList);
+        graph.resetCells(cells);
+        joint.layout.DirectedGraph.layout(graph, { setLinkVertices: false, rankDir: 'LR' });
+   });
 }

@@ -1,4 +1,9 @@
 {% extends 'base_menu.html' %}
+{% block definicion_script %}
+   <script>
+
+   </script>
+{% endblock %}
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
@@ -16,6 +21,11 @@
             <script src="/static/jointjs/js/joint.min.js"></script>
             <script src="/static/jointjs/js/joint.layout.DirectedGraph.min.js"></script>
             <script src="/static/jointjs/js/autolayout.js"></script>
+            <script>
+                $(document).ready(function(){
+                    layout('{{ idp }}');
+                });
+            </script>
         </div>
     </div>
 {% endblock %}
