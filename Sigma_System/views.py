@@ -14,7 +14,7 @@ from django.contrib import messages
 from decoradores import permisos_requeridos
 from funciones_aux import permisos_disponibles
 from django.core.urlresolvers import reverse
-from Sigma_System.models import Rol, UsuarioRol
+from Sigma_System.models import Rol, UsuarioRol, Fase, Item
 
 
 def iniciarsesion(request):
@@ -349,8 +349,67 @@ def desasignar_roles(request, id):
 
 def dibujar_grafo(request, idp):
     if request.is_ajax():
-        lista_ady = {'dos': [], 'uno': ['dos']}
+        fases = Fase.objects.filter(proyecto__id=idp).order_by('id')
+        items_lista = []
+        lista_ady2 = {}
+        for f in fases:
+            items = Item.objects.filter(tipoItems__fase=f).order_by('id')
+            for i in items:
+                items_lista.append(i)
+        for i in items_lista:
+            iden_padre = str('Fase ' + str(i.tipoItems.fase.posicionFase) + ':' + i.nombre)
+            lista_ady2[iden_padre] = []
+            hijos = Item.objects.filter(item_padre=i.id).order_by('id')
+            for h in hijos:
+                iden_hijo = str('Fase ' + str(h.tipoItems.fase.posicionFase) + ':' + h.nombre)
+                lista_ady2[iden_padre].append(iden_hijo)
+        #lista_ady = {'dos': [], 'uno': ['dos']}
+        return HttpResponse(simplejson.dumps(lista_ady2), content_type='application/json')
+    return render(request, 'grafo_sencillo/index_.html', {'direc': idp, 'objeto': 'Proyecto'})
 
-        return HttpResponse(simplejson.dumps(lista_ady), mimetype='application/json')
-    print "entro en dibujar grafo: ", idp
-    return render(request, 'grafo_sencillo/index_.html', {'idp':idp})
+
+def dibujar_grafo_defase(request, idf):
+    if request.is_ajax():
+        fase = Fase.objects.get(id=idf)
+        #items_lista = []
+        lista_ady2 = {}
+        items = Item.objects.filter(tipoItems__fase=fase).order_by('id')
+        for i in items:
+            iden_padre = str('Fase ' + str(i.tipoItems.fase.posicionFase) + ':' + i.nombre)
+            lista_ady2[iden_padre] = []
+            hijos = Item.objects.filter(item_padre=i.id, tipoItems__fase=fase).order_by('id')
+            for h in hijos:
+                iden_hijo = str('Fase ' + str(h.tipoItems.fase.posicionFase) + ':' + h.nombre)
+                lista_ady2[iden_padre].append(iden_hijo)
+        #lista_ady = {'dos': [], 'uno': ['dos']}
+        return HttpResponse(simplejson.dumps(lista_ady2), content_type='application/json')
+    dire = 'fase/' + str(idf)
+    return render(request, 'grafo_sencillo/index_.html', {'direc':dire, 'objeto':'Fase'})
+
+
+def dibujar_grafo_deitem(request, idi):
+    if request.is_ajax():
+        lista_ady2 = {}
+        item = Item.objects.get(id=idi)
+        iden_act = str('Fase ' + str(item.tipoItems.fase.posicionFase) + ':' + item.nombre)
+
+        #meter en la lista de adyacencia al item padre si tiene
+        item_padre = Item.objects.filter(id=item.item_padre)
+        if item_padre:
+            iden_padre = str('Fase ' + str(item_padre[0].tipoItems.fase.posicionFase) + ':' + item_padre[0].nombre)
+            lista_ady2[iden_padre] = []
+            lista_ady2[iden_padre].append(iden_act)
+
+        #meter en la lista de adyacencia al item en cuestion
+        lista_ady2[iden_act] = []
+        hijos = Item.objects.filter(item_padre=item.id).order_by('id')
+
+        #meter a los hijos en la lista de adyacencia
+        for h in hijos:
+            iden_hijo = str('Fase ' + str(h.tipoItems.fase.posicionFase) + ':' + h.nombre)
+            lista_ady2[iden_act].append(iden_hijo)
+            lista_ady2[iden_hijo] = []
+
+        return HttpResponse(simplejson.dumps(lista_ady2), content_type='application/json')
+    dire = 'item/' + str(idi)
+    return render(request, 'grafo_sencillo/index_.html', {'direc':dire, 'objeto':'Item'})

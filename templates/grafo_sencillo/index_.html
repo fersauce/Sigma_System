@@ -13,7 +13,7 @@
 {% block titulo %}Grafo del proyecto{% endblock %}
 {% block contenido %}
     <div class="span10">
-        <h2><a href="#"></a>Grafo<small class="on-right">del Proyecto</small> X</h2>
+        <h2><a href="#"></a>Grafo<small class="on-right">de {{ objeto }}</small> X</h2>
         <div class="example">
             <div id="paper"></div>
             <link rel="stylesheet" href="/static/jointjs/css/joint.css" type="text/css"/>
@@ -23,7 +23,7 @@
             <script src="/static/jointjs/js/autolayout.js"></script>
             <script>
                 $(document).ready(function(){
-                    layout('{{ idp }}');
+                    layout('{{ direc }}');
                 });
             </script>
         </div>

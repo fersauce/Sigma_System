@@ -11,6 +11,8 @@ urlpatterns = patterns('',
     url(r'^nuevopass/$', 'Sigma_System.views.recuperarPass', name='recu_pass'),
     url(r'^cambiarPass/$', 'Sigma_System.views.cambiarPass', name='cambiarPass'),
     url(r'^grafo/(?P<idp>\d+)$', 'Sigma_System.views.dibujar_grafo', name='grafo'),
+    url(r'^grafo/fase/(?P<idf>\d+)$', 'Sigma_System.views.dibujar_grafo_defase', name='grafo_fase'),
+    url(r'^grafo/item/(?P<idi>\d+)$', 'Sigma_System.views.dibujar_grafo_deitem', name='grafo_item'),
 
     url(r'^adm_u_baja/(?P<us>\d+)$', 'Sigma_System.views.baja_usuario', name='adm_u_baja'),
     url(r'^adm_u_mod/(?P<us>\d+)/$', 'Sigma_System.views.modificar_usuario', name='adm_u_mod'),

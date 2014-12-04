@@ -155,6 +155,8 @@
                                                                 <i class="icon-eye on-left"></i>Historial Item</a></li>
                                                             <li class="text-left {{ i.id|habilitar_opciones }}"><a href="{% url 'sigma:adm_relacion' i.id %}">
                                                                 <i class="icon-link on-left"></i>Relacionar Item</a></li>
+                                                            <li class="text-left "><a href="{% url 'sigma:grafo_item' i.id %}">
+                                                                <i class="icon-eye"></i>Grafo de Item</a></li>
                                                         </ul>
                                                     </li>
                                                 </ul>

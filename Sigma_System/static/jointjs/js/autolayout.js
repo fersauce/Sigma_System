@@ -36,7 +36,7 @@ function makeElement(label) {
     // of lines in the label and the letter size. 0.6 * letterSize is
     // an approximation of the monospace font letter width.
     var letterSize = 8;
-    var width = 2 * (letterSize * (0.6 * maxLineLength + 1));
+    var width = 2 * (letterSize * (0.3 * maxLineLength + 1));
     var height = 2 * ((label.split('\n').length + 1) * letterSize);
 
     return new joint.shapes.basic.Rect({
@@ -46,7 +46,7 @@ function makeElement(label) {
             text: { text: label, 'font-size': letterSize, 'font-family': 'monospace' },
             rect: {
                 width: width, height: height,
-                rx: 5, ry: 5,
+                rx: 12, ry: 12,
                 stroke: '#555'
             }
         }
@@ -68,12 +68,12 @@ var paper = new joint.dia.Paper({
 });
 
 // Just give the viewport a little padding.
-V(paper.viewport).translate(20, 20);
+//V(paper.viewport).translate(20, 20);
 
-function layout(idp) {
-   $.getJSON('/ss/grafo/'+idp, {xhr: "true"}, function(data){
+function layout(dir) {
+   $.getJSON('/ss/grafo/'+ dir, {xhr: "true"}, function(data){
         var cad3 = JSON.stringify(data);
-        alert(cad3);
+        //alert(cad3);
         var obj = jQuery.parseJSON( '{ "uno": ["dos"], "dos":[] }' );
         var cad2 = '{ "uno": ["dos"], "dos":[] }';
         var cadena = '{"Ruthi":["Carolina","P"],' +
