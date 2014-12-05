@@ -37,6 +37,22 @@
                     <small>Hijos</small>
                 </button>
             </a>
+            {% if ban %}
+                <a href="{% url 'sigma:adm_rel_desasignar' item.id item.item_padre %}">
+                    <button class="command-button primary "  >
+                        <i class="icon-eye on-left"></i><b>Desasignar</b>
+                        <small>Relacion</small>
+                    </button>
+                </a>
+            {% else %}
+                <a href="#">
+                    <button class="command-button disabled "  >
+                        <i class="icon-eye on-left"></i><b>Desasignar</b>
+                        <small>Relacion</small>
+                    </button>
+                </a>
+            {% endif %}
+
             <table class="table striped hovered dataTable" id="tablaFase">
                 <thead>
                      <tr>
