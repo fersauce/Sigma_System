@@ -1,11 +1,11 @@
 import os
 
-def loadPermisos():
 
-    #Se vacia la tabla permiso
+def loadPermisos():
+    # Se vacia la tabla permiso
     Permiso.objects.all().delete()
 
-    #Se cargan todos los permisos
+    # Se cargan todos los permisos
     Permiso.objects.create(nombre="Super Usuario", codigo="super_us")
 
     Permiso.objects.create(nombre="Crear Usuario", codigo="crear_us")
@@ -29,7 +29,8 @@ def loadPermisos():
     Permiso.objects.create(nombre="Ver Fase", codigo="ver_fa")
 
     Permiso.objects.create(nombre="Crear Tipo de Item", codigo="crear_ti")
-    Permiso.objects.create(nombre="Modificar Tipo de Item", codigo="modificar_ti")
+    Permiso.objects.create(nombre="Modificar Tipo de Item",
+                           codigo="modificar_ti")
     Permiso.objects.create(nombre="Eliminar Tipo de Item", codigo="eliminar_ti")
     Permiso.objects.create(nombre="Ver Tipo de Item", codigo="eliminar_ti")
 
@@ -49,16 +50,16 @@ def loadPermisos():
 
     #Se establecen los roles por defecto
     rol_adm_sistema = Rol.objects.create(nombre="Administrador de Sistema",
-                                       descripcion="Con este rol se establece el superusuario con todos los"
-                                                   "permisos del sistema asignados")
+                                         descripcion="Con este rol se establece el superusuario con todos los"
+                                                     "permisos del sistema asignados")
 
     rol_adm_proy = Rol.objects.create(nombre="Administrador de Proyecto",
-                                       descripcion="Rol que posibilita administrar completamente un proyecto")
+                                      descripcion="Rol que posibilita administrar completamente un proyecto")
 
     rol_adm_fase = Rol.objects.create(nombre="Administrador de Fase",
-                                       descripcion="Rol que posibilita administrar completamente una fase")
+                                      descripcion="Rol que posibilita administrar completamente una fase")
 
-            # Se imprimen los permisos cargados
+    # Se imprimen los permisos cargados
     for p in Permiso.objects.all():
         rol_adm_sistema.permisos.add(p)
         rol_adm_proy.permisos.add(p)
@@ -68,9 +69,11 @@ def loadPermisos():
     Rol.objects.get(id=rol_adm_fase.id).delete()
 
     user = User.objects.all().order_by('id')[0]
-    Usuario.objects.create(user=user, ci="__12345__", direccion="", tel="", estado=True)
+    Usuario.objects.create(user=user, ci="__12345__", direccion="", tel="",
+                           estado=True)
 
-    UsuarioRol.objects.create(usuario=user.usuario, rol=rol_adm_sistema, idProyecto=0, idFase=0, idItem=0)
+    UsuarioRol.objects.create(usuario=user.usuario, rol=rol_adm_sistema,
+                              idProyecto=0, idFase=0, idItem=0)
 
     print("Se cargaron correctamente los roles")
 
@@ -87,8 +90,8 @@ if __name__ == '__main__':
     user = User.objects.all().order_by('id')[1]
 
     UsuarioRol.objects.create(usuario=user.usuario, rol=rol_adm_fase, idProyecto=0, idFase=0, idItem=0)'''
-    #print user.usuario.roles
-    #for r in user.usuario.roles.all():
+    # print user.usuario.roles
+    # for r in user.usuario.roles.all():
     #    print r.nombre
     #usuario.roles.add(rol_adm_sistema)
     loadPermisos()
