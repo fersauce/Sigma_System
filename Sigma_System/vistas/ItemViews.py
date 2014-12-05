@@ -707,6 +707,7 @@ def guardarHistorial(its,verAct,verAnt,cod,valorActual,valorAnterior,descrip):
         his.valor_act='baja'
 
     if cod=='a':
+
         his.valor_act=0
 
     if cod== 'm':
