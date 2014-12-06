@@ -7,53 +7,31 @@
         <div class="example">
             <h1>Nombre del proyecto: {{ nombreProyecto }}</h1>
             <h1>Lider del Proyecto: {{ liderProyecto }}</h1>
-            {% for element in vector %}
-                {% for e in element %}
-                    {% if forloop.counter == 1 %}
-                        Solicitud de Camio: {{ e.nombre }}
-                        <table class="table striped hovered dataTable">
-                                <thead>
-                                    <th class="text-left">Linea Base</th>
-                                    <th class="text-left">Usuario solicitante </th>
-                                    <th class="text-left">Votacion del Lider</th>
-                                    <th class="text-left">Estado de la solicitud</th>
+        <table class="table striped hovered dataTable">
+            <thead>
+                <th class="text-left">Nombre</th>
+                <th class="text-left">L&iacute;neas Bases relacionadas</th>
+                <th class="text-left">Usuario solicitante </th>
+                <th class="text-left">Votacion del Lider</th>
+                <th class="text-left">Estado de la solicitud</th>
+            </thead>
+            <tbody>
+            {% for element in solicitudes %}
+                <tr>
+                    <td class="text-left">{{ element.codigo }}</td>
+                    <td class="text-left">
+                        {% for lb in element.lbs %}
+                            <p align="left">{{ lb.pos }} {{ lb.nombre }}</p>
+                        {% endfor %}
+                    </td>
+                    <td class="text-left">{{  element.usuario }}</td>
+                    <td class="text-left">{{ element.votoLider }}</td>
+                    <td class="text-left">{{ element.estado }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
 
-                                </thead>
-                    {% endif %}
-
-                {% endfor %}
-                <tbody>
-                {% for e in element  %}
-
-                        {% if forloop.counter > 1 %}
-
-                            <tr>
-                                <td class="text-left">{{ e.lineaBase }}</td>
-                                <td class="text-left">{{ e.usuarioSolicitante }} </td>
-                                <td class="text-left">{{  e.votacion}}</td>
-                                <td class="text-left">{{ e.estado }}</td>
-
-                            </tr>
-                        {% endif %}
-                        {% if forloop.counter == 1 %}
-
-                            {% if forloop.last %}
-
-                                <tr>
-                                    <td class="text-left">--</td>
-                                    <td class="text-left">-</td>
-                                    <td class="text-left">--</td>
-                                    <td class="text-left">--</td>
-
-                                </tr>
-
-                            {% endif %}
-                        {% endif %}
-
-                {% endfor %}
-                </tbody>
-                </table>
-            {%endfor%}
         </div>
     </div>
 {% endblock %}

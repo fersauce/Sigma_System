@@ -240,4 +240,7 @@ urlpatterns = patterns('',
     url(r'^solicitudes/voto/(?P<idProyecto>\d+)/$',
         'Sigma_System.vistas.ProyectoViews.finalizarProyecto',
         name='finalizar_proyecto'),
+    url(r'^proyecto/solicitudes/(?P<idProyecto>\d+)/$',
+        'Sigma_System.vistas.ProyectoViews.generarReporteSolicitudes',
+        name='generar_reporte_sol'),
     )
