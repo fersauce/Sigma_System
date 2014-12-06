@@ -5,7 +5,7 @@
     <div class="span10" align="center">
         <h1><a href="#"></a>Reporte del Proyecto </h1>
         <div class="example">
-            <h1><s>Nombre del proyecto:</s> {{ nombreProyecto }}</h1>
+            <h1>Nombre del proyecto: {{ nombreProyecto }}</h1>
             {% for element in vector %}
                 {% for e in element %}
                     {% if forloop.counter == 1 %}
@@ -37,9 +37,9 @@
                             </tr>
                         {% endif %}
                         {% if forloop.counter == 1 %}
-                            kk
+
                             {% if forloop.last %}
-                                ll
+
                                 <tr>
                                     <td class="text-left">--</td>
                                     <td class="text-left">-</td>
