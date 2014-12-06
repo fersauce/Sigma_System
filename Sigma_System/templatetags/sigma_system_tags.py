@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.html import format_html
 from django.core.urlresolvers import reverse
 from Sigma_System.models import Fase, Item, UsuariosXProyecto, TipoDeItem, \
-    Solicitud, UsuarioRol
+    Solicitud, UsuarioRol,Historial
 
 register = template.Library()
 
@@ -150,3 +150,21 @@ def rol_proy(value, arg):
 def rol_fase(value, arg):
     u_r = UsuarioRol.objects.filter(usuario=arg, idProyecto=value.proyecto.id, idFase=value.id)[0]
     return u_r.rol.nombre
+
+@register.filter
+def mensajeHistorial(value):
+    his=Historial.objects.get(id=value)
+    if his.descripcion=='alta':
+        return 'Item creado'
+    if his.descripcion=='baja':
+        return 'Item eliminado'
+    if his.descripcion=='revivir':
+        return 'Item revivido'
+    if his.descripcion=='complejidad':
+        return 'Cambio en la complejidad'
+    if his.descripcion=='prioridad':
+        return 'Cambio en la prioridad'
+    if his.descripcion=='baja':
+        return 'Item Eliminado'
+    else:
+        return 'Cambio en el atributo '+his.descripcion+' del item '

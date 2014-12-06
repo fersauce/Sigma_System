@@ -9,11 +9,19 @@ import simplejson
 import sys
 from Sigma_System.forms import BusquedaProyectoForm, AltaProyectoForm
 from Sigma_System.models import Proyecto, Usuario, Fase, UsuariosXProyecto, \
-    UsuarioRol, Rol, Comite, UsuarioPorComite
+    UsuarioRol, Rol, Comite, UsuarioPorComite, Item
 import datetime, time
 from Sigma_System.decoradores import permisos_requeridos
 from django.contrib.auth.decorators import login_required
 from Sigma_System.funciones_aux import permisos_disponibles
+
+
+import xhtml2pdf.pisa as pisa
+import cStringIO as StringIO
+import cgi
+from django.template.loader import get_template
+from django.template import Context
+
 
 
 @login_required(login_url='/login/')
@@ -447,3 +455,47 @@ def finalizarProyecto(request, idProyecto):
     fase = Fase.objects.get(proyecto=proyecto, posicionFase=proyecto.nroFases)
     return HttpResponseRedirect(
         reverse('sigma:adm_fase_fin', args=[proyecto.pk, fase.pk]))
+
+
+
+
+def generarReporte (request, idProy):
+
+    nProyecto=Proyecto.objects.get(id=idProy)
+    fases= Fase.objects.filter(proyecto__id=idProy).order_by('posicionFase')
+    lista_fase_item= []
+    c=0
+    tamListas=[]
+    for f in fases:
+       lista_fase_item.append([])
+       lista_fase_item[c].append(f)
+       items=Item.objects.filter(tipoItems__fase=f)
+       for i in items:
+
+           lista_fase_item[c].append(i)
+      # print(lista_fase_item[c].__len__())
+       tamListas.append(lista_fase_item[c].__len__()-1)
+       longitud=lista_fase_item[c].__len__()-1
+       lista_fase_item[c].append(longitud)
+       print('cantidad de item en cada fase',longitud)
+       c=c+1
+
+    c=0
+
+
+    #return render(request,'ReporteProyecto.html',{'vector':lista_fase_item, 'nombreProyecto':nProyecto})
+    return render_to_pdf('ReporteProyecto.html', {'vector':lista_fase_item, 'nombreProyecto':nProyecto, 'tamListas':tamListas}, 'reporteProyecto')
+
+
+def render_to_pdf(template_src, context_dict, filename):
+        template = get_template(template_src)
+        context = Context(context_dict)
+        html = template.render(context)
+        result = StringIO.StringIO()
+        pdf = pisa.pisaDocument(
+            StringIO.StringIO(html.encode("utf-8")), result)
+        if not pdf.err:
+            response = HttpResponse(result.getvalue(), mimetype='application/pdf')
+            response['Content-Disposition'] = 'filename='+ filename +'.pdf'
+            return response
+        return HttpResponse('No se pudo generar el reporte :%s' % cgi.escape(html))

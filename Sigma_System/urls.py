@@ -69,6 +69,8 @@ urlpatterns = patterns('',
     url(r'^proyecto/(?P<idProyect>\d+)/fase/baja/(?P<idFase>\d+)/$',
        'Sigma_System.vistas.FaseViews.baja_fase',
        name='adm_fase_baja'),
+    url(r'^proyecto/(?P<idProy>\d+)$', 'Sigma_System.vistas.ProyectoViews.generarReporte', name='genReport'),
+
 
     url(r'^adm_i_alta/(?P<idFase>\d+)/(?P<opcion>\d+)/$', 'Sigma_System.vistas.ItemViews.altaItem', name='adm_i_alta'),
     url(r'^adm_i/(?P<idFase>\d+)$', 'Sigma_System.vistas.ItemViews.administrarItem', name='adm_i'),
@@ -93,6 +95,11 @@ urlpatterns = patterns('',
         name='adm_rel_asig_final'),
     url(r'^item/relacion/hijos/(?P<id_item>\d+)/$', 'Sigma_System.vistas.RelacionItemViews.ver_hijos',
         name='adm_rel_hijos'),
+    url(r'^item/relacion/desasignar/(?P<idItem>\d+)/(?P<idPadre>\d+)/$',
+        'Sigma_System.vistas.RelacionItemViews.desasignarRelacion',
+        name='adm_rel_desasignar'),
+
+
 
     url(r'^proyecto/(?P<idProyect>\d+)/fase/intercambiar/$',
        'Sigma_System.vistas.FaseViews.intercambiarFase',

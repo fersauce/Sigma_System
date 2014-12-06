@@ -1,0 +1,61 @@
+<!--{ extends 'base.html' }
+{ block titulo %}Reporte del Proyecto{   endblock %}-->
+{% block contenido %}
+     {% load sigma_system_tags %}
+    <div class="span10" align="center">
+        <h1><a href="#"></a>Reporte del Proyecto </h1>
+        <div class="example">
+            <h1><s>Nombre del proyecto:</s> {{ nombreProyecto }}</h1>
+            {% for element in vector %}
+                {% for e in element %}
+                    {% if forloop.counter == 1 %}
+                        Fase: {{ e.nombre }}
+                        <table class="table striped hovered dataTable">
+                                <thead>
+                                    <th class="text-left">Id del Item</th>
+                                    <th class="text-left">Nombre del Item </th>
+                                    <th class="text-left">Tipo del Item</th>
+                                    <th class="text-left">Item Padre</th>
+                                    <th class="text-left">Version del Item</th>
+                                    <th class="text-left">Costo del Item</th>
+                                </thead>
+                    {% endif %}
+
+                {% endfor %}
+                <tbody>
+                {% for e in element  %}
+
+                        {% if forloop.counter > 1 %}
+
+                            <tr>
+                                <td class="text-left">{{ e.id }}</td>
+                                <td class="text-left">{{ e.nombre }} </td>
+                                <td class="text-left">{{  e.tipoItems.nombre}}</td>
+                                <td class="text-left">{{ e.item_padre }}</td>
+                                <td class="text-left">{{e.version}}</td>
+                                <td class="text-left">{{e.complejidad}}</td>
+                            </tr>
+                        {% endif %}
+                        {% if forloop.counter == 1 %}
+                            kk
+                            {% if forloop.last %}
+                                ll
+                                <tr>
+                                    <td class="text-left">--</td>
+                                    <td class="text-left">-</td>
+                                    <td class="text-left">--</td>
+                                    <td class="text-left">--</td>
+                                    <td class="text-left">--</td>
+                                    <td class="text-left">--</td>
+                                </tr>
+
+                            {% endif %}
+                        {% endif %}
+
+                {% endfor %}
+                </tbody>
+                </table>
+            {%endfor%}
+        </div>
+    </div>
+{% endblock %}
