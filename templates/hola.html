@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="product" content="Metro UI CSS Framework">
+        <meta name="description" content="Simple responsive css framework">
+        <meta name="author" content="Sergey S. Pimenov, Ukraine, Kiev">
+
+
+        <link href="/home/fernando/PycharmProjects/Sigma_System/Sigma_System/static/MetroBoostrap/css/metro-bootstrap.css" rel="stylesheet">
+        <link href="/home/fernando/PycharmProjects/Sigma_System/Sigma_System/static/MetroBoostrap/css/metro-bootstrap-responsive.css" rel="stylesheet">
+        <link href="/home/fernando/PycharmProjects/Sigma_System/Sigma_System/static/MetroBoostrap/css/iconFont.css" rel="stylesheet">
+        <link href="/home/fernando/PycharmProjects/Sigma_System/Sigma_System/static/MetroBoostrap/css/docs.css" rel="stylesheet">
+        <link href="/home/fernando/PycharmProjects/Sigma_System/Sigma_System/static/MetroBoostrap/js/prettify/prettify.css" rel="stylesheet">
+
+
+        <!-- Load JavaScript Libraries -->
+        <script src="/home/fernando/PycharmProjects/Sigma_System/Sigma_System/static/MetroBoostrap/js/jquery/jquery.min.js"></script>
+        <script src="/home/fernando/PycharmProjects/Sigma_System/Sigma_System/static/MetroBoostrap/js/jquery/jquery.widget.min.js"></script>
+        <script src="/home/fernando/PycharmProjects/Sigma_System/Sigma_System/static/MetroBoostrap/js/jquery/jquery.mousewheel.js"></script>
+        <script src="/home/fernando/PycharmProjects/Sigma_System/Sigma_System/static/MetroBoostrap/js/jquery/jquery.dataTables.js"></script>
+        <script src="/home/fernando/PycharmProjects/Sigma_System/Sigma_System/static/MetroBoostrap/js/prettify/prettify.js"></script>
+        <!-- Metro UI CSS JavaScript plugins -->
+        <!--script src="{{ STATIC_URL }}MetroBoostrap/js/load-metro.js"></script>
+
+        <!-- Local JavaScript -->
+        <script src="/home/fernando/PycharmProjects/Sigma_System/Sigma_System/static/MetroBoostrap/js/docs.js"></script>
+        <script src="/home/fernando/PycharmProjects/Sigma_System/Sigma_System/static/MetroBoostrap/js/github.info.js"></script>
+        <script src="/home/fernando/PycharmProjects/Sigma_System/Sigma_System/static/MetroBoostrap/js/metro.min.js"></script>
+    </head>
+<script>
+    var a = 0;
+function uno(){
+    a++;
+    $('#uno').append('<option value="example'+a+'" selected="selected"> Opcion # </option>');
+    $('#dos').empty();
+    $('#tres').empty();
+}
+function dosa(){
+    $('#dos').append('<option value="example" selected="selected"> Opcion # </option>');
+}
+function tresa(){
+    $('#tres').append('<li> hola </li>');
+}
+function vaciar(){
+    $('#uno').empty();
+    $('#dos').empty();
+    $('#tres').empty();
+}
+</script>
+    <body>
+<form>
+    <select id="uno" onchange="dosa()"></select>
+    <select id="dos" onchange="tresa()"></select>
+    <ul id="tres"></ul>
+    <a href="#" onclick="uno()"> Uno</a>
+    <a href="#" onclick="dos()"> Dos</a>
+    <a href="#" onclick="tres()"> Tres</a>
+    <a href="#" onclick="vaciar()"> Vaciar</a>
+</form>
+<br>
+<br>

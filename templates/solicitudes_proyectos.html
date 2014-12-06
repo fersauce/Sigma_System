@@ -4,22 +4,236 @@
     <a class="element" href="{% url 'sigma:inicio' %}"> P&aacute;gina Principal</a>
     <a class="pull-menu" href="#"></a>
 {% endblock %}
+{% block definicion_script %}
+    <script>
+        var alto = 0;
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        function agregar(urlAgregar){
+            var csrftoken = getCookie('csrftoken');
+
+            $.getJSON("{% url 'sigma:solic_rec_items' 1 %}", {'xhr': true}, function(data){
+                if (data==''){
+                    $.Notify({style: {background: '#1ba1e2', color: 'white'}, content: 'No tiene proyectos asociados que se encuentran en estado iniciado y/o han finalizado todos sus proyectos asociados'})
+                }else{
+                    var content = '';
+                    var fase;
+                    $.Dialog({
+                        shadow: true,
+                        overlay: true,
+                        flat: true,
+                        draggable: true,
+                        icon: '<span class="icon-bus"></span>',
+                        title: 'Draggable window',
+                        scroll: true,
+                        modal: true,
+                        resizable: true,
+                        height: 700,
+                        width: 70,
+                        padding: 10,
+                        content: 'This Window is draggable by caption.',
+                        onShow: function(){
+                            var content1 = '<div><form method="post" action="'+urlAgregar+'" enctype="multipart/form-data" style="overflow: visible;">' +
+                                    '<p>Seleccione el proyecto: <select id="proyectoSeleccionado" name="idProyecto" onchange="traerFases(this.value);">'+
+                                    '<option value="x">Sin elecci&oacute;n</option></select></p>'+
+                                    '<p>Seleccione la fase: <select id="faseSeleccionada" name="idFase" onchange="crearChecks(this.value);">'+
+                                    '</select></p>'+
+                                    '<p>Seleccione el/los items que quiera modificar </p>' +
+                                    '<input type="hidden" name="csrfmiddlewaretoken" value="'+csrftoken+'">'+
+                                    '<div class="example"><nav class="sidebar dark"><ul id="itemsSolicitados"></ul></nav>' +
+                                    '<label>Justificaci&oacute;n</label><input type="text" name="justificacion" required>'+
+                                    '</div>'+
+                                    '<div><input type="submit" class="button success" value="S&iacute;">' +
+                                    '<a href="#"><input type="button" class="button inverse" value="No" onclick="$.Dialog.close();"></a></div>'+
+                                    '</form></div>';
+                            $.Dialog.title("Agregar Solicitud");
+                            $.Dialog.content(content1);
+                            $.Metro.initInputs();
+                        }
+                    });
+                    traerProyectos(data);
+                }
+            });
+        }
+        function traerProyectos(data){
+            //var content = '';
+            $.each(data, function(i, dato){
+                $("#proyectoSeleccionado").append('<option value="'+dato.id_proy+'">'+dato.nombre_proy+'</option>');
+                //content = content + '<option value="'+dato.proyecto.id+'">'+dato.proyecto.nombre+'</option>';
+            });
+            $("#faseSeleccionada").empty('');
+            $("#itemsSolicitados").empty('');
+        }
+        function traerFases(proyecto){
+            if(proyecto == 'x'){
+                $("#faseSeleccionada").empty('');
+                $("#itemsSolicitados").empty('');
+            }else{
+                $.getJSON("{% url 'sigma:solic_rec_items' 2 %}", {'xhr': true, 'proyectoSeleccionado': proyecto}, function(data){
+                    $("#faseSeleccionada").append('<option value="x">Sin elecci&oacute;n</option>');
+                    $.each(data, function(i, dato){
+                        $("#faseSeleccionada").append('<option value="'+dato.pk_fase+'">'+dato.nombre_fase+'</option>');
+                        //content = content + '<option value="'+dato.fase.id+'">'+dato.fase.nombre+'</option>';
+                    });
+                    $("#itemsSolicitados").empty('');
+                });
+            }
+
+        }
+        function crearChecks(fase){
+            if(fase == 'x'){
+                $("#itemsSolicitados").empty('');
+            }else{
+                $.getJSON("{% url 'sigma:solic_rec_items' 4 %}", {'xhr': true, 'faseSeleccionada': fase}, function(data){
+                    var content = '';
+                    var fase;
+                    var bandera = true;
+                    alto = 0;
+                    $.each(data, function(i, dato){
+                        if (fase != dato.fase.nombre){
+                            fase = dato.fase.nombre;
+                            if (bandera == false){
+                                content = content + '</ul></li>'
+                            }
+                            bandera = false;
+                            content = content + '<li><a class="dropdown-toggle" href="#">'+
+                                    fase+
+                                    '</a>'+
+                                    '<ul class="dropdown-menu" data-role="dropdown" style="display: none">';
+                        }
+                        content = content + '<li><div class="input-control switch" data-role="input-control"' +
+                                'align="left"><label class="inline-block" align="left">' +
+                                '<input type="checkbox" name="itemSeleccionado"' +
+                                'onclick="verItems(\'{% url 'sigma:solic_rec_items_lb' %}\', '+dato.lb.pk_id+', '+dato.item.pk_id+')"  ' +
+                                'id= "itemSelecc'+dato.item.pk_id+'"'+
+                                'value="' + dato.item.pk_id +'" align="left"><span class="check"></span> '+dato.item.nombre+
+                                '</label></div></li>';
+                    });
+                    alto = alto * 70;
+                    $("#itemsSolicitados").html(content);
+                });
+            }
+        }
+        function confirmar(urlAux){
+            var csrftoken = getCookie('csrftoken');
+            $.Dialog({
+                shadow: true,
+                overlay: true,
+                flat: true,
+                draggable: true,
+                icon: '<span class="icon-cancel"></span>',
+                title: 'Draggable window',
+                width: 500,
+                padding: 10,
+                content: 'This Window is draggable by caption.',
+                onShow: function(){
+                    var content = '<form method="post" action="'+urlAux+'">' +
+                            '<input type="hidden" name="csrfmiddlewaretoken" value="'+csrftoken+'">'+
+                            '<p>¿Est&aacute; seguro de querer eliminar esta solicitud?</p>' +
+                            '<input type="submit" class="button success" value="S&iacute;">' +
+                            '<a href="#"><input type="button" class="button inverse" value="No" onclick="$.Dialog.close();"></a>'+
+                            '</form>';
+                    $.Dialog.title("Confirmar Eliminaci&oacute;n");
+                    $.Dialog.content(content);
+                }
+            });
+        }
+        function dialogo(titulo, contenido){
+            $.Dialog({
+                shadow: true,
+                overlay: true,
+                flat: true,
+                draggable: true,
+                icon: '<span class="icon-home"></span>',
+                title: 'Draggable window',
+                height: 700,
+                width: 500,
+                padding: 10,
+                content: 'This Window is draggable by caption.',
+                onShow: function(){
+                    $.Dialog.title(titulo);
+                    $.Dialog.modal = true;
+                    $.Dialog.content(contenido);
+                }
+            });
+        }
+        function verItems(urlAux, id1, id2){
+            $.getJSON(urlAux, {'xhr': true, 'lb': id1, 'item': id2}, function(data){
+                var csrftoken = getCookie('csrftoken');
+                if ($('#itemSelecc'+id2).is(':checked')){
+                    $.each(data, function(i, dato){
+                        var hola = '#itemSelecc'+dato.pk_id;
+                        if($(hola).length){
+                            $(hola).attr('disabled', true);
+                        }
+                    });
+                }else{
+                    $.each(data, function(i, dato){
+                        var hola = '#itemSelecc'+dato.pk_id;
+                        if($(hola).length){
+                            $(hola).removeAttr('disabled');
+                        }
+                    });
+                }
+            });
+        }
+        function actualizarTabla(){
+            $.getJSON('{% url 'sigma:solic_adm' 1 %}'+'hola', {'xhr': true}, function (data) {
+                var tabla = document.getElementById("tablaSolicitudes");
+                tabla.refresh();
+            });
+        }
+        function verInfo(id, estado, codigo) {
+            $.getJSON("{% url 'sigma:solic_rec_items' 3 %}", {'xhr': true, 'idSol': id}, function(data) {
+                var content = '<label>Estado: </label><h4>'+estado+'</h4>' +
+                        '<br><label>Items relacionados a la solicitud: </label><ul>';
+                $.each(data, function(i, dato){
+                    content = content + '<li class="icon-cone">'+dato.item+'</li>';
+                });
+                content = content + '</ul><div><a href="#"><input type="button" class="button success" value="Atr&aacute;s"'+
+                        ' onclick="$.Dialog.close();"></a></div>';
+                var titulo = 'Solicitud '+codigo;
+                dialogo(titulo, content);
+            });
+        }
+    </script>
+{% endblock %}
 {% block titulo %}Proyectos Activos{% endblock %}
 {% block contenido %}
     <div class="span10">
-        <h2><a href="#"></a>Proyectos <small class="on-right">Asociados</small></h2>
+        <h2><a href="#"></a>Solicitudes de  <small class="on-right">Cambios</small></h2>
         <div class="example">
             <table class="table striped hovered dataTable" id="tablaProyecto">
+                <a href="#" onclick="agregar('{% url 'sigma:solic_alta' %}')">
+                    <button class="command-button primary ">
+                        <i class="icon-new on-left"></i><b>Agregar</b>
+                        <small>Solicitud</small>
+                    </button>
+                </a>
+
                 <thead>
                     <th class="text-left">Nombre</th>
-                    <th class="text-left">Nro. de Solicitudes</th>
-                    <th class="text-left">Editar</th>
+                    <th class="text-left">Estado</th>
+                    <th class="text-left">Opciones</th>
                 </thead>
                 <tbody>
-                    {% for proyecto in proyectos %}
+                    {% for solicitud in solicitudes %}
                         <tr>
-                            <td>{{ proyecto.proyecto.nombre }}</td>
-                            <td class="right">{{ proyecto.nroSol }}</td>
+                            <td>{{ solicitud.codigo }}</td>
+                            <td class="right">{{ solicitud.estado }}</td>
                             <td align="center">
                                 <div class="span12">
                                     <nav class="navigation-bar transparente">
@@ -28,8 +242,17 @@
                                                 <li>
                                                     <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
                                                     <ul class="dropdown-menu" data-role="dropdown">
-                                                        <li class="text-left"><a href="{% url 'sigma:solic_fase' proyecto.proyecto.pk %}">
-                                                            <i class="icon-book on-left"></i>Fases</a></li>
+                                                        <li class="text-left"><a href="#" onclick="verInfo({{ solicitud.pk }}, '{{ solicitud.estado }}', '{{ solicitud.codigo }}')">
+                                                            <i class="icon-book  on-left"></i>Info</a></li>
+                                                        <li class="text-left"><a href="#" onclick="confirmar('{% url 'sigma:solic_baja' solicitud.pk %}')">
+                                                            <i class="icon-cancel-2 on-left"></i>Eliminar</a></li>
+                                                        {% if solicitud.estado == 'Pendiente' %}
+                                                        <li class="text-left"><a href="{% url 'sigma:solic_enviar' solicitud.pk %}">
+                                                            <i class="icon-arrow-right on-left"></i>Enviar</a></li>
+                                                        {% else %}
+                                                        <li class="text-left"><a href="{% url 'sigma:solic_ejec' solicitud.pk %}" {% if solicitud.estado != 'Aprobado' %}disabled{% endif %}>
+                                                            <i class="icon-play on-left" ></i>Ejecutar</a></li>
+                                                        {% endif %}
                                                     </ul>
                                                 </li>
                                             </ul>
@@ -43,8 +266,8 @@
                 <tfoot>
                     <tr>
                         <th class="text-left">Nombre</th>
-                        <th class="text-left">Nro. de Solicitudes</th>
-                        <th class="text-left">Editar</th>
+                        <th class="text-left">Estado</th>
+                        <th class="text-left">Opciones</th>
                     </tr>
                 </tfoot>
             </table>

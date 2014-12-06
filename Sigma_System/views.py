@@ -28,6 +28,7 @@ def iniciarsesion(request):
                     login(request, user)
                     request.session['userpk'] = username
                     request.session['permisos'] = permisos_disponibles(user)
+                    print request.session['permisos']
                     #if 'super_us' in request.session['permisos']:
                     return HttpResponseRedirect(reverse('sigma:inicio'))
                     #else:
@@ -181,7 +182,7 @@ def generar_nuevo_pass(request, correo):
                                    + string.digits) for i in range(10)])
         user.password = make_password(password)
         user.save()
-        return str(password)
+        return str('Usuario: '+user.username+'\nPassword: '+password)
     return None
 
 

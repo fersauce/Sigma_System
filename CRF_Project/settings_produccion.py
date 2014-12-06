@@ -25,8 +25,7 @@ DEBUG = False
 
 TEMPLATE_DEBUG = False
 
-ALLOWED_HOSTS = ['crfproject.org']
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -37,9 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_evolution',
     'Sigma_System',
-    'south',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -61,9 +58,9 @@ ADMINS = (
     ('Ruth Centurion', 'ruthiccr@gmail.com'),
 )
 """Administradores"""
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
+###############################################################################
+#########Configuraciones de la BD de produccion de Sigma_System################
+###############################################################################
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -105,7 +102,9 @@ STATICFILES_DIRS = (
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
-
+###############################################################################
+##################Servidor de Correo del Sistema###############################
+###############################################################################
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'sigmasystem21@gmail.com'
