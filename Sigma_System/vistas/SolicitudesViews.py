@@ -12,6 +12,7 @@ import sys
 from Sigma_System.models import Usuario, UsuariosXProyecto, Solicitud, Proyecto, \
     LBase, Items_x_LBase, Item, Archivo, Fase, HistorialLineabase
 from Sigma_System.views import inicio
+from Sigma_System.vistas.FaseViews import fases_por_usuario
 
 
 def administrarProyectosSolicitudes(request):
@@ -294,10 +295,16 @@ def recuperarItems(request, tipoTrans):
             """
             idProyecto = request.GET['proyectoSeleccionado']
             proyecto = Proyecto.objects.get(id=idProyecto)
-            fases = Fase.objects.filter(proyecto=proyecto)
+            fases = Fase.objects.filter(proyecto=proyecto, estado='Iniciado')
             fasEnvio = []
             for fas in fases:
-                fasEnvio.append({'pk_fase': fas.pk, 'nombre_fase': fas.nombre})
+                items = Item.objects.filter(estado='bloqueado',
+                                            tipoItems__fase=fas)
+                if items:
+                    fasesUsu = fases_por_usuario(idProyecto, request.user)
+                    if fas in fasesUsu:
+                        fasEnvio.append(
+                            {'pk_fase': fas.pk, 'nombre_fase': fas.nombre})
             return HttpResponse(simplejson.dumps(fasEnvio),
                                 content_type='application/json')
             pass
