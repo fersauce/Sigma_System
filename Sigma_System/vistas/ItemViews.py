@@ -20,6 +20,19 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 @login_required(login_url='/login/')
 def administrarItem(request, idFase):
+    """
+    Vista que asigna administra los items de una fase determinada
+    @param request: Contiene la informacion sobre la solicitud de la pagina
+    que lo llamo.
+    @type request: django.http.HttpRequest.
+
+    @param idFase: Contiene el id de la fase que a la que pertenecen los items.
+    @type idFase: Unicode
+
+    @return: AdministrarItem.html, pagina en la cual se trabaja con los item.
+    @rtype django.shortcuts.render
+
+    """
     fase = Fase.objects.get(id=idFase)
     item_baja = Item.objects.filter(tipoItems__fase=fase, estado='baja')
     request.session['fase'] = idFase
@@ -38,8 +51,21 @@ def administrarItem(request, idFase):
 @login_required(login_url='/login/')
 def altaItem(request, idFase, opcion):
     """
-    vista utilizada para crear un item
+    Vista que administra la creacion de nuevos items de una fase determinada
+
+    @param request: Contiene la informacion sobre la solicitud de la pagina
+    que lo llamo.
+    @type request: django.http.HttpRequest.
+
+    @param idFase: Contiene el id de la fase que a la que pertenecen los items.
+    @type idFase: Unicode
+    @param opcion:indica si hay algun enlace con un padre o ningun enlace
+    @type opcion: Unicode
+
+    @return: AltaItem.html, pagina en la cual se trabaja con los item.
+    @rtype django.shortcuts.render
     """
+
     print "entro en alta item"
     print opcion
     print "------------------"
@@ -140,6 +166,20 @@ def altaItem(request, idFase, opcion):
 
 
 def get_antecesores(idfase):
+    """
+    metodo que asigna administra la creacion de nuevos items de una fase determinada
+
+
+
+    @param idFase: Contiene el id de la fase que a la que pertenecen los items.
+    @type idFase: Unicode
+
+    @return:
+    @rtype lista
+
+    """
+
+
     fase = Fase.objects.get(id=idfase)
     lista = []
     if fase.posicionFase == 1:
@@ -154,6 +194,27 @@ def get_antecesores(idfase):
 
 
 def aprobar_desaprobar_item(request, idFase, idItem, opcion):
+
+    """
+    Vista donde se administra la aprobacion de un item de una fase determinada
+
+    @param request: Contiene la informacion sobre la solicitud de la pagina
+    que lo llamo.
+    @type request: django.http.HttpRequest.
+
+    @param idFase: Contiene el id de la fase que a la que pertenece el item
+    @type idFase: Unicode
+    @param idItem:indica el id del item.
+    @type idFase: Unicode
+    @param idItem:indica si hay algun enlace con un padre.
+    @type idFase: Unicode
+
+
+    @return: lista
+    @rtype django.http.HttpRequestRedirect
+    """
+
+
     item = Item.objects.get(id=idItem)
     fase = Fase.objects.get(id=idFase)
     if item.estado not in ['bloqueado', 'revision']:
@@ -213,8 +274,18 @@ def aprobar_desaprobar_item(request, idFase, idItem, opcion):
 @login_required(login_url='/login/')
 def modificar_item(request, it):
     """
-    vista utilizada para modificar un item
-    donde el parametro it es el id del item
+    Vista donde se administra la modificacion de uno o mas parametros de un item.
+
+    @param request: Contiene la informacion sobre la solicitud de la pagina
+    que lo llamo.
+    @type request: django.http.HttpRequest.
+
+    @param idItem:indica el id del item.
+    @type idFase: Unicode
+
+
+    @return: ModificarItem.html
+    @rtype django.shortcuts.render
     """
 
     its = Item.objects.get(id=it)
@@ -336,8 +407,18 @@ def modificar_item(request, it):
 @login_required(login_url='/login/')
 def baja_item(request, it):
     """
-    vista utilizada para dar de baja un item, baja logica
-    donde el parametro it es el id del item a dar de baja
+    Vista donde se administra la eliminacion logica de un item.
+
+    @param request: Contiene la informacion sobre la solicitud de la pagina
+    que lo llamo.
+    @type request: django.http.HttpRequest.
+
+    @param idItem:indica el id del item.
+    @type idFase: Unicode
+
+
+    @return: /ss/adm_i/
+    @rtype django.http.HttpRequestRedirect
     """
     #user = User.objects.get(id=us)
 
@@ -369,10 +450,22 @@ def baja_item(request, it):
 
 @login_required(login_url='/login/')
 def revivir_item(request, idFase):
-    """
-    vista utilizada para mostrar los items a ser revividos
 
     """
+    Vista donde se administra los items que pueden ser revividos.
+
+    @param request: Contiene la informacion sobre la solicitud de la pagina
+    que lo llamo.
+    @type request: django.http.HttpRequest.
+
+    @param idFase:indica el id de la fase a la que pertenece el item.
+    @type idFase: Unicode
+
+
+    @return: RevivirItem.html
+    @rtype django.shortcuts.render
+    """
+
     request.session['fase'] = idFase
 
     fs = Fase.objects.get(pk=idFase)
@@ -388,10 +481,23 @@ def revivir_item(request, idFase):
 
 @login_required(login_url='/login/')
 def revivir(request, it):
+
     """
-    vista utilizada para revivir un item eliminado
-    donde el parametro it es el id del item a revivir
+    Vista donde se administra "revivir" de un item.
+
+    @param request: Contiene la informacion sobre la solicitud de la pagina
+    que lo llamo.
+    @type request: django.http.HttpRequest.
+
+    @param it:indica el id del item.
+    @type idFase: Unicode
+
+
+    @return: '/ss/adm_i_rev/'
+    @rtype django.http.HttpRequestRedirect
     """
+
+
     #user = User.objects.get(id=us)
     its = Item.objects.get(id=it)
     its.estado = "activo"
@@ -417,8 +523,18 @@ def revivir(request, it):
 @login_required(login_url='/login/')
 def revertir(request, idFase):
     """
-    vista utilizada para mostrar las versiones del item a reversionar
+    Vista donde se administra todas las versiones del item.
 
+    @param request: Contiene la informacion sobre la solicitud de la pagina
+    que lo llamo.
+    @type request: django.http.HttpRequest.
+
+    @param idFase:indica el id de la fase a la que pertenece el item.
+    @type idFase: Unicode
+
+
+    @return: RevertirItem.html
+    @rtype django.shortcuts.render
     """
 
     itemAux = Item.objects.get(id=idFase)
@@ -444,13 +560,27 @@ def revertir(request, idFase):
 
 @login_required(login_url='/login/')
 def revertirItem(request, idItem, versionRev, idHis):
-    """
-    vista utilizada para realizar la reversion del item,
-    idItem es el id del item que se va a cambiar
-    verisonRev es la version a la que ira nuevamente
-    historial.item.all
 
     """
+    Vista donde se administra la reversion del item.
+
+    @param request: Contiene la informacion sobre la solicitud de la pagina
+    que lo llamo.
+    @type request: django.http.HttpRequest.
+
+    @param idItem:indica el id del item a revertir.
+    @type idFase: Unicode
+    @param versionRev: indica a que version se desea reversionar.
+    @type: Unicode
+    @param idHis: indica el id del historial en el que se encuentra la version a reversionar del item.
+    @type: Unicode
+
+
+    @return: '/ss/adm_i/'
+    @rtype django.http.HttpRequestRedirect
+    """
+
+
     its = Item.objects.get(id=idItem)
     versionActual = its.version
     #idPadre= Item.
@@ -691,6 +821,31 @@ def historialItem(request, idItem):
 
 
 def guardarHistorial(its,verAct,verAnt,cod,valorActual,valorAnterior,descrip):
+
+    """
+    Metodo con el que se guardan los datos del historial del item.
+
+
+    @param its:indica el item a modificar
+    @type its: Unicode
+    @param verAct: indica la version nueva del item.
+    @type valorAct: Unicode.
+    @param verAnt:indica la version anterior del item.
+    @type verAnt: Unicode.
+    @param cod:indica el tipo de modificacion que tuvo el item..
+    @type cod: Unicode.
+    @param valorActual :indica el valor nuevo del item.
+    @type valorActual: Unicode.
+    @param valorAnterior:indica el valor a reemplazar, el valor que actualmente tiene el item antes del cambio.
+    @type valorAnterior: Unicode
+    @param descrip: indica una breve descripcion del cambio  que hubo en el ite,
+    @type descrip: Unicode
+
+
+
+    @return: void
+    @rtype none
+    """
 
 
     his=Historial.objects.create(
