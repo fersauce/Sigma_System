@@ -877,6 +877,10 @@ def guardarHistorial(its,verAct,verAnt,cod,valorActual,valorAnterior,descrip):
 
     if cod== 'rever':
         his.valor_act=valorActual
+    if cod == 'adj':
+        his.valor_act= valorActual
+    if cod== 'elimA':
+        his.valor_act=valorActual
 
 
     his.save()
