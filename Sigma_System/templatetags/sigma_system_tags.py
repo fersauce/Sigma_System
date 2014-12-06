@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.html import format_html
 from django.core.urlresolvers import reverse
 from Sigma_System.models import Fase, Item, UsuariosXProyecto, TipoDeItem, \
-    Solicitud, UsuarioRol,Historial
+    Solicitud, UsuarioRol, Historial, Usuario
 
 register = template.Library()
 
@@ -16,6 +16,12 @@ def lider(value):
     else:
         nombre = ""
     return nombre
+
+@register.filter
+def eslider(value, arg):
+    usuario = Usuario.objects.get(id=arg)
+    usuarioXproyecto = UsuariosXProyecto.objects.get(proyecto=value, usuario=usuario)
+    return usuarioXproyecto.lider
 
 
 @register.filter

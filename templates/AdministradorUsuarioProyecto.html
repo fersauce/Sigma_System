@@ -75,9 +75,11 @@
                                                 <li>
                                                     <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
                                                     <ul class="dropdown-menu" data-role="dropdown">
-                                                        <li class="text-left" onclick="confirmar('{% url 'sigma:adm_proy_desasig_usu' proyecto.id u.id %}')">
-                                                            <a href="#">
-                                                            <i class="icon-exit on-left"></i>Desasignar Usuario</a></li>
+                                                        {% if proyecto.estado != 'Iniciado' %}
+                                                            <li class="text-left" onclick="confirmar('{% url 'sigma:adm_proy_desasig_usu' proyecto.id u.id %}')">
+                                                                <a href="#">
+                                                                <i class="icon-exit on-left"></i>Desasignar Usuario</a></li>
+                                                        {% endif %}
                                                         <li class="text-left"><a href="{% url 'sigma:adm_proy_usu_roles' proyecto.id u.id %}">
                                                             <i class="icon-user-3 on-left"></i>Roles de Proyecto</a></li>
                                                     </ul>

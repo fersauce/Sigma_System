@@ -156,10 +156,12 @@
                                                             <li class="text-left"><a href="{% url 'sigma:adm_proy_iniciar' proyecto.pk %}">
                                                                 <i class="icon-open on-left"></i>Iniciar</a></li>
                                                         {% endif %}
-                                                        <li class="text-left"><a href="{% url 'sigma:genReport' proyecto.pk %}">
-                                                            <i class="icon-eye on-left"></i>Reporte del Proyecto</a> </li>
-                                                        <li class="text-left"><a href="{% url 'sigma:generar_reporte_sol' proyecto.pk %}">
-                                                            <i class="icon-eye on-left"></i>Reporte Solicitudes</a> </li>
+                                                        {% if proyecto.estado != 'Pendiente' %}
+                                                            <li class="text-left"><a href="{% url 'sigma:genReport' proyecto.pk %}">
+                                                                <i class="icon-eye on-left"></i>Reporte del Proyecto</a> </li>
+                                                            <li class="text-left"><a href="{% url 'sigma:generar_reporte_sol' proyecto.pk %}">
+                                                                <i class="icon-eye on-left"></i>Reporte Solicitudes</a> </li>
+                                                        {% endif %}
                                                     </ul>
                                                 </li>
                                             </ul>
