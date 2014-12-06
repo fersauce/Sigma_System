@@ -4,22 +4,100 @@
     <a class="element" href="{% url 'sigma:inicio' %}"> P&aacute;gina Principal</a>
     <a class="pull-menu" href="#"></a>
 {% endblock %}
-{% block titulo %}Proyectos Asociados{% endblock %}
+{% block definicion_script %}
+    <script>
+        var alto = 0;
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        function dialogo(titulo, contenido){
+            $.Dialog({
+                shadow: true,
+                overlay: true,
+                flat: true,
+                draggable: true,
+                icon: '<span class="icon-bus"></span>',
+                title: 'Draggable window',
+                height: 500,
+                width: 500,
+                padding: 10,
+                content: 'This Window is draggable by caption.',
+                onShow: function(){
+                    $.Dialog.title(titulo);
+                    $.Dialog.modal = true;
+                    $.Dialog.content(contenido);
+                }
+            });
+        }
+        function actualizarTabla(){
+            $.getJSON('{% url 'sigma:solic_adm' 1 %}'+'hola', {'xhr': true}, function (data) {
+                var tabla = document.getElementById("tablaSolicitudes");
+                tabla.refresh();
+            });
+        }
+        function confirmar(urlAux, codigo) {
+            var csrftoken = getCookie('csrftoken');
+            var content = '<form method="post" action="'+urlAux+'">' +
+                            '<input type="hidden" name="csrfmiddlewaretoken" value="'+csrftoken+'">'+
+                            '<p>Escoja una opci&oacute;n para saber si desea validar el cambio solicitado:</p>' +
+                            '<div class="input-control radio default-style inline-block" data-role="input-control">'+
+                            '<label class="inline-block">'+
+                                '<input type="radio" name="voto" checked value="0"/>'+
+                                '<span class="check"></span>'+
+                                'S&iacute;'+
+                            '</label>'+
+                            '<label class="inline-block">'+
+                                '<input type="radio" name="voto" value="1"/>'+
+                                '<span class="check"></span>'+
+                                'No'+
+                            '</label><br><br><br>'+
+                            '</div>'+
+                            '<input type="submit" class="button success" value="Aceptar">' +
+                            '<a href="#"><input type="button" class="button inverse" value="Cancelar" onclick="$.Dialog.close();"></a>'+
+                            '</form>';
+            var titulo = 'Solicitud '+codigo;
+            dialogo(titulo, content);
+        }
+        function verInfo(id, codigo) {
+            $.getJSON("{% url 'sigma:solic_rec_items' 3 %}", {'xhr': true, 'idSol': id}, function(data) {
+                var content = '<br><label>Items relacionados a la solicitud: </label><ul>';
+                $.each(data, function(i, dato){
+                    content = content + '<li class="icon-cone">'+dato.item+'</li>';
+                });
+                content = content + '</ul><div><a href="#"><input type="button" class="button success" value="Atr&aacute;s"'+
+                        ' onclick="$.Dialog.close();"></a></div>';
+                var titulo = 'Solicitud '+codigo;
+                dialogo(titulo, content);
+            });
+        }
+    </script>
+{% endblock %}
+{% block titulo %}Votaciones{% endblock %}
 {% block contenido %}
     <div class="span10">
-        <h2><a href="#"></a>Proyectos <small class="on-right">Asociados</small></h2>
+        <h2><a href="#"></a>Votaci&oacute;n de <small class="on-right">Solicitudes</small></h2>
         <div class="example">
-            <table class="table striped hovered dataTable" id="tablaVotosProyecto">
+            <table class="table striped hovered dataTable" id="tablaProyecto">
                 <thead>
                     <th class="text-left">Nombre</th>
-                    <th class="text-left">Descripci&oacute;n</th>
-                    <th class="text-left">Editar</th>
+                    <th class="text-left">Opciones</th>
                 </thead>
                 <tbody>
-                    {% for proyecto in proyectos %}
+                    {% for solicitud in sol %}
                         <tr>
-                            <td>{{ proyecto.nombre }}</td>
-                            <td class="right">{{ proyecto.descripcion }}</td>
+                            <td>{{ solicitud.solic_cod }}</td>
                             <td align="center">
                                 <div class="span12">
                                     <nav class="navigation-bar transparente">
@@ -28,8 +106,10 @@
                                                 <li>
                                                     <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
                                                     <ul class="dropdown-menu" data-role="dropdown">
-                                                        <li class="text-left"><a href="{% url 'sigma:voto_adm_proy' proyecto.pk %}">
-                                                            <i class="icon-book on-left"></i>Fases</a></li>
+                                                        <li class="text-left"><a href="#" onclick="verInfo({{ solicitud.solic_pk }}, '{{ solicitud.solic_cod }}')">
+                                                            <i class="icon-info-2  on-left"></i>Info</a></li>
+                                                        <li class="text-left"><a href="#" onclick="confirmar('{% url 'sigma:solic_ver_sol' solicitud.solic_pk %}', '{{ solicitud.solic_cod }}')">
+                                                            <i class="icon-book on-left"></i>Votar</a></li>
                                                     </ul>
                                                 </li>
                                             </ul>
@@ -43,14 +123,13 @@
                 <tfoot>
                     <tr>
                         <th class="text-left">Nombre</th>
-                        <th class="text-left">Descripci&oacute;n</th>
-                        <th class="text-left">Editar</th>
+                        <th class="text-left">Opciones</th>
                     </tr>
                 </tfoot>
             </table>
             <script>
                 $(document).ready(function() {
-                    $('#tablaVotosProyecto').dataTable( {
+                    $('#tablaProyecto').dataTable( {
                         "oLanguage": {
                             "sUrl": "/static/MetroBoostrap/data/spanish.txt"
                         }

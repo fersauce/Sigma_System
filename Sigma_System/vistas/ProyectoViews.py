@@ -33,7 +33,8 @@ def administrar_proyecto(request):
     if 'super_us' in permisos:
         proyectos = Proyecto.objects.all().order_by('-nombre')
     elif 'modificar_pr' in permisos:
-        usu_proyectos = UsuariosXProyecto.objects.filter(usuario=request.user.usuario, activo=True)
+        usu_proyectos = UsuariosXProyecto.objects.filter(
+            usuario=request.user.usuario, activo=True)
         permisos = request.session['permisos']
         proyectos = []
         for u in usu_proyectos:
@@ -236,13 +237,15 @@ def administrarProyectosAsociados(request):
 
 def administrarUsuariosAsociados(request, idProyect):
     proyecto = Proyecto.objects.get(id=idProyect)
-    usu_proy = UsuariosXProyecto.objects.filter(proyecto=proyecto).exclude(lider=True)
+    usu_proy = UsuariosXProyecto.objects.filter(proyecto=proyecto).exclude(
+        lider=True)
     usuarios = []
     for u_p in usu_proy:
         usuarios.append(u_p.usuario)
-    return render(request, 'AdministradorUsuarioProyecto.html', {'usuarios': usuarios,
-                                                   'proyecto': proyecto,
-                                                   'permisos': request.session['permisos']})
+    return render(request, 'AdministradorUsuarioProyecto.html',
+                  {'usuarios': usuarios,
+                   'proyecto': proyecto,
+                   'permisos': request.session['permisos']})
 
 
 def asignarUsuarioProyecto(request, idProyect):
@@ -264,8 +267,8 @@ def asignarUsuarioProyecto(request, idProyect):
     proyecto = Proyecto.objects.get(pk=idProyect)
     users = User.objects.exclude(id=1).exclude(id=request.user.id)
     usuarioXproy = UsuariosXProyecto.objects.filter(
-                proyecto=Proyecto.objects.get(pk=idProyect)).exclude(
-                lider=True)
+        proyecto=Proyecto.objects.get(pk=idProyect)).exclude(
+        lider=True)
     usr_proy = []
     for u in usuarioXproy:
         usr_proy.append(u.usuario)
@@ -288,10 +291,10 @@ def asignarUsuarioProyecto(request, idProyect):
             usuario = Usuario.objects.get(id=u)
             try:
                 UsuariosXProyecto.objects.create(
-                        proyecto=proyecto,
-                        usuario=usuario,
-                        activo=True,
-                        lider=False)
+                    proyecto=proyecto,
+                    usuario=usuario,
+                    activo=True,
+                    lider=False)
                 proyecto.nroMiembros += 1
                 proyecto.save()
                 messages.success(request,
@@ -303,12 +306,14 @@ def asignarUsuarioProyecto(request, idProyect):
                 messages.error(request,
                                'Ha ocurrido un erro interno, favor'
                                ' contacte al administrador')
-        return HttpResponseRedirect(reverse('sigma:adm_proy_usu', args=[idProyect]))
+        return HttpResponseRedirect(
+            reverse('sigma:adm_proy_usu', args=[idProyect]))
     else:
         pass
     return render(request, 'AsignarUsuario.html', {'usuarios': usuarios,
                                                    'proyecto': proyecto,
-                                                   'permisos': request.session['permisos']})
+                                                   'permisos': request.session[
+                                                       'permisos']})
 
 
 def desasignarUsuarioProyecto(request, idProyect, idUser):
@@ -317,25 +322,26 @@ def desasignarUsuarioProyecto(request, idProyect, idUser):
     uxp = UsuariosXProyecto.objects.get(proyecto=proyecto, usuario=usuario)
     uxp.delete()
     messages.success(request, 'El usuario ' +
-                              usuario.user.username
-                              + ' ha sido desasignado del proyecto ' +
-                              proyecto.nombre)
+                     usuario.user.username
+                     + ' ha sido desasignado del proyecto ' +
+                     proyecto.nombre)
     return HttpResponseRedirect(reverse('sigma:adm_proy_usu', args=[idProyect]))
 
 
 def asig_desagig_roles_proyecto(request, idProyect, idUser):
     proyecto = Proyecto.objects.get(id=idProyect)
     usuario = Usuario.objects.get(id=idUser)
-    #roles = usuario.roles.all().exclude(nombre='Lider')
+    # roles = usuario.roles.all().exclude(nombre='Lider')
     rol_lider = Rol.objects.get(nombre='Lider')
     roles_usuario = UsuarioRol.objects.filter(usuario=usuario,
-                               idProyecto=0,
-                               idFase=0,
-                               idItem=0).exclude(rol=rol_lider)
+                                              idProyecto=0,
+                                              idFase=0,
+                                              idItem=0).exclude(rol=rol_lider)
     roles = []
     for r_u in roles_usuario:
         roles.append(r_u.rol)
-    rolXusuario = UsuarioRol.objects.filter(usuario=usuario, idProyecto=idProyect)
+    rolXusuario = UsuarioRol.objects.filter(usuario=usuario,
+                                            idProyecto=idProyect)
     rol_usr = roles[0]
     if rolXusuario:
         rol_usr = rolXusuario[0].rol
@@ -345,28 +351,32 @@ def asig_desagig_roles_proyecto(request, idProyect, idUser):
         if rolXusuario:
             if rol != rol_usr:
                 UsuarioRol.objects.get(id=rolXusuario[0].id).delete()
-                UsuarioRol.objects.create(usuario=usuario, rol=rol, idProyecto=idProyect)
+                UsuarioRol.objects.create(usuario=usuario, rol=rol,
+                                          idProyecto=idProyect)
                 messages.success(request, 'El usuario ' +
-                                      usuario.user.username
-                                      + ' ahora posee el rol ' +
-                                      rol.nombre)
-                return HttpResponseRedirect(reverse('sigma:adm_proy_usu', args=[idProyect]))
+                                 usuario.user.username
+                                 + ' ahora posee el rol ' +
+                                 rol.nombre)
+                return HttpResponseRedirect(
+                    reverse('sigma:adm_proy_usu', args=[idProyect]))
             else:
-                messages.info(request, 'El usuario no sufrio modificacion alguna')
-                return HttpResponseRedirect(reverse('sigma:adm_proy_usu', args=[idProyect]))
+                messages.info(request,
+                              'El usuario no sufrio modificacion alguna')
+                return HttpResponseRedirect(
+                    reverse('sigma:adm_proy_usu', args=[idProyect]))
         else:
-            UsuarioRol.objects.create(usuario=usuario, rol=rol, idProyecto=idProyect)
+            UsuarioRol.objects.create(usuario=usuario, rol=rol,
+                                      idProyecto=idProyect)
             messages.success(request, 'El usuario ' +
-                                  usuario.user.username
-                                  + ' ahora posee el rol ' +
-                                  rol.nombre)
-        return HttpResponseRedirect(reverse('sigma:adm_proy_usu', args=[idProyect]))
+                             usuario.user.username
+                             + ' ahora posee el rol ' +
+                             rol.nombre)
+        return HttpResponseRedirect(
+            reverse('sigma:adm_proy_usu', args=[idProyect]))
     return render(request, 'UsuarioRolProyecto.html', {'proyecto': proyecto,
                                                        'usuario': usuario,
                                                        'roles': roles,
                                                        'rol_usr': rol_usr})
-
-
 
 
 def iniciarProyecto(request, idProyect):
@@ -411,3 +421,16 @@ def iniciarProyecto(request, idProyect):
         messages.error(request, 'Ha ocurrido un error interno')
         sys.exc_info()
     return HttpResponseRedirect(reverse('sigma:adm_proy'))
+
+
+def finalizarProyecto(request, idProyecto):
+    """
+    Metodo que realiza la finzalicion de un proyecto en caso de que cumpla con
+    todas las condiciones de clausura
+    :param request:
+    :return:
+    """
+    proyecto = Proyecto.objects.get(pk=idProyecto)
+    fase = Fase.objects.get(proyecto=proyecto, posicionFase=proyecto.nroFases)
+    return HttpResponseRedirect(
+        reverse('sigma:adm_fase_fin', args=[proyecto.pk, fase.pk]))

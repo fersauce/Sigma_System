@@ -12,17 +12,14 @@ from Sigma_System.models import UsuarioPorComite, Solicitud, Proyecto, Fase, \
 def administrarVotacion(request):
     usuario = request.user.usuario
     comites = UsuarioPorComite.objects.filter(usuario=usuario)
-    proyecto = []
+    solic = []
     for comite in comites:
-        solicitudes = Solicitud.objects.filter(proyecto=comite.comite.proy)
-        if solicitudes.__len__() > 0:
-            proyecto.append(comite.comite.proy.pk)
-    if proyecto.__len__() == 0:
-        return HttpResponseRedirect(reverse('sigma:inicio'))
-    proyectos = Proyecto.objects.filter(pk__in=proyecto)
-    for proy in proyectos:
-        print proy
-    return render(request, 'votos_proyectos.html', {'proyectos': proyectos})
+        solicitudes = Solicitud.objects.filter(proyecto=comite.comite.proy,
+                                               estado='Votacion')
+        for soli in solicitudes:
+            solic.append({'solic_cod': soli.codigo, 'solic_pk': soli.pk})
+    return render(request, 'votos_proyectos.html',
+                  {'sol': solic, 'permisos': request.session['permisos']})
 
 
 def administrarVotacionProyectos(request, idProyecto):
@@ -37,7 +34,8 @@ def administrarVotacionProyectos(request, idProyecto):
         return HttpResponseRedirect(reverse('sigma:voto_adm'))
     fases = Fase.objects.filter(pk__in=fase)
     return render(request, 'votos_fases.html',
-                  {'fases': fases, 'proyecto': proyecto})
+                  {'fases': fases, 'proyecto': proyecto,
+                   'permisos': request.session['permisos']})
 
 
 def administrarVotacionFase(request, idFase):
@@ -57,10 +55,11 @@ def administrarVotacionFase(request, idFase):
         pk__in=c)
     return render(request, 'votos_listado.html',
                   {'proyecto': fase.proyecto, 'fase': fase,
-                   'solicitudes': solicitudesFinal})
+                   'solicitudes': solicitudesFinal,
+                   'permisos': request.session['permisos']})
 
 
-def realizarVoto(request, idSolicitud, idFase, voto):
+def realizarVoto(request, idSolicitud):
     """
     Vista para ejecutar el voto del usuario del comite
     :param request: Contiene la informacion de la pagina que lo solicito
@@ -68,8 +67,9 @@ def realizarVoto(request, idSolicitud, idFase, voto):
     :return: pantalla con la solicitud ya votada
     :rtype: django.http.response.HttpResponseRedirect
     """
-    if request.method == 'GET':
+    if request.method == 'POST':
         solicitud = Solicitud.objects.get(pk=idSolicitud)
+        voto = request.POST['voto']
         if voto == '0':
             try:
                 with transaction.atomic():
@@ -137,5 +137,4 @@ def realizarVoto(request, idSolicitud, idFase, voto):
                 print sys.exc_info()
                 messages.error(request,
                                'Ha ocurrido un error al registrar el voto')
-    return HttpResponseRedirect(
-        reverse('sigma:voto_adm_fase', args=[idFase]))
+    return administrarVotacion(request)

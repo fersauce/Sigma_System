@@ -279,6 +279,11 @@ def loadTiposAtributos():
 
 
 def loadProyectos():
+    """
+    Script para cargar los proyectos, uno a iniciar, otro iniciado y otro a
+    finalizar
+    :return:
+    """
     proyectoInicial = Proyecto.objects.create(nombre='Iniciar',
                                               fechaCreacion=datetime.datetime.now(),
                                               descripcion='Proyecto a iniciar',
@@ -307,25 +312,25 @@ def loadProyectos():
                                      usuario=user.usuario,
                                      activo=True,
                                      lider=False)
+    UsuarioPorComite.objects.create(comite=comite,
+                                    usuario=user)
     user = User.objects.get(username='ccandia')
     UsuariosXProyecto.objects.create(proyecto=proyectoInicial,
                                      usuario=user.usuario,
                                      activo=True,
                                      lider=False)
+    UsuarioPorComite.objects.create(comite=comite,
+                                    usuario=user)
     user = User.objects.get(username='vfranco')
     UsuariosXProyecto.objects.create(proyecto=proyectoInicial,
                                      usuario=user.usuario,
                                      activo=True,
                                      lider=False)
-    UsuarioPorComite.objects.create(comite=comite,
-                                    usuario=user)
     user = User.objects.get(username='kosorio')
     UsuariosXProyecto.objects.create(proyecto=proyectoInicial,
                                      usuario=user.usuario,
                                      activo=True,
                                      lider=False)
-    UsuarioPorComite.objects.create(comite=comite,
-                                    usuario=user)
 
     proyectoIniciado = Proyecto.objects.create(nombre='Iniciado',
                                                fechaCreacion=datetime.datetime.now(),
@@ -342,35 +347,35 @@ def loadProyectos():
     comite = Comite.objects.create(obs='Comite Numero 2',
                                    nro_integ=3,
                                    fecha_creacion=datetime.datetime.now(),
-                                   proy=proyectoInicial)
+                                   proy=proyectoIniciado)
     user = User.objects.get(username='fsaucedo')
-    UsuariosXProyecto.objects.create(proyecto=proyectoInicial,
+    UsuariosXProyecto.objects.create(proyecto=proyectoIniciado,
                                      usuario=user.usuario,
                                      activo=True,
                                      lider=False)
     user = User.objects.get(username='rcenturion')
-    UsuariosXProyecto.objects.create(proyecto=proyectoInicial,
+    UsuariosXProyecto.objects.create(proyecto=proyectoIniciado,
                                      usuario=user.usuario,
                                      activo=True,
                                      lider=False)
     UsuarioPorComite.objects.create(comite=comite,
                                     usuario=user)
     user = User.objects.get(username='ccandia')
-    UsuariosXProyecto.objects.create(proyecto=proyectoInicial,
+    UsuariosXProyecto.objects.create(proyecto=proyectoIniciado,
                                      usuario=user.usuario,
                                      activo=True,
                                      lider=True)
     UsuarioPorComite.objects.create(comite=comite,
                                     usuario=user)
     user = User.objects.get(username='vfranco')
-    UsuariosXProyecto.objects.create(proyecto=proyectoInicial,
+    UsuariosXProyecto.objects.create(proyecto=proyectoIniciado,
                                      usuario=user.usuario,
                                      activo=True,
                                      lider=False)
     UsuarioPorComite.objects.create(comite=comite,
                                     usuario=user)
     user = User.objects.get(username='kosorio')
-    UsuariosXProyecto.objects.create(proyecto=proyectoInicial,
+    UsuariosXProyecto.objects.create(proyecto=proyectoIniciado,
                                      usuario=user.usuario,
                                      activo=True,
                                      lider=False)
@@ -426,33 +431,33 @@ def loadProyectos():
     comite = Comite.objects.create(obs='Comite Numero 3',
                                    nro_integ=3,
                                    fecha_creacion=datetime.datetime.now(),
-                                   proy=proyectoInicial)
+                                   proy=proyectoFinalizar)
     user = User.objects.get(username='fsaucedo')
-    UsuariosXProyecto.objects.create(proyecto=proyectoInicial,
+    UsuariosXProyecto.objects.create(proyecto=proyectoFinalizar,
                                      usuario=user.usuario,
                                      activo=True,
                                      lider=False)
     UsuarioPorComite.objects.create(comite=comite,
                                     usuario=user)
     user = User.objects.get(username='rcenturion')
-    UsuariosXProyecto.objects.create(proyecto=proyectoInicial,
+    UsuariosXProyecto.objects.create(proyecto=proyectoFinalizar,
                                      usuario=user.usuario,
                                      activo=True,
                                      lider=True)
     UsuarioPorComite.objects.create(comite=comite,
                                     usuario=user)
     user = User.objects.get(username='ccandia')
-    UsuariosXProyecto.objects.create(proyecto=proyectoInicial,
+    UsuariosXProyecto.objects.create(proyecto=proyectoFinalizar,
                                      usuario=user.usuario,
                                      activo=True,
                                      lider=False)
     user = User.objects.get(username='vfranco')
-    UsuariosXProyecto.objects.create(proyecto=proyectoInicial,
+    UsuariosXProyecto.objects.create(proyecto=proyectoFinalizar,
                                      usuario=user.usuario,
                                      activo=True,
                                      lider=False)
     user = User.objects.get(username='kosorio')
-    UsuariosXProyecto.objects.create(proyecto=proyectoInicial,
+    UsuariosXProyecto.objects.create(proyecto=proyectoFinalizar,
                                      usuario=user.usuario,
                                      activo=True,
                                      lider=False)

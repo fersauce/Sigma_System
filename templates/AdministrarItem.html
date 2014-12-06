@@ -187,7 +187,7 @@
                                                     <li>
                                                         <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
                                                         <ul class="dropdown-menu" data-role="dropdown">
-                                                            <li class="text-left {{ i.id|habilitar_opciones }}" ><a href="{% url 'sigma:adm_i_mod' i.id %}" >
+                                                            <li class="text-left {{ i.id|habilitar_opciones }}{% if i.estado == 'revision-desbloq' %}enabled{% endif %}" ><a href="{% url 'sigma:adm_i_mod' i.id %}" >
                                                                 <i class="icon-pencil on-left"> </i>Modificar</a>
                                                             </li>
                                                             {% if i.estado == 'aprobado' %}

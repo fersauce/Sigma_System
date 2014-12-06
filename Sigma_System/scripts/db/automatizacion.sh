@@ -55,18 +55,22 @@ do
             cd /var/www/CRF_Project/;
             hola=$(git tag)
             export OPCIONES=""
+            declare -i b=0;
             for h in ${hola};
             do
+                if [ ${b} -eq 3 ];then
                 OPCIONES=${OPCIONES}" FALSE "${h};
+                else
+                b=$(( b+1 ));
+                fi
             done
-            OPCIONES=${OPCIONES}" FALSE Anterior"
             export GIT_OPCION=$(zenity \
                 --title="Por favor, selecciona una versión:" --width 500 \
                 --height 240 --list --radiolist \
-                --column "Choose" --column "Option" ${OPCIONES} FALSE "Salir");
+                --column "Choose" --column "Option" ${OPCIONES});
             if [ "${GIT_OPCION}" != "Anterior" -a "${GIT_OPCION}" != "" ];then
                 echo ${GIT_OPCION};
-                gksu git stash save --keep-index;
+                gksu git stash;
                 gksu git checkout ${GIT_OPCION};
                 gksu service apache2 restart;
                 cd ${DIR_LOCAL};

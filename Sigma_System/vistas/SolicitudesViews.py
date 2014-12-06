@@ -1,4 +1,5 @@
 import datetime
+import traceback
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core import serializers
@@ -10,21 +11,37 @@ import simplejson
 import sys
 from Sigma_System.models import Usuario, UsuariosXProyecto, Solicitud, Proyecto, \
     LBase, Items_x_LBase, Item, Archivo, Fase, HistorialLineabase
+from Sigma_System.views import inicio
 
 
 def administrarProyectosSolicitudes(request):
+    """
+    :param request: Contiene informacion de la pagina que solicito la vista
+    :type request: django.http.HttpRequest
+    :return: vista que presenta las solicitudes realizadas por el usuario.
+    :rtype: None
+    """
     id_user = request.user.id
-    userSesion = User.objects.get(id=id_user)
-    sesionado = userSesion.usuario
-    proyectos = UsuariosXProyecto.objects.filter(usuario=sesionado, activo=True)
-    permisos = request.session['permisos']
-    c = []
-    for u in proyectos:
-        c.append({'proyecto': u.proyecto, 'nroSol': Solicitud.objects.filter(
-            proyecto=u.proyecto.pk, activo=True).__len__()})
-
-    return render(request, 'solicitudes_proyectos.html',
-                  {'proyectos': c, 'permisos': permisos})
+    print id_user
+    try:
+        userSesion = User.objects.get(id=id_user)
+        sesionado = userSesion.usuario
+        proyectos = UsuariosXProyecto.objects.filter(usuario=sesionado,
+                                                     activo=True)
+        permisos = request.session['permisos']
+        solicitudes = Solicitud.objects.filter(id_usuario=id_user).exclude(
+            activo=False)
+        c = []
+        """for u in proyectos:
+            c.append(
+                {'proyecto': u.proyecto, 'nroSol': Solicitud.objects.filter(
+                    proyecto=u.proyecto.pk, activo=True).__len__()})"""
+        return render(request, 'solicitudes_proyectos.html',
+                      {'solicitudes': solicitudes, 'permisos': permisos})
+    except Exception:
+        print traceback.print_exc()
+        messages.error(request, 'Fallo en el servidor')
+        return inicio(request)
 
 
 def administrarSolicitudes(request, idFase):
@@ -45,17 +62,18 @@ def administrarSolicitudesProyectoFase(request, idProyecto):
                   {'proyecto': proyecto, 'fases': fases})
 
 
-def altaSolicitud(request, idFase):
+def altaSolicitud(request):
     """
-
+    Controlador que se encargar de realizar el alta correspondiente de la
+    solicitud que se ha encar
     :param request: Contiene informacion de la pagina que solicito la vista
     :type request: django.http.HttpRequest
-    :param idFase: id de la fase a asociar a la solicitud
-    :type idFase: integer
     :return: almacenamiento de la nueva solicitud
     :rtype: None
     """
     if request.method == 'POST':
+        idProyecto = request.POST['idProyecto']
+        idFase = request.POST['idFase']
         if not request.POST.getlist('itemSeleccionado'):
             messages.info(request, 'No se ha seleccionado ningun item, '
                                    'por ello la solicitud no se ha creado')
@@ -90,13 +108,15 @@ def altaSolicitud(request, idFase):
                             hijo.estado = 'revision'
                             hijo.save()
                         solicitud.impacto += calcularImpacto(item)
-                        lbs = Items_x_LBase.objects.filter(item=item)
+                        lbs = Items_x_LBase.objects.filter(item=item,
+                                                           lb__estado='cerrado')
                         for lb in lbs:
                             if not lb.lb in solicitud.lb_relacionadas.all():
                                 solicitud.lb_relacionadas.add(lb.lb)
                                 lb.lb.estado = 'comprometida'
+                                print 'posible'
                                 lb.lb.save()
-                                historial = HistorialLineabase.objects.create(
+                                HistorialLineabase.objects.create(
                                     id_usuario=solicitud.id_usuario,
                                     tipo_operacion=lb.lb.estado,
                                     id_solicitud=solicitud.pk,
@@ -112,7 +132,7 @@ def altaSolicitud(request, idFase):
                 print sys.exc_info()
                 messages.error(request,
                                'Ha ocurrido un error al crear la solicitud')
-    return HttpResponseRedirect(reverse('sigma:solic_adm', args=[idFase]))
+    return administrarProyectosSolicitudes(request)
 
 
 def bajaSolicitud(request, idSolicitud):
@@ -146,8 +166,7 @@ def bajaSolicitud(request, idSolicitud):
     except Exception:
         print sys.exc_info()
         messages.error(request, 'Ha ocurrido un error al eliminar la solicitud')
-    return HttpResponseRedirect(
-        reverse('sigma:solic_adm', args=[solicitud.fase.pk]))
+    return administrarProyectosSolicitudes(request)
 
 
 def enviarSolicitud(request, idSolicitud):
@@ -165,29 +184,38 @@ def enviarSolicitud(request, idSolicitud):
     solicitud.estado = 'Votacion'
     solicitud.save()
     messages.success(request, 'La solicitud ha sido enviada para la votacion')
-    return HttpResponseRedirect(
-        reverse('sigma:solic_adm', args=[solicitud.fase.pk]))
+    return administrarProyectosSolicitudes(request)
 
 
 def ejecutarSolicitud(request, idSolicitud):
+    """
+    Controlador que se encarga de habilitar la ejecucion de la solicitud pasada
+    como parametro.
+    :param request: Contiene la informacion sobre la solicitud de la pagina
+    que lo llamo
+    :type request: django.http.HttpRequest
+    :param idSolicitud: id de la solicitud a ser enviada
+    :type idSolicitud: int
+    :return: Pagina en donde se encuentra actualizado.
+    """
     solicitud = Solicitud.objects.get(pk=idSolicitud)
 
     if solicitud.estado == 'Pendiente':
         messages.info(request, 'La solicitud ' + str(solicitud.codigo) +
                       ' no puede ser ejecutada hasta que no sea aprobada.')
-        return HttpResponseRedirect(
-            reverse('sigma:solic_adm', args=[solicitud.fase.pk]))
     elif solicitud.estado == 'Votacion':
         messages.info(request, 'La solicitud ' + str(solicitud.codigo) +
                       ' no puede ser ejecutada porque se encuentra en proceso '
                       'de votacion.')
-        return HttpResponseRedirect(
-            reverse('sigma:solic_adm', args=[solicitud.fase.pk]))
     elif solicitud.estado == 'Rechazado':
         messages.info(request, 'La solicitud ' + str(solicitud.codigo) +
                       ' ha sido rechazada y no puede ser ejecutada.')
-        return HttpResponseRedirect(
-            reverse('sigma:solic_adm', args=[solicitud.fase.pk]))
+    elif solicitud.estado == 'Ejecucion':
+        messages.info(request, 'La solicitud ' + str(solicitud.codigo) +
+                      ' esta siendo ejecutada.')
+    elif solicitud.estado == 'Ejecutado':
+        messages.info(request, 'La solicitud ' + str(solicitud.codigo) +
+                      ' ya ha sido ejecutada.')
     else:
         try:
             with transaction.atomic():
@@ -217,13 +245,13 @@ def ejecutarSolicitud(request, idSolicitud):
             messages.error(request,
                            'Ocurrio un error al intentar ejecutar '
                            'la solicitud.')
-    return HttpResponseRedirect(
-        reverse('sigma:solic_adm', args=[solicitud.fase.pk]))
+    return administrarProyectosSolicitudes(request)
 
 
-def recuperarItems(request, idFase):
+def recuperarItems(request, tipoTrans):
     """
-    Vista que se encarga de recuperar los items que se encuentran en lb para
+    Vista que se encarga de recuperar los proyectos y fases asociadas al
+    usuario logueado y tambien los items que se encuentran en lb para
     ingresarlos en una solicitud.
 
     :param request: Contiene la informacion sobre la solicitud de la pagina
@@ -235,32 +263,84 @@ def recuperarItems(request, idFase):
     :rtype: lista
     """
     if request.is_ajax():
-        fase = Fase.objects.get(pk=idFase)
-        if fase.estado == 'Finalizado':
-            return HttpResponse(simplejson.dumps([]),
+
+        if tipoTrans == '1':
+            """
+            Retorna los proyectos que tiene asociado el usuario.
+            """
+            idUsuario = request.user.id
+            proyectos = UsuariosXProyecto.objects.filter(usuario=idUsuario)
+            projects = []
+            b = False
+            print 'Hola'
+            for proyecto in proyectos:
+                if proyecto.proyecto.estado == 'Iniciado':
+                    projects.append({'id_proy': proyecto.proyecto.pk,
+                                     'nombre_proy': proyecto.proyecto.nombre})
+                    b = True
+            if not projects or not b:
+                messages.error(request,
+                               'No tiene proyectos asociados que se encuentran '
+                               'en estado iniciado y/o han finalizado todos sus'
+                               ' proyectos asociados')
+                return HttpResponse(simplejson.dumps(''),
+                                    content_type='applicationl/json')
+            print projects
+            return HttpResponse(simplejson.dumps(projects),
                                 content_type='application/json')
-        try:
-            lbs = LBase.objects.filter(fase=fase)
+        elif tipoTrans == '2':
+            """
+            Retorna las fases asociadas al usuario del proyecto seleccionado
+            """
+            idProyecto = request.GET['proyectoSeleccionado']
+            proyecto = Proyecto.objects.get(id=idProyecto)
+            fases = Fase.objects.filter(proyecto=proyecto)
+            fasEnvio = []
+            for fas in fases:
+                fasEnvio.append({'pk_fase': fas.pk, 'nombre_fase': fas.nombre})
+            return HttpResponse(simplejson.dumps(fasEnvio),
+                                content_type='application/json')
+            pass
+
+        elif tipoTrans == '3':
+            """
+            Retorna la solicitud pedida
+            """
+            solicitud = Solicitud.objects.get(pk=request.GET['idSol'])
             c = []
-            for lb in lbs:
-                item_x_lb = Items_x_LBase.objects.filter(lb=lb).order_by(
-                    'lb__fase')
-                for item in item_x_lb:
-                    if not itemsParaSolicitud(item.item.pk):
-                        c.append({
-                            'item': {'pk_id': item.item.pk,
-                                     'nombre': item.item.nombre},
-                            'lb': {'pk_id': lb.pk, 'nombre': lb.obs},
-                            'fase': {'pk': lb.fase.pk,
-                                     'nombre': lb.fase.nombre}})
-            c.sort()
-            print c.__len__()
+            for i in solicitud.item.all():
+                c.append({'item': i.nombre})
             return HttpResponse(simplejson.dumps(c),
-                                content_type='application/json')
-        except Exception:
-            print sys.exc_info()
-            return HttpResponseRedirect(
-                reverse('sigma:solic_adm', args=[fase.pk]))
+                                content_type="application/json")
+        else:
+            idFase = request.GET['faseSeleccionada']
+            fase = Fase.objects.get(pk=idFase)
+            if fase.estado == 'Finalizado':
+                return HttpResponse(simplejson.dumps([]),
+                                    content_type='application/json')
+            try:
+                lbs = LBase.objects.filter(fase=fase)
+                c = []
+                for lb in lbs:
+                    item_x_lb = Items_x_LBase.objects.filter(lb=lb).order_by(
+                        'lb__fase')
+                    for item in item_x_lb:
+                        if not itemsParaSolicitud(item.item.pk):
+                            c.append({
+                                'item': {'pk_id': item.item.pk,
+                                         'nombre': item.item.nombre},
+                                'lb': {'pk_id': lb.pk, 'nombre': lb.obs},
+                                'fase': {'pk': lb.fase.pk,
+                                         'nombre': lb.fase.nombre}})
+                c.sort()
+                if not c:
+                    return HttpResponse(simplejson.dumps(''),
+                                        content_type='application/json')
+                return HttpResponse(simplejson.dumps(c),
+                                    content_type='application/json')
+            except Exception:
+                print sys.exc_info()
+                return administrarProyectosSolicitudes(request)
 
 
 def familiaItems(request):
@@ -287,7 +367,8 @@ def familiaItems(request):
 
 def itemsParaSolicitud(idItem):
     """
-
+    Metodo para realizar la verificacion del item para poder ingresar a la lista
+    que se envia en el metodo que lo llama.
     :param idItem: id del item a verificar si existe en alguna solicitud valida
     o existe alguna relacion que invalide la seleccion de este item.
     :type idItem: integer
@@ -323,11 +404,8 @@ def calcularImpacto(item):
 
 def listaDescendientes(item):
     hijos = Item.objects.filter(item_padre=item.id).order_by('id')
-    print '/*/*/*/*/*/*/*/*/*/*/*/*/*/*'
-    print 'item padre: ', item.nombre
     for i in hijos:
         print '   item hijos: ', i.nombre
-    print '/*/*/*/*/*/*/*/*/*/*/*/*/*/*'
     lista = [item]
     if not hijos:
         return lista
@@ -374,8 +452,8 @@ def verificarSolicitud(request):
     :rtype: django.http.response.HttpResponseRedirect
     """
     item = Item.objects.get(pk=request.GET['idItem'])
-    solicitud = Solicitud.objects.filter(item__pk=item.pk,
-                                         estado='Ejecucion').first()
+    solicitud = Solicitud.objects.get(item__pk=item.pk,
+                                      estado='Ejecucion')
     with transaction.atomic():
         try:
             item.estado = 'revision-bloq'
@@ -385,7 +463,8 @@ def verificarSolicitud(request):
             print sys.exc_info()
             messages.error(request, 'Ha ocurrido un error al verificar '
                                     'este item.')
-    if item.solicitud_set.filter(estado='revision-desbloq').__len__() == 0:
+
+    if solicitud.item.filter(estado='revision-desbloq').__len__() == 0:
         try:
             with transaction.atomic():
                 for it in solicitud.item.all():

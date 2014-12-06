@@ -125,13 +125,13 @@ def modificar_fase(request, idProyect, idFase):
 
 
 def linea_base(request, idProyecto, idFase):
-    item = Item.objects.get(id=34)
+    """item = Item.objects.get(id=34)
     print '==========================='
     print item.nombre
     print '==========================='
     lista = lista_des(item)
     for i in lista:
-        print i.nombre, i.id
+        print i.nombre, i.id"""
     lb = LBase.objects.filter(fase=Fase.objects.get(id=idFase)).order_by('id')
     return render(request, 'LineaBase.html',
                   {'id_proy': idProyecto, 'id_fase': idFase, 'lineasbase': lb})
