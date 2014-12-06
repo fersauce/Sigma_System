@@ -241,6 +241,7 @@ def cambiar(request, us):
 
 
 @login_required(login_url='/login/')
+@permisos_requeridos(['eliminar_rol'], 'sigma:adm_r', 'eliminar rol')
 def del_roles(request, id):
     nombre = Rol.objects.get(id=id).nombre
     Rol.objects.get(id=id).delete()
