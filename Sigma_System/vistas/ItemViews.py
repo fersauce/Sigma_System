@@ -49,7 +49,7 @@ def altaItem(request, idFase, opcion):
     if opcion == '0':
         listaitems1 = Item.objects.filter(tipoItems__fase=fase, estado='aprobado')
         listaitems2 = Item.objects.filter(tipoItems__fase=fase, estado='bloqueado')
-        listaitems = listaitems1 | listaitems2
+        #listaitems = listaitems1 | listaitems2
         listaitems = Item.objects.filter(tipoItems__fase=fase).exclude(estado='baja')
         items_ant = get_antecesores(idFase)
     else:

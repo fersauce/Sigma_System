@@ -110,6 +110,8 @@ class Archivo(models.Model):
     activo = models.BooleanField(default=True)
 
 
+
+
 class LBase(models.Model):
     estado = models.CharField(max_length=15, default='cerrado')
     obs = models.CharField(max_length=60, default='Sin obs.')
@@ -205,10 +207,3 @@ class UsuariosXProyecto(models.Model):
     usuario = models.ForeignKey(Usuario)
     activo = models.BooleanField(default=False)
     lider = models.BooleanField(default=False)
-
-
-class Votacion(models.Model):
-    miembro = models.ForeignKey(Usuario)
-    solicitud = models.ForeignKey(Solicitud)
-    fechaVotacion = models.DateTimeField(default=datetime.datetime.now())
-    voto = models.BooleanField(default=False)

@@ -1,5 +1,6 @@
 from random import choice
 import string
+import simplejson
 from django.contrib.auth.hashers import make_password
 from django.core.mail import EmailMessage
 from django.shortcuts import render, render_to_response
@@ -13,7 +14,7 @@ from django.contrib import messages
 from decoradores import permisos_requeridos
 from funciones_aux import permisos_disponibles
 from django.core.urlresolvers import reverse
-from Sigma_System.models import Rol, UsuarioRol
+from Sigma_System.models import Rol, UsuarioRol, Fase, Item
 
 
 def iniciarsesion(request):
@@ -27,12 +28,11 @@ def iniciarsesion(request):
                 if user.is_active:
                     login(request, user)
                     request.session['userpk'] = username
-                    request.session['permisos'] = permisos_disponibles(user)
-                    print request.session['permisos']
+                    request.session['permisos'] = permisos_disponibles(request, 0, 0, -1)
                     #if 'super_us' in request.session['permisos']:
                     return HttpResponseRedirect(reverse('sigma:inicio'))
                     #else:
-                    #    return HttpResponseRedirect(reverse('sigma:adm_proy'))
+                    #return HttpResponseRedirect(reverse('sigma:adm_proy'))
             else:
                 messages.error(request, 'Username o contrasenha incorrecta')
     else:
@@ -74,22 +74,22 @@ def alta_usuario(request):
                                                       password=make_password(form.cleaned_data['contrasenha']),
                                                       is_active=True)
                         Usuario.objects.create(user=usuario, ci=form.cleaned_data['ci'],
-                                                       direccion=form.cleaned_data['direccion'],
-                                                       tel=form.cleaned_data['tel'],
-                                                       estado=True)
-                        messages.success(request, 'El usuario "'+usuario.username+'" ha sido creado con exito')
+                                               direccion=form.cleaned_data['direccion'],
+                                               tel=form.cleaned_data['tel'],
+                                               estado=True)
+                        messages.success(request, 'El usuario "' + usuario.username + '" ha sido creado con exito')
                         return HttpResponseRedirect('/ss/adm_u/')
                     else:
                         form = FormAltaUsuario()
-                        messages.error(request, 'El ci "'+cid+'" ya existe')
+                        messages.error(request, 'El ci "' + cid + '" ya existe')
                         return render(request, 'Alta Usuario.html', {'form': form})
                 else:
                     form = FormAltaUsuario()
-                    messages.error(request, 'El e-mail "'+e_mail+'" ya existe')
+                    messages.error(request, 'El e-mail "' + e_mail + '" ya existe')
                     return render(request, 'Alta Usuario.html', {'form': form})
             else:
                 form = FormAltaUsuario()
-                messages.error(request, 'El username "'+user_n+'" ya existe')
+                messages.error(request, 'El username "' + user_n + '" ya existe')
                 return render(request, 'Alta Usuario.html', {'form': form})
         else:
             messages.error(request, 'Formulario invalido')
@@ -109,7 +109,7 @@ def baja_usuario(request, us):
     user.is_active = False
     nombre = user.username
     user.save()
-    messages.error(request, 'El usuario "'+nombre+'" ha sido eliminado')
+    messages.error(request, 'El usuario "' + nombre + '" ha sido eliminado')
     return HttpResponseRedirect('/ss/adm_u/')
 
 
@@ -122,15 +122,15 @@ def modificar_usuario(request, us):
     user = User.objects.get(id=us)
     #direccion = '/ss/adm_u/?page='+request.session['pag_actual']
     if request.method == 'POST':
-        user.first_name=request.POST['nombre']
-        user.last_name=request.POST['apellido']
+        user.first_name = request.POST['nombre']
+        user.last_name = request.POST['apellido']
         user.usuario.direccion = request.POST['direccion']
-        user.usuario.ci=request.POST['ci']
+        user.usuario.ci = request.POST['ci']
         user.usuario.tel = request.POST['tel']
         user.usuario.save()
         user.save()
         nombre = user.username
-        messages.info(request, 'usuario "'+nombre+'" modificado correctamente')
+        messages.info(request, 'usuario "' + nombre + '" modificado correctamente')
     else:
         return render(request, 'modificarUsuario.html', {'user': user})
     return HttpResponseRedirect('/ss/adm_u/')
@@ -206,9 +206,8 @@ def ver_detalle(request, us):
     vista utilizada para dar los demas datos de un usuario,
     pero sin modificarlos
     """
-    user = User.objects.filter(is_active=True, id = us)
+    user = User.objects.filter(is_active=True, id=us)
     return render(request, 'verDetalle.html', {'user': user})
-
 
 
 @login_required(login_url='/login/')
@@ -218,25 +217,25 @@ def cambiar(request, us):
     de cualquier usuario
     """
     if request.method == 'POST':
-        usA=User.objects.get(id=us)
-        direc=usA.email
-        passNueva=request.POST['passNueva']
-        confirmacion=request.POST['conf']
+        usA = User.objects.get(id=us)
+        direc = usA.email
+        passNueva = request.POST['passNueva']
+        confirmacion = request.POST['conf']
         if passNueva == confirmacion:
             contenido = render_to_string('mailing/recuperacion_password.html',
                                          {'pass': passNueva})
-            correo = EmailMessage('Restablecimiento de Pass de SS', contenido,to=[direc])
+            correo = EmailMessage('Restablecimiento de Pass de SS', contenido, to=[direc])
             correo.content_subtype = "html"
             correo.send()
-            nuevo=make_password(confirmacion)
+            nuevo = make_password(confirmacion)
             usA.password = nuevo
             usA.save()
             messages.info(request, 'Contrasenha cambiada con exito')
         else:
             messages.error(request, 'Las contrasenhas no coinciden')
-            return render(request, 'cambiarPass2.html', {'id':us,'user':usA})
+            return render(request, 'cambiarPass2.html', {'id': us, 'user': usA})
     else:
-        return render(request, 'cambiarPass2.html', {'id':us})
+        return render(request, 'cambiarPass2.html', {'id': us})
 
     return HttpResponseRedirect('/ss/inicio/')
 
@@ -245,7 +244,7 @@ def cambiar(request, us):
 def del_roles(request, id):
     nombre = Rol.objects.get(id=id).nombre
     Rol.objects.get(id=id).delete()
-    messages.error(request, 'El rol: '+nombre+', ha sido eliminado')
+    messages.error(request, 'El rol: ' + nombre + ', ha sido eliminado')
     return HttpResponseRedirect('/ss/adm_r/')
 
 
@@ -280,29 +279,30 @@ def cambiarPass(request):
 
         #if user:
 
-            passVieja= request.POST['passVieja']
-            viejoConHash=make_password(passVieja)
-            #valor=user.password
-            #valor=us.password
-            passNueva=request.POST['passNueva']
-            confirmacion=request.POST['passNueva2']
-            if passNueva == confirmacion:
+        passVieja = request.POST['passVieja']
+        viejoConHash = make_password(passVieja)
+        #valor=user.password
+        #valor=us.password
+        passNueva = request.POST['passNueva']
+        confirmacion = request.POST['passNueva2']
+        if passNueva == confirmacion:
 
-                nuevo=make_password(confirmacion)
-                us.password = nuevo
-                us.save()
-                messages.info(request, 'Contrasenha cambiada con exito')
-            else:
-                messages.error(request, 'Las contrasenhas no coinciden')
-                return render(request, 'cambiarPass.html')
-        #else:
-         #   messages.error(request,'El usuario no existe' )
-          #  return render(request, 'cambiarPass.html')
+            nuevo = make_password(confirmacion)
+            us.password = nuevo
+            us.save()
+            messages.info(request, 'Contrasenha cambiada con exito')
+        else:
+            messages.error(request, 'Las contrasenhas no coinciden')
+            return render(request, 'cambiarPass.html')
+            #else:
+            #   messages.error(request,'El usuario no existe' )
+            #  return render(request, 'cambiarPass.html')
     else:
         return render(request, 'cambiarPass.html')
     return HttpResponseRedirect('/ss/inicio/')
-@login_required(login_url='/login/')
 
+
+@login_required(login_url='/login/')
 def asignar_roles(request, id):
     user = User.objects.get(id=id)
     if request.method == 'POST':
@@ -336,7 +336,10 @@ def desasignar_roles(request, id):
             UsuarioRol.objects.create(usuario=user.usuario, rol=rol, idProyecto=0, idFase=0, idItem=0)
         messages.success(request, 'Desasignacion correcta de roles del usuario "' + user.username + '"')
     else:
-        roles = user.usuario.roles.all()
+        #roles = user.usuario.roles.all()
+        roles = user.usuario.roles.all().filter(usuariorol__idProyecto=0,
+                                                usuariorol__idFase=0,
+                                                usuariorol__idItem=0)
         if roles.__len__() != 0:
             return render(request, 'DesasignarRol.html', {'roles': roles, 'user': user})
         else:
@@ -344,6 +347,78 @@ def desasignar_roles(request, id):
     return HttpResponseRedirect(reverse('sigma:adm_u'))
 
 
+def dibujar_grafo(request, idp):
+    if request.is_ajax():
+        fases = Fase.objects.filter(proyecto__id=idp).order_by('id')
+        items_lista = []
+        lista_ady2 = {}
+        for f in fases:
+            items = Item.objects.filter(tipoItems__fase=f).order_by('id')
+            for i in items:
+                items_lista.append(i)
+        for i in items_lista:
+            iden_padre = str('Fase ' + str(i.tipoItems.fase.posicionFase) + ':' + i.nombre)
+            lista_ady2[iden_padre] = []
+            hijos = Item.objects.filter(item_padre=i.id).order_by('id')
+            for h in hijos:
+                iden_hijo = str('Fase ' + str(h.tipoItems.fase.posicionFase) + ':' + h.nombre)
+                lista_ady2[iden_padre].append(iden_hijo)
+        #lista_ady = {'dos': [], 'uno': ['dos']}
+        return HttpResponse(simplejson.dumps(lista_ady2), content_type='application/json')
+    proyecto = Proyecto.objects.get(id=idp)
+    return render(request, 'grafo_sencillo/index_.html', {'direc': idp,
+                                                          'objeto': 'Proyecto',
+                                                          'entidad': proyecto})
 
-def pruebaGrafos(request):
-        return render(request, 'atlas/pruebaGrafos.html')
+
+def dibujar_grafo_defase(request, idf):
+    if request.is_ajax():
+        fase = Fase.objects.get(id=idf)
+        #items_lista = []
+        lista_ady2 = {}
+        items = Item.objects.filter(tipoItems__fase=fase).order_by('id')
+        for i in items:
+            iden_padre = str('Fase ' + str(i.tipoItems.fase.posicionFase) + ':' + i.nombre)
+            lista_ady2[iden_padre] = []
+            hijos = Item.objects.filter(item_padre=i.id, tipoItems__fase=fase).order_by('id')
+            for h in hijos:
+                iden_hijo = str('Fase ' + str(h.tipoItems.fase.posicionFase) + ':' + h.nombre)
+                lista_ady2[iden_padre].append(iden_hijo)
+        #lista_ady = {'dos': [], 'uno': ['dos']}
+        return HttpResponse(simplejson.dumps(lista_ady2), content_type='application/json')
+    dire = 'fase/' + str(idf)
+    fase = Fase.objects.get(id=idf)
+    return render(request, 'grafo_sencillo/index_.html', {'direc': dire,
+                                                          'objeto': 'Fase',
+                                                          'entidad': fase})
+
+
+def dibujar_grafo_deitem(request, idi):
+    if request.is_ajax():
+        lista_ady2 = {}
+        item = Item.objects.get(id=idi)
+        iden_act = str('Fase ' + str(item.tipoItems.fase.posicionFase) + ':' + item.nombre)
+
+        #meter en la lista de adyacencia al item padre si tiene
+        item_padre = Item.objects.filter(id=item.item_padre)
+        if item_padre:
+            iden_padre = str('Fase ' + str(item_padre[0].tipoItems.fase.posicionFase) + ':' + item_padre[0].nombre)
+            lista_ady2[iden_padre] = []
+            lista_ady2[iden_padre].append(iden_act)
+
+        #meter en la lista de adyacencia al item en cuestion
+        lista_ady2[iden_act] = []
+        hijos = Item.objects.filter(item_padre=item.id).order_by('id')
+
+        #meter a los hijos en la lista de adyacencia
+        for h in hijos:
+            iden_hijo = str('Fase ' + str(h.tipoItems.fase.posicionFase) + ':' + h.nombre)
+            lista_ady2[iden_act].append(iden_hijo)
+            lista_ady2[iden_hijo] = []
+
+        return HttpResponse(simplejson.dumps(lista_ady2), content_type='application/json')
+    dire = 'item/' + str(idi)
+    it = Item.objects.get(id=idi)
+    return render(request, 'grafo_sencillo/index_.html', {'direc': dire,
+                                                          'objeto': 'Item',
+                                                          'entidad': it})

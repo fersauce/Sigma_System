@@ -7,9 +7,10 @@ import simplejson
 import sys
 from Sigma_System.forms import BusquedaFasesForm
 from Sigma_System.models import Proyecto, Usuario, Fase, TipoDeItem, LBase, \
-    Items_x_LBase, Item, Solicitud, UsuarioRol
+    Items_x_LBase, Item, Solicitud, UsuarioRol, UsuariosXProyecto
 from Sigma_System.decoradores import permisos_requeridos
 from django.contrib.auth.decorators import login_required
+from Sigma_System.funciones_aux import permisos_disponibles
 import datetime, time
 
 
@@ -25,14 +26,41 @@ def administrar_fases(request, idProyect):
     """
     request.session['idProyectoActual'] = idProyect
     proyecto = Proyecto.objects.get(pk=idProyect)
-    fases = Fase.objects.filter(proyecto=proyecto).order_by('posicionFase')
+    #fases = Fase.objects.filter(proyecto=proyecto).order_by('posicionFase')
+    #us_x_proy = UsuariosXProyecto.objects.filter(proyecto=proyecto, usuario=request.user.usuario)
+    #idp = idProyect
+    #if us_x_proy:
+    #    if us_x_proy[0].lider:
+    #        idp = '0'
+
+    request.session['permisos'] = permisos_disponibles(request, 1, int(idProyect), 0)
     permisos = request.session['permisos']
+    print "/*/*/*/*/*"
+    print permisos
+    print "/*/*/*/*/*"
+    fases = fases_por_usuario(idProyect, request.user)
     return render(request, 'administrarfases.html',
                   {'proyecto': proyecto, 'fases': fases,
                    'form': BusquedaFasesForm(),
                    'vacio': 'No se encontraron fases asociadas a este '
                             'proyecto',
-                   'permisos': permisos})
+                   'permisos': permisos,
+                   'contexto': request.session['contexto']})
+
+
+def fases_por_usuario(idp, usuario):#, permisos):
+    usu_roles = UsuarioRol.objects.filter(usuario=usuario.usuario, idProyecto=idp)
+    fases = []
+    usu_proyecto = UsuariosXProyecto.objects.filter(usuario=usuario.usuario, proyecto=Proyecto.objects.get(id=idp))
+    if usu_proyecto:
+        if usu_proyecto[0].lider and usu_proyecto[0].activo:
+            return Fase.objects.filter(proyecto=idp).order_by('posicionFase')
+    #if 'super_us' in permisos:
+    #    return Fase.objects.filter(proyecto=idp).order_by('posicionFase')
+    for u_r in usu_roles:
+        if u_r.idFase != 0:
+            fases.append(Fase.objects.get(id=u_r.idFase))
+    return fases
 
 
 @login_required(login_url='/login/')

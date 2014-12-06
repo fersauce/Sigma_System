@@ -13,6 +13,7 @@ from Sigma_System.models import Proyecto, Usuario, Fase, UsuariosXProyecto, \
 import datetime, time
 from Sigma_System.decoradores import permisos_requeridos
 from django.contrib.auth.decorators import login_required
+from Sigma_System.funciones_aux import permisos_disponibles
 
 
 @login_required(login_url='/login/')
@@ -27,14 +28,17 @@ def administrar_proyecto(request):
     @return: AdministrarProyecto.html, pagina en la cual se trabaja con los
     proyectos.
     """
+    request.session['permisos'] = permisos_disponibles(request, 0, 0, 0)
+    request.session['contexto'] = 'administrar'
     permisos = request.session['permisos']
     usuario = request.user.usuario
     proyectos = usuario.proyectos.all()
     if 'super_us' in permisos:
         proyectos = Proyecto.objects.all().order_by('-nombre')
-    elif 'modificar_pr' in permisos:
-        usu_proyectos = UsuariosXProyecto.objects.filter(
-            usuario=request.user.usuario, activo=True)
+    elif 'adm_pr' in permisos:
+        usu_proyectos = UsuariosXProyecto.objects.filter(usuario=request.user.usuario,
+                                                         activo=True,
+                                                         lider=True)
         permisos = request.session['permisos']
         proyectos = []
         for u in usu_proyectos:
@@ -144,7 +148,7 @@ def modificar_proyecto(request, idProyecto):
                     messages.error(request, 'El nombre de ese proyecto ya '
                                             'existe, escriba otro')
                     return render(request, 'proyectomodificar.html',
-                                  {'proyecto': proyecto})
+                                  {'proyecto': proyecto, 'permisos': request.session['permisos']})
             proyecto.nombre = request.POST['nombre']
             proyecto.descripcion = request.POST['descripcion']
         try:
@@ -153,9 +157,10 @@ def modificar_proyecto(request, idProyecto):
             messages.error(request, 'Ocurrio un error al intentar modificar '
                                     'el proyecto')
             return render(request, 'proyectomodificar.html',
-                          {'proyecto': proyecto})
+                          {'proyecto': proyecto, 'permisos': request.session['permisos']})
         return HttpResponseRedirect('/ss/proyecto')
-    return render(request, 'proyectomodificar.html', {'proyecto': proyecto})
+    return render(request, 'proyectomodificar.html', {'proyecto': proyecto,
+                                                      'permisos': request.session['permisos']})
 
 
 @login_required(login_url='/login/')
@@ -220,6 +225,7 @@ def buscar_proyecto(request):
 
 
 def administrarProyectosAsociados(request):
+    request.session['contexto'] = 'desarrollo'
     usuario = Usuario.objects.all()
     id_user = request.user.id
     userSesion = User.objects.get(id=id_user)
@@ -320,7 +326,11 @@ def desasignarUsuarioProyecto(request, idProyect, idUser):
     usuario = Usuario.objects.get(id=idUser)
     proyecto = Proyecto.objects.get(id=idProyect)
     uxp = UsuariosXProyecto.objects.get(proyecto=proyecto, usuario=usuario)
+    roles = UsuarioRol.objects.filter(usuario=usuario, idProyecto=idProyect)
+    for r in roles:
+        r.delete()
     uxp.delete()
+
     messages.success(request, 'El usuario ' +
                      usuario.user.username
                      + ' ha sido desasignado del proyecto ' +
@@ -349,10 +359,12 @@ def asig_desagig_roles_proyecto(request, idProyect, idUser):
         idrol = request.POST['roles']
         rol = Rol.objects.get(id=idrol)
         if rolXusuario:
-            if rol != rol_usr:
-                UsuarioRol.objects.get(id=rolXusuario[0].id).delete()
-                UsuarioRol.objects.create(usuario=usuario, rol=rol,
-                                          idProyecto=idProyect)
+            if rol.id != rol_usr.id:
+                usuario_rol = UsuarioRol.objects.get(id=rolXusuario[0].id)#.delete()
+                usuario_rol.idProyecto = idProyect
+                usuario_rol.rol = rol
+                usuario_rol.save()
+                #UsuarioRol.objects.create(usuario=usuario, rol=rol, idProyecto=idProyect)
                 messages.success(request, 'El usuario ' +
                                  usuario.user.username
                                  + ' ahora posee el rol ' +
@@ -376,7 +388,8 @@ def asig_desagig_roles_proyecto(request, idProyect, idUser):
     return render(request, 'UsuarioRolProyecto.html', {'proyecto': proyecto,
                                                        'usuario': usuario,
                                                        'roles': roles,
-                                                       'rol_usr': rol_usr})
+                                                       'rol_usr': rol_usr,
+                                                       'permisos': request.session['permisos']})
 
 
 def iniciarProyecto(request, idProyect):
