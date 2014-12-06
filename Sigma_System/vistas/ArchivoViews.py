@@ -6,6 +6,7 @@ from django.shortcuts import render
 import simplejson
 import sys
 from Sigma_System.models import Item, Archivo
+from Sigma_System.vistas.ItemViews import guardarHistorial
 
 
 def administrarArchivos(request, idItem):
@@ -34,7 +35,10 @@ def agregarArchivo(request, idItem):
             archivo.archivo_adj = request.FILES['arch']
             archivo.save()
             item.arch_adjuntos.add(archivo)
+            version=item.version
+            item.version=version+1
             item.save()
+            guardarHistorial(item,item.version,version,'adj','ver dir archivo','ver dir','carga de archivo')
             messages.success(request, 'Archivo cargado y asociado al item')
         except Exception:
             messages.error(request, 'Ha ocurrido un error, pongase en contacto '
@@ -50,5 +54,9 @@ def eliminarArchivo(request, idItem, idArchivo):
     if request.method == 'POST':
         archivo.activo = False
         archivo.save()
+        version=item.version
+        item.version=version+1
+        item.save()
+        guardarHistorial(item,item.version,version,'elimA',0,'ver dir','carga de archivo')
         item.save()
     return HttpResponseRedirect(reverse('sigma:adm_arch' ,args=[idItem]))

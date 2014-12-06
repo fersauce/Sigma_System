@@ -440,8 +440,8 @@ def iniciarProyecto(request, idProyect):
         fase.save()
         proyecto.save()
         messages.success(request,
-                         'El proyecto ' + proyecto.nombre + ' ha sido iniciado, '
-                                                            'el lider ya puede '
+                         'El proyecto ' + proyecto.nombre + ' ha sido iniciado,'
+                                                            ' ya puede '
                                                             'trabajar por el')
     except Exception:
         messages.error(request, 'Ha ocurrido un error interno')
