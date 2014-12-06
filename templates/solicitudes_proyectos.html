@@ -196,13 +196,14 @@
                 tabla.refresh();
             });
         }
-        function verInfo(id, estado, codigo) {
+        function verInfo(id, estado, codigo, impacto) {
             $.getJSON("{% url 'sigma:solic_rec_items' 3 %}", {'xhr': true, 'idSol': id}, function(data) {
                 var content = '<label>Estado: </label><h4>'+estado+'</h4>' +
                         '<br><label>Items relacionados a la solicitud: </label><ul>';
                 $.each(data, function(i, dato){
                     content = content + '<li class="icon-cone">'+dato.item+'</li>';
                 });
+                content = content + '<label>Impacto: </label><h4>'+impacto+'</h4>';
                 content = content + '</ul><div><a href="#"><input type="button" class="button success" value="Atr&aacute;s"'+
                         ' onclick="$.Dialog.close();"></a></div>';
                 var titulo = 'Solicitud '+codigo;
@@ -242,7 +243,7 @@
                                                 <li>
                                                     <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
                                                     <ul class="dropdown-menu" data-role="dropdown">
-                                                        <li class="text-left"><a href="#" onclick="verInfo({{ solicitud.pk }}, '{{ solicitud.estado }}', '{{ solicitud.codigo }}')">
+                                                        <li class="text-left"><a href="#" onclick="verInfo({{ solicitud.pk }}, '{{ solicitud.estado }}', '{{ solicitud.codigo }}', '{{ solicitud.impacto }}')">
                                                             <i class="icon-book  on-left"></i>Info</a></li>
                                                         <li class="text-left"><a href="#" onclick="confirmar('{% url 'sigma:solic_baja' solicitud.pk %}')">
                                                             <i class="icon-cancel-2 on-left"></i>Eliminar</a></li>

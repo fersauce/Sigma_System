@@ -70,12 +70,13 @@
             var titulo = 'Solicitud '+codigo;
             dialogo(titulo, content);
         }
-        function verInfo(id, codigo) {
+        function verInfo(id, codigo, impacto) {
             $.getJSON("{% url 'sigma:solic_rec_items' 3 %}", {'xhr': true, 'idSol': id}, function(data) {
                 var content = '<br><label>Items relacionados a la solicitud: </label><ul>';
                 $.each(data, function(i, dato){
                     content = content + '<li class="icon-cone">'+dato.item+'</li>';
                 });
+                content = content + '<label>Impacto: </label><h4>'+impacto+'</h4>';
                 content = content + '</ul><div><a href="#"><input type="button" class="button success" value="Atr&aacute;s"'+
                         ' onclick="$.Dialog.close();"></a></div>';
                 var titulo = 'Solicitud '+codigo;
@@ -106,7 +107,7 @@
                                                 <li>
                                                     <a class="dropdown-toggle" href="#"><i class="icon-cog"></i></a>
                                                     <ul class="dropdown-menu" data-role="dropdown">
-                                                        <li class="text-left"><a href="#" onclick="verInfo({{ solicitud.solic_pk }}, '{{ solicitud.solic_cod }}')">
+                                                        <li class="text-left"><a href="#" onclick="verInfo({{ solicitud.solic_pk }}, '{{ solicitud.solic_cod }}', '{{ solicitud.impacto }}')">
                                                             <i class="icon-info-2  on-left"></i>Info</a></li>
                                                         <li class="text-left"><a href="#" onclick="confirmar('{% url 'sigma:solic_ver_sol' solicitud.solic_pk %}', '{{ solicitud.solic_cod }}')">
                                                             <i class="icon-book on-left"></i>Votar</a></li>

@@ -2,14 +2,14 @@
 {% block titulo %}Agregar nuevo Tipo de &Iacute;tem{% endblock %}
 {% block navegacion %}
     <span class="element-divider"></span>
-    <a class="element" href="{% url 'sigma:inicio' %}"> Página Principal</a>
+    <a class="element" href="{% url 'sigma:inicio' %}"> P&aacute;gina Principal</a>
     <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
     <a class="element" href="{% url 'sigma:adm_fase' pkProyecto %}">Fases</a>
     <a class="pull-menu" href="#"></a>
 {% endblock %}
 {% block contenido %}
     <div class="span10">
-        <h1>Crear<small class="on-right">Fase</small></h1>
+        <h1>Crear<small class="on-right">Tipo de &Iacute;tem</small></h1>
         <div class="example">
             <form action = "{% url 'sigma:adm_ti_alta' pkProyecto pkFase %}" method="post">
                 {% csrf_token %}
