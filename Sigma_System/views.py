@@ -74,22 +74,22 @@ def alta_usuario(request):
                                                       password=make_password(form.cleaned_data['contrasenha']),
                                                       is_active=True)
                         Usuario.objects.create(user=usuario, ci=form.cleaned_data['ci'],
-                                                       direccion=form.cleaned_data['direccion'],
-                                                       tel=form.cleaned_data['tel'],
-                                                       estado=True)
-                        messages.success(request, 'El usuario "'+usuario.username+'" ha sido creado con exito')
+                                               direccion=form.cleaned_data['direccion'],
+                                               tel=form.cleaned_data['tel'],
+                                               estado=True)
+                        messages.success(request, 'El usuario "' + usuario.username + '" ha sido creado con exito')
                         return HttpResponseRedirect('/ss/adm_u/')
                     else:
                         form = FormAltaUsuario()
-                        messages.error(request, 'El ci "'+cid+'" ya existe')
+                        messages.error(request, 'El ci "' + cid + '" ya existe')
                         return render(request, 'Alta Usuario.html', {'form': form})
                 else:
                     form = FormAltaUsuario()
-                    messages.error(request, 'El e-mail "'+e_mail+'" ya existe')
+                    messages.error(request, 'El e-mail "' + e_mail + '" ya existe')
                     return render(request, 'Alta Usuario.html', {'form': form})
             else:
                 form = FormAltaUsuario()
-                messages.error(request, 'El username "'+user_n+'" ya existe')
+                messages.error(request, 'El username "' + user_n + '" ya existe')
                 return render(request, 'Alta Usuario.html', {'form': form})
         else:
             messages.error(request, 'Formulario invalido')
@@ -109,7 +109,7 @@ def baja_usuario(request, us):
     user.is_active = False
     nombre = user.username
     user.save()
-    messages.error(request, 'El usuario "'+nombre+'" ha sido eliminado')
+    messages.error(request, 'El usuario "' + nombre + '" ha sido eliminado')
     return HttpResponseRedirect('/ss/adm_u/')
 
 
@@ -122,15 +122,15 @@ def modificar_usuario(request, us):
     user = User.objects.get(id=us)
     #direccion = '/ss/adm_u/?page='+request.session['pag_actual']
     if request.method == 'POST':
-        user.first_name=request.POST['nombre']
-        user.last_name=request.POST['apellido']
+        user.first_name = request.POST['nombre']
+        user.last_name = request.POST['apellido']
         user.usuario.direccion = request.POST['direccion']
-        user.usuario.ci=request.POST['ci']
+        user.usuario.ci = request.POST['ci']
         user.usuario.tel = request.POST['tel']
         user.usuario.save()
         user.save()
         nombre = user.username
-        messages.info(request, 'usuario "'+nombre+'" modificado correctamente')
+        messages.info(request, 'usuario "' + nombre + '" modificado correctamente')
     else:
         return render(request, 'modificarUsuario.html', {'user': user})
     return HttpResponseRedirect('/ss/adm_u/')
@@ -206,9 +206,8 @@ def ver_detalle(request, us):
     vista utilizada para dar los demas datos de un usuario,
     pero sin modificarlos
     """
-    user = User.objects.filter(is_active=True, id = us)
+    user = User.objects.filter(is_active=True, id=us)
     return render(request, 'verDetalle.html', {'user': user})
-
 
 
 @login_required(login_url='/login/')
@@ -218,25 +217,25 @@ def cambiar(request, us):
     de cualquier usuario
     """
     if request.method == 'POST':
-        usA=User.objects.get(id=us)
-        direc=usA.email
-        passNueva=request.POST['passNueva']
-        confirmacion=request.POST['conf']
+        usA = User.objects.get(id=us)
+        direc = usA.email
+        passNueva = request.POST['passNueva']
+        confirmacion = request.POST['conf']
         if passNueva == confirmacion:
             contenido = render_to_string('mailing/recuperacion_password.html',
                                          {'pass': passNueva})
-            correo = EmailMessage('Restablecimiento de Pass de SS', contenido,to=[direc])
+            correo = EmailMessage('Restablecimiento de Pass de SS', contenido, to=[direc])
             correo.content_subtype = "html"
             correo.send()
-            nuevo=make_password(confirmacion)
+            nuevo = make_password(confirmacion)
             usA.password = nuevo
             usA.save()
             messages.info(request, 'Contrasenha cambiada con exito')
         else:
             messages.error(request, 'Las contrasenhas no coinciden')
-            return render(request, 'cambiarPass2.html', {'id':us,'user':usA})
+            return render(request, 'cambiarPass2.html', {'id': us, 'user': usA})
     else:
-        return render(request, 'cambiarPass2.html', {'id':us})
+        return render(request, 'cambiarPass2.html', {'id': us})
 
     return HttpResponseRedirect('/ss/inicio/')
 
@@ -245,7 +244,7 @@ def cambiar(request, us):
 def del_roles(request, id):
     nombre = Rol.objects.get(id=id).nombre
     Rol.objects.get(id=id).delete()
-    messages.error(request, 'El rol: '+nombre+', ha sido eliminado')
+    messages.error(request, 'El rol: ' + nombre + ', ha sido eliminado')
     return HttpResponseRedirect('/ss/adm_r/')
 
 
@@ -280,29 +279,30 @@ def cambiarPass(request):
 
         #if user:
 
-            passVieja= request.POST['passVieja']
-            viejoConHash=make_password(passVieja)
-            #valor=user.password
-            #valor=us.password
-            passNueva=request.POST['passNueva']
-            confirmacion=request.POST['passNueva2']
-            if passNueva == confirmacion:
+        passVieja = request.POST['passVieja']
+        viejoConHash = make_password(passVieja)
+        #valor=user.password
+        #valor=us.password
+        passNueva = request.POST['passNueva']
+        confirmacion = request.POST['passNueva2']
+        if passNueva == confirmacion:
 
-                nuevo=make_password(confirmacion)
-                us.password = nuevo
-                us.save()
-                messages.info(request, 'Contrasenha cambiada con exito')
-            else:
-                messages.error(request, 'Las contrasenhas no coinciden')
-                return render(request, 'cambiarPass.html')
-        #else:
-         #   messages.error(request,'El usuario no existe' )
-          #  return render(request, 'cambiarPass.html')
+            nuevo = make_password(confirmacion)
+            us.password = nuevo
+            us.save()
+            messages.info(request, 'Contrasenha cambiada con exito')
+        else:
+            messages.error(request, 'Las contrasenhas no coinciden')
+            return render(request, 'cambiarPass.html')
+            #else:
+            #   messages.error(request,'El usuario no existe' )
+            #  return render(request, 'cambiarPass.html')
     else:
         return render(request, 'cambiarPass.html')
     return HttpResponseRedirect('/ss/inicio/')
-@login_required(login_url='/login/')
 
+
+@login_required(login_url='/login/')
 def asignar_roles(request, id):
     user = User.objects.get(id=id)
     if request.method == 'POST':
@@ -365,7 +365,10 @@ def dibujar_grafo(request, idp):
                 lista_ady2[iden_padre].append(iden_hijo)
         #lista_ady = {'dos': [], 'uno': ['dos']}
         return HttpResponse(simplejson.dumps(lista_ady2), content_type='application/json')
-    return render(request, 'grafo_sencillo/index_.html', {'direc': idp, 'objeto': 'Proyecto'})
+    proyecto = Proyecto.objects.get(id=idp)
+    return render(request, 'grafo_sencillo/index_.html', {'direc': idp,
+                                                          'objeto': 'Proyecto',
+                                                          'entidad': proyecto})
 
 
 def dibujar_grafo_defase(request, idf):
@@ -384,7 +387,10 @@ def dibujar_grafo_defase(request, idf):
         #lista_ady = {'dos': [], 'uno': ['dos']}
         return HttpResponse(simplejson.dumps(lista_ady2), content_type='application/json')
     dire = 'fase/' + str(idf)
-    return render(request, 'grafo_sencillo/index_.html', {'direc':dire, 'objeto':'Fase'})
+    fase = Fase.objects.get(id=idf)
+    return render(request, 'grafo_sencillo/index_.html', {'direc': dire,
+                                                          'objeto': 'Fase',
+                                                          'entidad': fase})
 
 
 def dibujar_grafo_deitem(request, idi):
@@ -412,4 +418,7 @@ def dibujar_grafo_deitem(request, idi):
 
         return HttpResponse(simplejson.dumps(lista_ady2), content_type='application/json')
     dire = 'item/' + str(idi)
-    return render(request, 'grafo_sencillo/index_.html', {'direc':dire, 'objeto':'Item'})
+    it = Item.objects.get(id=idi)
+    return render(request, 'grafo_sencillo/index_.html', {'direc': dire,
+                                                          'objeto': 'Item',
+                                                          'entidad': it})

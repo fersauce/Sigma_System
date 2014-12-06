@@ -7,13 +7,33 @@
 {% block navegacion %}
     <span class="element-divider"></span>
     <a class="element" href="{% url 'sigma:inicio' %}">Página Principal</a>
-    <a class="element" href="{% url 'sigma:adm_proy' %}">Proyectos</a>
+    <span class="element-divider"></span>
+    <a class="element" href="{% url 'sigma:des_proyec' %}">Desarrollo</a>
+    {% if objeto == 'Fase' %}
+        <span class="element-divider"></span>
+        <a class="element" href="{% url 'sigma:adm_fase' entidad.proyecto.id %}">Proyecto
+            <sub>{{ entidad.proyecto.nombre }}</sub></a>
+        <span class="element-divider"></span>
+        <a class="element" > Fase <sub>{{ entidad.nombre }}</sub> </a>
+    {% endif %}
+    {% if objeto == 'Item' %}
+        <span class="element-divider"></span>
+        <a class="element" href="{% url 'sigma:adm_fase' entidad.tipoItems.fase.proyecto.id %}">Proyecto
+            <sub>{{ entidad.tipoItems.fase.proyecto.nombre }}</sub></a>
+        <span class="element-divider"></span>
+        <a class="element" href="{% url 'sigma:adm_i' entidad.tipoItems.fase.id %}">Fase
+            <sub>{{ entidad.tipoItems.fase.nombre }}</sub></a>
+        <span class="element-divider"></span>
+        <a class="element"> Item <sub>{{ entidad.nombre }}</sub> </a>
+    {% endif %}
+
+    <span class="element-divider"></span>
     <a class="pull-menu" href="#"></a>
 {% endblock %}
-{% block titulo %}Grafo del proyecto{% endblock %}
+{% block titulo %}Grafo de {{ objeto }}{% endblock %}
 {% block contenido %}
     <div class="span10">
-        <h2><a href="#"></a>Grafo<small class="on-right">de {{ objeto }}</small> X</h2>
+        <h2><a href="#"></a>Grafo<small class="on-right">de {{ objeto }}</small>{{ entidad.nombre }} </h2>
         <div class="example">
             <div id="paper"></div>
             <link rel="stylesheet" href="/static/jointjs/css/joint.css" type="text/css"/>
