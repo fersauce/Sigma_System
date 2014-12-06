@@ -157,7 +157,9 @@
                                                                 <i class="icon-open on-left"></i>Iniciar</a></li>
                                                         {% endif %}
                                                         <li class="text-left"><a href="{% url 'sigma:genReport' proyecto.pk %}">
-                                                            <i class="icon-eye on-left"></i>Reporte</a> </li>
+                                                            <i class="icon-eye on-left"></i>Reporte del Proyecto</a> </li>
+                                                        <li class="text-left"><a href="{% url 'sigma:generar_reporte_sol' proyecto.pk %}">
+                                                            <i class="icon-eye on-left"></i>Reporte Solicitudes</a> </li>
                                                     </ul>
                                                 </li>
                                             </ul>

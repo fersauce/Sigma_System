@@ -9,19 +9,16 @@ import simplejson
 import sys
 from Sigma_System.forms import BusquedaProyectoForm, AltaProyectoForm
 from Sigma_System.models import Proyecto, Usuario, Fase, UsuariosXProyecto, \
-    UsuarioRol, Rol, Comite, UsuarioPorComite, Item
+    UsuarioRol, Rol, Comite, UsuarioPorComite, Item, Solicitud, Votacion
 import datetime, time
 from Sigma_System.decoradores import permisos_requeridos
 from django.contrib.auth.decorators import login_required
 from Sigma_System.funciones_aux import permisos_disponibles
-
-
 import xhtml2pdf.pisa as pisa
 import cStringIO as StringIO
 import cgi
 from django.template.loader import get_template
 from django.template import Context
-
 
 
 @login_required(login_url='/login/')
@@ -44,9 +41,10 @@ def administrar_proyecto(request):
     if 'super_us' in permisos:
         proyectos = Proyecto.objects.all().order_by('-nombre')
     elif 'adm_pr' in permisos:
-        usu_proyectos = UsuariosXProyecto.objects.filter(usuario=request.user.usuario,
-                                                         activo=True,
-                                                         lider=True)
+        usu_proyectos = UsuariosXProyecto.objects.filter(
+            usuario=request.user.usuario,
+            activo=True,
+            lider=True)
         permisos = request.session['permisos']
         proyectos = []
         for u in usu_proyectos:
@@ -156,7 +154,8 @@ def modificar_proyecto(request, idProyecto):
                     messages.error(request, 'El nombre de ese proyecto ya '
                                             'existe, escriba otro')
                     return render(request, 'proyectomodificar.html',
-                                  {'proyecto': proyecto, 'permisos': request.session['permisos']})
+                                  {'proyecto': proyecto,
+                                   'permisos': request.session['permisos']})
             proyecto.nombre = request.POST['nombre']
             proyecto.descripcion = request.POST['descripcion']
         try:
@@ -165,10 +164,13 @@ def modificar_proyecto(request, idProyecto):
             messages.error(request, 'Ocurrio un error al intentar modificar '
                                     'el proyecto')
             return render(request, 'proyectomodificar.html',
-                          {'proyecto': proyecto, 'permisos': request.session['permisos']})
+                          {'proyecto': proyecto,
+                           'permisos': request.session['permisos']})
         return HttpResponseRedirect('/ss/proyecto')
     return render(request, 'proyectomodificar.html', {'proyecto': proyecto,
-                                                      'permisos': request.session['permisos']})
+                                                      'permisos':
+                                                          request.session[
+                                                              'permisos']})
 
 
 @login_required(login_url='/login/')
@@ -368,11 +370,12 @@ def asig_desagig_roles_proyecto(request, idProyect, idUser):
         rol = Rol.objects.get(id=idrol)
         if rolXusuario:
             if rol.id != rol_usr.id:
-                usuario_rol = UsuarioRol.objects.get(id=rolXusuario[0].id)#.delete()
+                usuario_rol = UsuarioRol.objects.get(
+                    id=rolXusuario[0].id)  # .delete()
                 usuario_rol.idProyecto = idProyect
                 usuario_rol.rol = rol
                 usuario_rol.save()
-                #UsuarioRol.objects.create(usuario=usuario, rol=rol, idProyecto=idProyect)
+                # UsuarioRol.objects.create(usuario=usuario, rol=rol, idProyecto=idProyect)
                 messages.success(request, 'El usuario ' +
                                  usuario.user.username
                                  + ' ahora posee el rol ' +
@@ -397,7 +400,9 @@ def asig_desagig_roles_proyecto(request, idProyect, idUser):
                                                        'usuario': usuario,
                                                        'roles': roles,
                                                        'rol_usr': rol_usr,
-                                                       'permisos': request.session['permisos']})
+                                                       'permisos':
+                                                           request.session[
+                                                               'permisos']})
 
 
 def iniciarProyecto(request, idProyect):
@@ -457,45 +462,81 @@ def finalizarProyecto(request, idProyecto):
         reverse('sigma:adm_fase_fin', args=[proyecto.pk, fase.pk]))
 
 
-
-
-def generarReporte (request, idProy):
-
-    nProyecto=Proyecto.objects.get(id=idProy)
-    fases= Fase.objects.filter(proyecto__id=idProy).order_by('posicionFase')
-    lista_fase_item= []
-    c=0
-    tamListas=[]
+def generarReporte(request, idProy):
+    nProyecto = Proyecto.objects.get(id=idProy)
+    fases = Fase.objects.filter(proyecto__id=idProy).order_by('posicionFase')
+    lista_fase_item = []
+    c = 0
+    tamListas = []
     for f in fases:
-       lista_fase_item.append([])
-       lista_fase_item[c].append(f)
-       items=Item.objects.filter(tipoItems__fase=f)
-       for i in items:
+        lista_fase_item.append([])
+        lista_fase_item[c].append(f)
+        items = Item.objects.filter(tipoItems__fase=f)
+        for i in items:
+            lista_fase_item[c].append(i)
+            # print(lista_fase_item[c].__len__())
+        tamListas.append(lista_fase_item[c].__len__() - 1)
+        longitud = lista_fase_item[c].__len__() - 1
+        lista_fase_item[c].append(longitud)
+        print('cantidad de item en cada fase', longitud)
+        c = c + 1
 
-           lista_fase_item[c].append(i)
-      # print(lista_fase_item[c].__len__())
-       tamListas.append(lista_fase_item[c].__len__()-1)
-       longitud=lista_fase_item[c].__len__()-1
-       lista_fase_item[c].append(longitud)
-       print('cantidad de item en cada fase',longitud)
-       c=c+1
-
-    c=0
+    c = 0
 
 
-    #return render(request,'ReporteProyecto.html',{'vector':lista_fase_item, 'nombreProyecto':nProyecto})
-    return render_to_pdf('ReporteProyecto.html', {'vector':lista_fase_item, 'nombreProyecto':nProyecto, 'tamListas':tamListas}, 'reporteProyecto')
+    # return render(request,'ReporteProyecto.html',
+    # {'vector':lista_fase_item, 'nombreProyecto':nProyecto})
+    return render_to_pdf('ReporteProyecto.html', {'vector': lista_fase_item,
+                                                  'nombreProyecto': nProyecto,
+                                                  'tamListas': tamListas},
+                         'reporteProyecto')
 
 
 def render_to_pdf(template_src, context_dict, filename):
-        template = get_template(template_src)
-        context = Context(context_dict)
-        html = template.render(context)
-        result = StringIO.StringIO()
-        pdf = pisa.pisaDocument(
-            StringIO.StringIO(html.encode("utf-8")), result)
-        if not pdf.err:
-            response = HttpResponse(result.getvalue(), mimetype='application/pdf')
-            response['Content-Disposition'] = 'filename='+ filename +'.pdf'
-            return response
-        return HttpResponse('No se pudo generar el reporte :%s' % cgi.escape(html))
+    template = get_template(template_src)
+    context = Context(context_dict)
+    html = template.render(context)
+    result = StringIO.StringIO()
+    pdf = pisa.pisaDocument(
+        StringIO.StringIO(html.encode("utf-8")), result)
+    if not pdf.err:
+        response = HttpResponse(result.getvalue(), mimetype='application/pdf')
+        response['Content-Disposition'] = 'filename=' + filename + '.pdf'
+        return response
+    return HttpResponse('No se pudo generar el reporte :%s' % cgi.escape(html))
+
+
+def generarReporteSolicitudes(request, idProyecto):
+    """
+    Controlador que se encarga de realizar el reporte de las solicitudes que se
+    han realizado en un proyecto.
+    :param request:
+    :param idProyecto: id del proyecto del cual se va a realizar el reporte.
+    :return:
+    """
+    proyecto = Proyecto.objects.get(pk=idProyecto)
+    solicitudes = Solicitud.objects.filter(proyecto=proyecto)
+    enviar = []
+    lider = UsuariosXProyecto.objects.get(proyecto=proyecto,
+                                          lider=True).usuario
+    for solicitud in solicitudes:
+        lbsAfectadas = solicitud.lb_relacionadas.all()
+        lb = []
+        c = 0
+        for lbAfectada in lbsAfectadas:
+            c += 1
+            lb.append({'pos': c, 'nombre': lbAfectada.obs})
+        usuario = Usuario.objects.get(pk=solicitud.id_usuario)
+        voto = Votacion.objects.filter(miembro=lider, solicitud=solicitud)
+        if not voto:
+            votoLider = 'No'
+        else:
+            votoLider = 'Si'
+        enviar.append(
+            {'codigo': solicitud.codigo, 'lbs': lb, 'estado': solicitud.estado,
+             'usuario': usuario.user.first_name, 'votoLider': votoLider})
+    return render_to_pdf('ReporteSolicitud.html',
+                         {'solicitudes': enviar,
+                          'nombreProyecto': proyecto.nombre,
+                          'liderProyecto': lider.user.first_name},
+                         'ReporteSolicitud')
