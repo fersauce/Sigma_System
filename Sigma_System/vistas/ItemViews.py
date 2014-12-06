@@ -686,7 +686,7 @@ def revertirItem(request, idItem, versionRev, idHis):
                                 its.estado = 'baja'
                                 its.version = versionActual+1
                                 #its.save()
-                                guardarHistorial(its,its.version,versionActual,'rever',valorActualEnHistorial,valorAnteriorEnHistorial,'reversion')
+                                guardarHistorial(its,its.version,versionActual,'rever','baja','activo','reversion')
                             if historialAux.cod_mod=='a':
                                 print 'revertir a alta, la primera version'
                                 its.version=1
