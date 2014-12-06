@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
-from django import forms
 import datetime
 # Create your models here.
 
@@ -109,6 +108,8 @@ class Archivo(models.Model):
     archivo_adj = models.FileField(upload_to='archivos')
 
 
+
+
 class LBase(models.Model):
     estado = models.CharField(max_length=15, default='cerrado')
     obs = models.CharField(max_length=60, default='Sin obs.')
@@ -126,6 +127,8 @@ class Item(models.Model):
     items_atrib = models.ManyToManyField(AtribTipoDeItem,
                                          through='ItemAtributosTipoI')
     arch_adjuntos = models.ManyToManyField(Archivo)
+
+
 
 
 class Items_x_LBase(models.Model):
@@ -166,6 +169,13 @@ class Solicitud(models.Model):
     item = models.ForeignKey(Item)
 
 
+
+
+
+
+
+
+
 class Comite(models.Model):
     obs = models.CharField(max_length=200)
     nro_integ = models.IntegerField()
@@ -177,6 +187,7 @@ class Comite(models.Model):
 class UsuarioPorComite(models.Model):
     comite = models.ForeignKey(Comite)
     usuario = models.ForeignKey(Usuario)
+
 
 
 class HistorialLineabase(models.Model):

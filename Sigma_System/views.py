@@ -28,11 +28,11 @@ def iniciarsesion(request):
                 if user.is_active:
                     login(request, user)
                     request.session['userpk'] = username
-                    request.session['permisos'] = permisos_disponibles(user, 0, 0, 0)
+                    request.session['permisos'] = permisos_disponibles(request, 0, 0, -1)
                     #if 'super_us' in request.session['permisos']:
                     return HttpResponseRedirect(reverse('sigma:inicio'))
                     #else:
-                    #    return HttpResponseRedirect(reverse('sigma:adm_proy'))
+                    #return HttpResponseRedirect(reverse('sigma:adm_proy'))
             else:
                 messages.error(request, 'Username o contrasenha incorrecta')
     else:
